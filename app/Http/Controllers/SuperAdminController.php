@@ -12,7 +12,7 @@ use App\Employee;
 use Illuminate\Support\Facades\DB;
 
 
-class SuperAdminController extends Controller
+class superadminController extends Controller
 {
     public function __construct()
     {
@@ -24,7 +24,7 @@ class SuperAdminController extends Controller
     public function index()
     {
     
-        return view('superAdmin.home', );
+        return view('superadmin.home', );
 
     }
 
@@ -72,7 +72,7 @@ class SuperAdminController extends Controller
         //$users = User::where('id','!=', Auth::user()->id)->where('is_admin', true)->get();
         $keyValue = "" ;
     
-        return view('superAdmin.generatekey',compact('users','keyValue','allprivileges') );
+        return view('superadmin.generatekey',compact('users','keyValue','allprivileges') );
 
     }
 
@@ -184,7 +184,7 @@ class SuperAdminController extends Controller
         /* ->Where('keys.date_experation', '>', Carbon::now()) */
         ->get();
     
-        return view('superAdmin.showRestaurantWithKey',compact('users') );
+        return view('superadmin.showRestaurantWithKey',compact('users') );
 
     }
 
@@ -206,7 +206,7 @@ class SuperAdminController extends Controller
         ->get();
         //dd($users);
     
-        return view('superAdmin.showRestaurantAllInfo',compact('users') );
+        return view('superadmin.showRestaurantAllInfo',compact('users') );
 
     }
 
@@ -242,7 +242,7 @@ class SuperAdminController extends Controller
 
    
         //dd($someInfoEmployees);
-        return view('superAdmin.showRestaurantAllInfoByOne',compact('user','someInfoEmployees','restaurants') );
+        return view('superadmin.showRestaurantAllInfoByOne',compact('user','someInfoEmployees','restaurants') );
 
     }
 
