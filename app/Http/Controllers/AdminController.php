@@ -130,9 +130,9 @@ $mounth = array();
   
     
     if (request('image') != null){
-
+     
         $imagePath = request('image')->store('users','public');
-        dd($imagePath);
+        dd($imagePath,request('image'));
         $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
         
        
