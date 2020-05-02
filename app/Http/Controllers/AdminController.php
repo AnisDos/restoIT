@@ -132,7 +132,7 @@ $mounth = array();
     if (request('image') != null){
      
         $imagePath = request('image')->store('users','public');
-        dd(storage_path("$imagePath"),$imagePath, public_path("storage/{$imagePath}") );
+       // dd(storage_path("$imagePath"),$imagePath, public_path("storage/{$imagePath}") );
         $image = Image::make(storage_path("$imagePath"))->fit(120,120);
         $image->save();
 
