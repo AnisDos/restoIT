@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Hash;
-use Image;
+//use Image;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use App\Category;
@@ -17,6 +17,9 @@ use App\Restaurant;
 use DB;
 use Carbon\Carbon;
 
+
+//require 'vendor/autoload.php';
+use Intervention\Image\ImageManagerStatic as Image;
 
 class AdminController extends Controller
 {
@@ -133,6 +136,10 @@ $mounth = array();
         $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
        
         $image->save();
+
+
+
+        
        
     }
 
