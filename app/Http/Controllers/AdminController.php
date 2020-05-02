@@ -130,9 +130,9 @@ $mounth = array();
 
         $imagePath = request('image')->store('users','public');
         
-       // $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
+        $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
        
-       // $image->save();
+        $image->save();
        
     }
 
