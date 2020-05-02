@@ -357,9 +357,9 @@ public function mailsend() {
 
             $imagePath = request('image')->store('meals','public');
             
-            $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
+      /*       $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
            
-            $image->save();
+            $image->save(); */
            
         }
 
@@ -539,10 +539,10 @@ $me =   Auth::user()->restaurant->categories()->create([
 
             $imagePath = request('image')->store('meals','public');
             
-            $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
+          /*   $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
            
             $image->save();
-           
+            */
         }
 
         $category = Category::find($data['category']);
@@ -995,9 +995,9 @@ public function decativateEmployee()
 
             $imagePath = request('image')->store('charges','public');
             
-            $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
+           /*  $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
            
-            $image->save();
+            $image->save(); */
            
         }
 
