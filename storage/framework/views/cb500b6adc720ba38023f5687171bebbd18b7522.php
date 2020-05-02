@@ -1,0 +1,1 @@
+restaurant lazem ycontacti ladmin li lazem ycontati mol site bach ya3tilou cle ydekhelha admin kbir<?php /**PATH D:\laravelAnis\restoIT\resources\views/pages/notVerifiedRestaurant.blade.php ENDPATH**/ ?>
