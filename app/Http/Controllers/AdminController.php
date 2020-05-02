@@ -116,7 +116,7 @@ $mounth = array();
     }
     
 
-    public function addRestaurantFormValidation()
+    public function addRestaurantFormValidation(Request $request)
 {
    
     $data = request()->validate([
@@ -132,16 +132,9 @@ $mounth = array();
     if (request('image') != null){
      
         $imagePath = request('image')->store('users','public');
-       // dd($imagePath,request('image'));
-        $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
-        
-       
+        $image = Image::make("storage/{$imagePath}")->fit(120,120);
         $image->save();
 
-
-
-        
-       
     }
 
 $password = \Hash::make($data['password']);
