@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-use App\User;
+use App\Restaurant;
 use App\DeliveryCompany;
 use App\Employee;
 
@@ -12,9 +12,9 @@ class Charge extends Model
 {
     protected $guarded =[];
 
-public function user()
+public function restaurant()
 {
-    return $this->belongsTo(User::class);
+    return $this->belongsTo(Restaurant::class);
 }
 
 

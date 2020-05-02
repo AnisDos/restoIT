@@ -15,34 +15,33 @@ class Employee
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null )
+    public function handle($request, Closure $next )
     {
+        if (Auth::user()) {
 
-        switch ($guard) {
-         
-            case 'employee':
-                if (Auth::guard($guard)->check()) {
-                    
-        dd('jjhjhj',Auth::user(),auth()->guest(),auth());
-                    return redirect ('employee'); 
-                }
-                break;
             
-            default:
-                if (Auth::guard($guard)->check()) {
-                      if (Auth::user()->is_admin) {
-                            return redirect ('admin'); /* $redirectTo = RouteServiceProvider::ADMIN;*/
-                      }
-                      return redirect ('restaurant'); /*$redirectTo = RouteServiceProvider::HOME;*/
-        
-                /*return redirect(RouteServiceProvider::HOME);*/
-                }
-                break;
+            if (Auth::user()->admin()->exists()) {
+                return redirect ('admin'); 
+                
+    
+            } elseif (Auth::user()->restaurant()->exists()) {
+                
+                return redirect ('restaurant'); 
+
+            }elseif (Auth::user()->employee()->exists()) {
+    
+                return $next($request);
+    
+            }elseif (Auth::user()->superadmin()->exists()) {
+    
+                return redirect ('superadmin'); 
+    
+            }
+       
+            
         }
 
 
-
-
-        return $next($request);
+        return redirect ('/'); 
     }
 }

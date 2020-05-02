@@ -17,12 +17,20 @@ class UserIsNotConfirmedEmployee
      */
     public function handle($request, Closure $next)
     {
+
+        
+        if (Auth::user()) {
+            if (Auth::user()->employee()->exists()) {
+                if (!Auth::user()->restaurant->admin->verified) {
+                    return redirect('notVerifiedForEmployee');
+                }
+                return $next($request);
+                
+    
+            }
+        }
        
         
-        if (!Auth::user()->user->user->verified)
-        {
-            return redirect('notVerifiedForEmployee');
-        }
-        return $next($request);
+       
     }
 }

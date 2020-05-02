@@ -7,6 +7,7 @@ use App\Product;
 use App\ProductVersion;
 use Illuminate\Support\Facades\Auth;
 use App\Provider;
+use DB;
 
 class ProductController extends Controller
 {
@@ -18,18 +19,42 @@ class ProductController extends Controller
         $this->middleware(['auth','isusernotconfirmed']);
     }
 
+    public function productNoQntfunction(){
+        
+       // $products = Product::where('user_id',Auth::user()->id)->get();
+        $products = Auth::user()->restaurant->products()->get();
+        $productNoQnt = array();
+        foreach($products as $product)
+        {
+            
+            $productWest = DB::table('product_versions')
+            ->where('product_id',$product->id)
+            ->sum('product_versions.qntSTK');
+            
+        
+            if ($product->limiteSTK >= $productWest) {
+           
+                array_push($productNoQnt,  $product);
+        
+            }
+        
+        
+        }
+        
+        //dd($productNoQnt);
+        return $productNoQnt;
+        
+            }
 
     public function addProduct()
     {
-        
-        $providers = Provider::where('user_id',Auth::user()->id)->get();
+        $productNoQnt = $this->productNoQntfunction();
 
-        return view('product.addProduct',compact('providers'));
+     //   $providers = Provider::where('user_id',Auth::user()->id)->get();
+        $providers = Auth::user()->restaurant->providers()->get();
+        return view('product.addProduct',compact('providers','productNoQnt'));
 
     }
-
-
-    
 
     public function addProductForm() 
     {
@@ -132,7 +157,44 @@ class ProductController extends Controller
 
    
     
-          $me->user()->associate(Auth::user());
+          $me->restaurant()->associate(Auth::user()->restaurant);
+          $me->save();
+     
+    
+            
+         return redirect()->back()->with("success"," Product added with success !");
+
+    }
+    
+
+    public function adminaddProductForm() 
+    {
+        $data = request()->validate([
+            'productName' => 'required',
+        
+            'unity' => 'required',
+          
+            'tax' => 'required',
+         
+        
+     
+            'limiteSTK' => 'required',
+  
+
+          
+        ]);
+     
+
+            $me = Product::create([
+        
+                'productName'=> $data['productName'],
+                'unity'=>  $data['unity'],
+                'limiteSTK'=>  $data['limiteSTK'],
+                'tax'=>  $data['tax'],
+            
+                ]);
+
+          $me->admin()->associate(Auth::user()->admin);
           $me->save();
      
     
@@ -144,9 +206,10 @@ class ProductController extends Controller
     public function adminAddProduct()
     {
         
-        $providers = Provider::where('user_id',Auth::user()->id)->get();
+      //  $providers = Provider::where('user_id',Auth::user()->id)->get();
+     
 
-        return view('product.adminAddProduct',compact('providers'));
+        return view('product.adminAddProduct',);
 
     }
 

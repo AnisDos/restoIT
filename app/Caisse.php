@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-use App\User;
+use App\Restaurant;
 
 use App\Employee;
 
@@ -14,9 +14,9 @@ class Caisse extends Model
 
     protected $guarded =[];
     
-    public function user()
+    public function restaurant()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Restaurant::class);
     }
     
     

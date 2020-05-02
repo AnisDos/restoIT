@@ -3,12 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\User;
+use App\Restaurant;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Privilege;
 use App\TransactioHistory;
 use App\Charge;
+use App\User;
 use App\Caisse;
 use App\OrderDelivery;
     
@@ -31,10 +32,16 @@ class Employee extends Authenticatable
     protected $hidden = ['password'];
 
     
+    public function restaurant()
+    {
+        return $this->belongsTo(Restaurant::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
 
     public function privileges()
     {

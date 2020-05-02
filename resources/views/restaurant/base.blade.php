@@ -7,6 +7,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+{{--   <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
   <title>Costic Dashboard</title>
   <!-- Iconic Fonts -->
 
@@ -91,12 +92,14 @@
         <a href="#" class="has-chevron" data-toggle="collapse" data-target="#product1" aria-expanded="false" aria-controls="product1"> <span><i class="fa fa-archive fs-16"></i>Stock Products </span>
         </a>
         <ul id="product1" class="collapse" aria-labelledby="product1" data-parent="#side-nav-accordion">
-          <li> <a href="pages/product/productcata.html">Menu Catalogue</a>
-          </li>
+    
           <li> <a href="{{ url('restaurant/mealsList') }}">Meals List</a>
           </li>
       
           <li> <a href="{{ url('restaurant/addProduct') }}">Add Product</a>
+          </li>
+           
+          <li> <a href="{{ url('restaurant/addVersionProduct') }}">Add Version Product</a>
           </li>
           <li> <a href="{{ url('restaurant/addCategory') }}">Add Category</a>
           </li>
@@ -113,6 +116,8 @@
           <li> <a href="{{ url('restaurant/addEmployee') }}"> Add Employee </a>
           </li>
           <li> <a href="{{ url('restaurant/addProvider') }}"> Add Provider </a>
+          </li>
+          <li> <a href="{{ url('restaurant/allEmployee') }}">all Employee</a>
           </li>
           <li> <a href="{{ url('restaurant/employeeCharge') }}">Employee Charget</a>
           </li>
@@ -152,7 +157,7 @@
             </a>
             <ul id="invoice" class="collapse" aria-labelledby="invoice" data-parent="#side-nav-accordion">
   
-              <li> <a href="{{ url('restaurant/charge') }}">Charge</a>
+              <li> <a href="{{ url('restaurant/addSupCharge') }}">Charge</a>
               </li>
             </ul>
           </li>
@@ -246,14 +251,21 @@
         </li>
      
        
-        <li class="ms-nav-item dropdown"> <a href="#" class="text-disabled ms-has-notification" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="flaticon-bell"></i></a>
+        <li class="ms-nav-item dropdown"> <a href="#" class="text-disabled @if($productNoQnt) ms-has-notification @endif" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="flaticon-bell"></i></a>
           <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="notificationDropdown">
             <li class="dropdown-menu-header">
-              <h6 class="dropdown-header ms-inline m-0"><span class="text-disabled">Notifications</span></h6><span class="badge badge-pill badge-info">4 New</span>
+              <h6 class="dropdown-header ms-inline m-0"><span class="text-disabled">Notifications</span></h6><span class="badge badge-pill badge-info">{{count($productNoQnt)}} New</span>
             </li>
             <li class="dropdown-divider"></li>
             <li class="ms-scrollable ms-dropdown-list">
-              <a class="media p-2" href="#">
+              @foreach ($productNoQnt as $prod)
+              <a class="media p-2" href="/restaurant/purchaseOrder/{{ $prod->id}}">
+                <div class="media-body"> <span> Inventory shortage <strong> {{ $prod->productName}} </strong> go check it</span>
+
+                </div>
+              </a>
+              @endforeach
+          {{--     <a class="media p-2" href="#">
                 <div class="media-body"> <span>12 ways to improve your crypto dashboard</span>
                   <p class="fs-10 my-1 text-disabled"><i class="material-icons">access_time</i> 30 seconds ago</p>
                 </div>
@@ -272,7 +284,7 @@
                 <div class="media-body"> <span>An application form has been submitted</span>
                   <p class="fs-10 my-1 text-disabled"><i class="material-icons">access_time</i> 1 day ago</p>
                 </div>
-              </a>
+              </a> --}}
             </li>
             <li class="dropdown-divider"></li>
             <li class="dropdown-menu-footer text-center"> <a href="#">View all Notifications</a>
@@ -280,9 +292,24 @@
           </ul>
         </li>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <li class="ms-nav-item ms-nav-user dropdown">
           <a href="#" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <img class="ms-user-img ms-img-round float-right" src="/storage/{{Auth::user()->image}}" alt="people">
+            <img class="ms-user-img ms-img-round float-right" src="/storage/{{Auth::user()->restaurant->image}}" alt="people">
           </a>
           <ul class="dropdown-menu dropdown-menu-right user-dropdown" aria-labelledby="userDropdown">
             <li class="dropdown-menu-header">
@@ -324,7 +351,7 @@
 
 
 
-
+    <h1>شتان بين الثرى والثريا</h1>
 
 
  <!-- page content -->

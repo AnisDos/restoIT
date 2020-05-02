@@ -15,7 +15,7 @@ class CreateKeysTable extends Migration
     {
         Schema::create('keys', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('admin_id')->nullable();
             $table->string('restaurant_key');
             $table->date('date_experation');
             $table->decimal('priceKey', 15, 2);

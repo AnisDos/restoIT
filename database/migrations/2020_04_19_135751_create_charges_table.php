@@ -15,7 +15,7 @@ class CreateChargesTable extends Migration
     {
         Schema::create('charges', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('restaurant_id');
             $table->unsignedBigInteger('employee_id')->nullable();
             $table->unsignedBigInteger('deleveryCompany_id')->nullable();
             $table->decimal('priceCharge', 10, 2);

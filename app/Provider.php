@@ -2,7 +2,7 @@
 
 namespace App;
 use App\ProductVersion;
-use App\User;
+use App\Restaurant;
 
 
 
@@ -18,9 +18,9 @@ class Provider extends Model
           return $this->hasMany(ProductVersion::class);
       }
     
-public function user()
+public function restaurant()
 {
-    return $this->belongsTo(User::class);
+    return $this->belongsTo(Restaurant::class);
 }
 
 

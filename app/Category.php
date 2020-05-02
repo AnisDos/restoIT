@@ -5,7 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Meal;
-use App\User;
+use App\Admin;
+use App\Restaurant;
 
 class Category extends Model
 {
@@ -22,11 +23,17 @@ class Category extends Model
 
 
     
-public function user()
+public function admin()
 {
-    return $this->belongsTo(User::class);
+    return $this->belongsTo(Admin::class);
 }
 
+
+    
+public function restaurant()
+{
+    return $this->belongsTo(Restaurant::class);
+}
 
 
 

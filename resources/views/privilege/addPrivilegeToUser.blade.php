@@ -82,12 +82,7 @@
    [ " {{ $employee->idEmployee }}","{{ $employee->type }}",  "{{ $employee->email }}", "{{ $employee->hWork }}", "${{ $employee->price_ph }}","<a href='/restaurant/addPrivilegeToUserFormForUpdate/{{$employee->id}}  '> go update =></a>"],
    
                             @endforeach
-    [ "40521","  <img src='../../assets/img/costic/pizza.jpg' style='width:50px; height:30px;'>pizza",  "5421", "In Stock", "$32","564"],
-    [ "98521", "<img src='../../assets/img/costic/pizza.jpg' style='width:50px; height:30px;'>shake", "8422", "In Stock", "$17","564"],
-    [ "45454", "<img src='../../assets/img/costic/egg-sandwich.jpg' style='width:50px; height:30px;'>Burger",  "1562", "In Stock", "$86" ,"564"],
-    [ "12121", "<img src='../../assets/img/costic/egg-sandwich.jpg' style='width:50px; height:30px;'>Noodels",  "6224", "In Stock", "$43" ,"564"],
-    [ "14451", "<img src='../../assets/img/costic/french-fries.jpg' style='width:50px; height:30px;'>pizza",  "5384", "Out Of Stock", "$85","564" ]
-  ];
+ ];
 
 
 

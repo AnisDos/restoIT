@@ -19,13 +19,48 @@ class PrivilegeController extends Controller
     }
 
 
+
+    public function productNoQntfunction(){
+        
+        // $products = Product::where('user_id',Auth::user()->id)->get();
+         $products = Auth::user()->restaurant->products()->get();
+ 
+ $productNoQnt = array();
+ foreach($products as $product)
+ {
+     
+     $productWest = DB::table('product_versions')
+     ->where('product_id',$product->id)
+     ->sum('product_versions.qntSTK');
+     
+ 
+     if ($product->limiteSTK >= $productWest) {
+    
+         array_push($productNoQnt,  $product);
+ 
+     }
+ 
+ 
+ }
+ 
+ //dd($productNoQnt);
+ return $productNoQnt;
+ 
+     }
+
+
+
+
+
+
     public function addPrivilegeToUser()
     {
         
-     
-        $employees = Employee::where('user_id', Auth::user()->id)->get();
+        $productNoQnt = $this->productNoQntfunction();
+     //   $employees = Employee::where('user_id', Auth::user()->id)->get();
+        $employees =Auth::user()->restaurant->employees()->get();
 
-        return view('privilege.addPrivilegeToUser', compact('employees'));
+        return view('privilege.addPrivilegeToUser', compact('employees','productNoQnt'));
 
     }
 
@@ -35,18 +70,15 @@ class PrivilegeController extends Controller
     public function addPrivilegeToUserFormForUpdate(Employee $employee) 
     {     
         
-        //$allprivileges = Privilege::all();
-        if (Auth::user()->is_admin) {
-            
-        $allprivileges = Auth::user()->privileges()->get();
-        }else {
-            $us = User::find(Auth::user()->user_id);
-            $allprivileges = $us->privileges()->get();
-        }
+        $productNoQnt = $this->productNoQntfunction();
+         /*    $us = User::find(Auth::user()->user_id);
+            $allprivileges = $us->privileges()->get(); */
+            $allprivileges = Auth::user()->restaurant->admin->privileges()->get();
+     
         $privileges = $employee->privileges;
-        $olkl = Employee::where('user_id',Auth::user()->id)->where('id',$employee->id)->exists();
+        $olkl = Employee::where('restaurant_id',Auth::user()->restaurant->id)->where('id',$employee->id)->exists();
         if ($olkl) {
-            return view('privilege.addPrivilegeToUserFormForUpdate', compact('employee','privileges','allprivileges'));
+            return view('privilege.addPrivilegeToUserFormForUpdate', compact('employee','privileges','allprivileges','productNoQnt'));
 
         } else {
                

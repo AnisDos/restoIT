@@ -19,26 +19,30 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
 
-        switch ($guard) {
-            case 'employee':
-                if (Auth::guard($guard)->check()) {
-                    
-                    return redirect ('employee'); 
-                }
-                break;
-            
-            default:
-                if (Auth::guard($guard)->check()) {
-                      if (Auth::user()->is_admin) {
-                            return redirect ('admin'); /* $redirectTo = RouteServiceProvider::ADMIN;*/
-                      }
-                      return redirect ('restaurant'); /*$redirectTo = RouteServiceProvider::HOME;*/
-        
-                /*return redirect(RouteServiceProvider::HOME);*/
-                }
-                break;
-        }
+        if (Auth::guard($guard)->check()) {
 
+        
+            if (Auth::user()->admin()->exists()) {
+                return redirect ('admin'); 
+                
+    
+            } elseif (Auth::user()->restaurant()->exists()) {
+                
+                return redirect ('restaurant'); 
+
+            }elseif (Auth::user()->employee()->exists()) {
+    
+                return redirect ('employee'); 
+    
+            }elseif (Auth::user()->superadmin()->exists()) {
+    
+                return redirect ('superadmin'); 
+    
+            }
+            return redirect ('erreur'); 
+
+
+        }
 
 
 

@@ -15,7 +15,7 @@ class CreateCaissesTable extends Migration
     {
         Schema::create('caisses', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('restaurant_id');
             $table->unsignedBigInteger('employee_id')->nullable();
             $table->string('caisseName');
             $table->decimal('total', 15, 2);

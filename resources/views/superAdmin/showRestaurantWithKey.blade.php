@@ -1,5 +1,5 @@
 
-@extends('superAdmin.base')
+@extends('superadmin.base')
 
 
 

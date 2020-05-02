@@ -26,7 +26,7 @@
         <script type="text/javascript" > 
           setTimeout(function() {
        $('#successalert').fadeOut('fast');
-     }, 8000); // <-- time in milliseconds
+     }, 18000); // <-- time in milliseconds
      </script>
     
    
@@ -70,7 +70,7 @@
         <div class="col-xl-6 col-md-12">
           <div class="ms-panel ms-panel-fh">
             <div class="ms-panel-header">
-              <h6>Add Meal Form</h6>
+              <h6>Employee Informations</h6>
             </div>
             <div class="ms-panel-body">
                 <form onsubmit="return submitForm();" id="ratinoupikamila" method="POST"  action="{{ url('restaurant/updatePrivilege') }}" class="needs-validation clearfix" novalidate>
@@ -180,7 +180,7 @@
                 <input id="validationCustom36" name="var[]" type="hidden" value="" />
 
                 <div class="ms-panel-header new">
-                  <button  class="btn btn-primary d-block" type="submit">Add Meal</button>
+                  <button  class="btn btn-primary d-block" type="submit">Add Privileges</button>
                 </div>
 
 
@@ -234,7 +234,7 @@
            <div class="col-xl-6 col-md-12 ms-deletable ms-todo-list">
             <div class="ms-card ms-widget ms-card-fh">
               <div class="ms-card-header clearfix">
-                <h6 class="ms-card-title">Ingredients Lists</h6>
+                <h6 class="ms-card-title">Privileges Lists</h6>
           
       <button  onclick="addLine()" data-toggle="tooltip" data-placement="left" title="Add a Task to this block" class="ms-btn-icon float-right"> <i class="material-icons text-disabled">add</i> </button>
              
@@ -288,9 +288,7 @@
                 </ul>
               </div>
               <div class="ms-card-footer clearfix">
-                <a href="#" class="text-disabled mr-2"> <i class="flaticon-archive"> </i> Archive </a>
-                <a href="#" class="text-disabled ms-delete-trigger float-right"> <i class="flaticon-trash"> </i> Delete </a>
-              </div>
+             </div>
             </div>
           </div>
 

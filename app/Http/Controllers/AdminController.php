@@ -13,8 +13,9 @@ use App\Product;
 use App\Ingredient;
 use Illuminate\Support\Arr;
 
+use App\Restaurant;
 use DB;
-
+use Carbon\Carbon;
 
 
 class AdminController extends Controller
@@ -27,15 +28,66 @@ class AdminController extends Controller
     }
 
 
+
+
+
+
     public function index()
     {
-        
+
+//partie chart===================================================================
+//$chart = [];
+
+$charts = array();
+
+
+//$restaurants = User::where('user_id',Auth::user()->id)->where('id','!=',Auth::user()->id)->get();
+$restaurants = Auth::user()->admin->restaurants()->get();
+//dd($restaurants);
+// feach all restaurant of this admin and try yo evry one put there name end revuen of year
+foreach($restaurants as $restaurant){
+
+  
+   $year = 2020;
+   $tz = 'Europe/Madrid';
+
+$mounth = array();
+   for ($i=1; $i <13 ; $i++) { 
+   
+
+   $order = DB::table('orders')
+/*    ->select('orders.*') */
+   ->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+   ->where('caisses.restaurant_id', $restaurant->id )
+   ->where('orders.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+   ->where('orders.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+   ->sum('orders.priceOrder');
+
+
+
+   array_push($mounth,  $order);
+
+
+
+}
+
+
+   array_push($charts,  array( $restaurant->name,$mounth));
+
+}
+
+//end partie charts===================================================================
+//dd($charts[0][1],$order);
+
         
 
-        return view('admin.home', );
+        return view('admin.home',compact('charts') );
 
     }
-    
+ //=======================================================================================================
+ //=======================================================================================================
+ //=======================================================================================================
+ //=======================================================================================================   
     public function addRestaurant()
     {
       /*   $meals = Meal::find(1);
@@ -87,22 +139,27 @@ class AdminController extends Controller
 $password = \Hash::make($data['password']);
 
 
-
+$compte = new User;
+$compte->email = $data['email'];
+$compte->password = $password;
+$compte->save();
     //registre that employee delete version of product of this employee
-    $restaurant = new User;
+    $restaurant = new Restaurant;
     $restaurant->name = $data['name'];
     $restaurant->address = $data['address'];
-    $restaurant->is_admin = false;
-    $restaurant->email = $data['email'];
-    $restaurant->password = $password;
+  /*   $restaurant->email = $data['email'];
+    $restaurant->password = $password; */
     if (request('image') != null){$restaurant->image = $imagePath;}
     
-    $restaurant->user()->associate(Auth::user());
+    $restaurant->admin()->associate(Auth::user());
+    $restaurant->user()->associate($compte);
     $restaurant->save();
 
     //assign menus to new restaurant=============================================================================
 
-    $categories = Category::where('user_id', Auth::user()->id)->get();
+    $categories = Auth::user()->admin->categories()->get();
+   
+  //  $categories = Category::where('user_id', Auth::user()->id)->get();
     $arrayReferencescatOldNew = array();
     foreach($categories as $category){
 
@@ -126,8 +183,8 @@ $password = \Hash::make($data['password']);
 
 //nb: s3iba
 //add only product not version productcuz evry restaurant have his own stock
-$products = Product::where('user_id',Auth::user()->id)->get();
-
+//$products = Product::where('user_id',Auth::user()->id)->get();
+$products = Auth::user()->admin->products()->get();
 $arrayReferencesProductOldNew = array();
 foreach($products as $product){
 
@@ -140,7 +197,7 @@ foreach($products as $product){
     
         ]);
 
-        $me->user()->associate($restaurant);
+        $me->restaurant()->associate($restaurant);
         $me->save();
 
         $arrayReferencesProductOldNew[$product->id] = $me->id;
@@ -158,11 +215,11 @@ foreach($products as $product){
 //$meals == Auth::user()->categories()->meals();
   // $meals = Auth::user()->categories()->meals()->get();
          
-  $meals = DB::table('meals')
-  ->select('meals.*','categories.categoryName')
+  $meals =  DB::table('meals')
+  ->select('meals.*')
   ->leftJoin('categories',  'categories.id', '=','meals.category_id')
-  ->leftJoin('users',  'users.id', '=','categories.user_id')
-  ->where('users.id', 2)
+  ->leftJoin('admins',  'admins.id', '=','categories.admin_id')
+  ->where('admins.user_id', Auth::user()->id )
   ->get();
 
 foreach($meals as $mealee){
@@ -224,7 +281,8 @@ foreach($meals as $mealee){
 public function restaurantsList()
 {
 
-    $restaurants= User::where('user_id',Auth::user()->id)->get();
+   // $restaurants= User::where('user_id',Auth::user()->id)->get();
+    $restaurants= Auth::user()->admin->restaurants()->get();
     
 
     return view('admin.restaurantsList', compact('restaurants') );
@@ -243,7 +301,58 @@ public function restaurantDetails(User $restaurant)
 $someInfoEmployees = $restaurant->employees()->get();
 
 
-    return view('admin.restaurantDetails', compact('restaurant','someInfoEmployees') );
+//partie chart===================================================================
+
+
+$year = 2020;
+$tz = 'Europe/Madrid';
+
+
+$revenus = array();
+   for ($i=1; $i <13 ; $i++) { 
+   
+
+   $order = DB::table('orders')
+/*    ->select('orders.*') */
+   ->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+   ->where('caisses.user_id', $restaurant->id )
+   ->where('orders.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+   ->where('orders.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+   ->sum('orders.priceOrder');
+
+
+
+   array_push($revenus,  $order);
+
+
+
+}
+
+$depenses = array();
+   for ($i=1; $i <13 ; $i++) { 
+   
+
+   $order = DB::table('charges')
+/*    ->select('charges.*') */
+   ->where('charges.user_id', $restaurant->id )
+   ->where('charges.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+   ->where('charges.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+   ->sum('charges.priceCharge');
+
+
+
+   array_push($depenses,  $order);
+
+
+
+}
+
+
+//end partie chart===================================================================
+
+//dd($revenus,$depenses);
+
+    return view('admin.restaurantDetails', compact('restaurant','someInfoEmployees','revenus','depenses') );
   
 
 }
@@ -259,7 +368,8 @@ public function updateRestaurantInfo(){
         'id_res'=> '',
         'name' => 'required|min:3|max:50',
         //'email' => 'unique:users'.request()['email'],
-        'email'=>'',
+       // 'email'=>'',
+       'email' => ['required','email', \Illuminate\Validation\Rule::unique('users')->ignore(request()['id_res'])],
        // 'password' => 'confirmed|min:6',
         'address'=>'required',
         'image' => '',
@@ -349,8 +459,11 @@ public function decativateRestaurant()
 public function addMeal()
 {
     
-    $categories = Category::where('user_id',Auth::user()->id)->get();
-    $products = Product::all();
+    //$categories = Category::where('user_id',Auth::user()->id)->get();
+    //$products = Product::all();
+
+    $categories = Auth::user()->admin->categories()->get();
+    $products = Auth::user()->admin->products()->get();
 
     return view('admin.addMeal', compact('categories','products')  );
 
@@ -474,7 +587,7 @@ public function addCategoryForm()
 
 
 
-$me =    Auth::user()->categories()->create([
+$me =    Auth::user()->admin->categories()->create([
     
          'categoryName'=> $data['categoryName'] ,
     
@@ -494,8 +607,16 @@ $me =    Auth::user()->categories()->create([
 public function mealsList()
 {
     
-    $meals = Meal::all();
+    //$meals = Meal::all();
+   // $meals = Auth::user()->admin->categories()->meals()->get();
+    $meals = DB::table('meals')
+       ->select('meals.*')
+       ->leftJoin('categories',  'categories.id', '=','meals.category_id')
+       ->leftJoin('admins',  'admins.id', '=','categories.admin_id')
+       ->where('admins.user_id', Auth::user()->id )
+       ->get();
 
+    //dd($meals);
     return view('admin.mealsList', compact('meals')  );
 
 }
@@ -516,10 +637,10 @@ public function updateMeal(Meal $meal)
 {
 
     $ingredients = Ingredient::where('meal_id', $meal->id)->get();
-  
-    $categories = Category::where('user_id',Auth::user()->id)->get();
-    $products = Product::all();
-
+    $categories = Auth::user()->admin->categories()->get();
+    //$categories = Category::where('user_id',Auth::user()->id)->get();
+   // $products = Product::all();
+    $products = Auth::user()->admin->products()->get();
 
     return view('admin.updateMeal', compact('meal','categories','products','ingredients')  );
 
@@ -615,6 +736,31 @@ $t=  Ingredient::where('meal_id', $me->id)->delete();
      return redirect()->back()->with("success"," Meal updated with success !");
 
 }
+
+
+
+//==============================================================================================
+//==============================================================================================
+//==============================================================================================
+//==============================================================================================
+//==============================================================================================
+//==============================================================================================
+
+
+
+
+
+public function chartTotalOrders()
+{
+
+
+
+    return view('admin.chartTotalOrders',   );
+
+}
+
+
+
 
 
 }

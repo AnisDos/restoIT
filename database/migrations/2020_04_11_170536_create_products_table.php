@@ -15,8 +15,10 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('admin_id')->nullable();
+            $table->unsignedBigInteger('restaurant_id')->nullable();
             $table->string('productName');
+            $table->string('productName_ar')->nullable();
             $table->string('unity');
             $table->decimal('limiteSTK', 10, 2);
             $table->decimal('tax', 10, 2)->nullable();

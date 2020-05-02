@@ -2,7 +2,6 @@
 <html lang="en">
 
 
-<!-- Mirrored from slidesigma.com/themes/html/costic/{{ url('superadmin') }} by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 10 Apr 2020 18:47:11 GMT -->
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -84,9 +83,26 @@
         </li>
         <!-- /Basic UI Elements -->
   
+
+
+      
    
 
- 
+     <!-- charge -->
+     <li class="menu-item">
+      <a href="#" class="has-chevron" data-toggle="collapse" data-target="#invoice" aria-expanded="false" aria-controls="invoice"> <span><i class="fas fa-file-invoice fs-16"></i>Charge </span>
+      </a>
+      <ul id="invoice" class="collapse" aria-labelledby="invoice" data-parent="#side-nav-accordion">
+
+        <li> <a href="{{ url('superadmin/showRevenu') }}">showRevenu</a>
+        </li>   
+           <li> <a href="{{ url('superadmin/showtotalecompte') }}">showtotalecompte</a>
+        </li>
+      </ul>
+    </li>
+    <!-- charge end -->
+
+
  
   
 

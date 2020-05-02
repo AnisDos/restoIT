@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\User;
+use App\Restaurant;
 use App\Order;
 
 class Customer extends Model
@@ -12,9 +12,9 @@ class Customer extends Model
 
 protected $guarded =[];
 
-  public function user()
+  public function restaurant()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Restaurant::class);
     }
 
     

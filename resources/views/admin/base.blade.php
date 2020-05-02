@@ -54,7 +54,7 @@
   <aside id="ms-side-nav" class="side-nav fixed ms-aside-scrollable ms-aside-left">
     <!-- Logo -->
     <div class="logo-sn ms-d-block-lg">
-      <a class="pl-0 ml-0 text-center" href="{{ url('admin/home') }}">
+      <a class="pl-0 ml-0 text-center" href="{{ url('admin') }}">
         <img src="{{ asset ('styleRestoIT/assets/img/costic/costic-logo-216x62.png') }}" alt="logo">
       </a>
     </div>
@@ -105,7 +105,19 @@
         </ul>
       </li>
       <!-- stock product end -->
-
+    <!-- Caisse Elements -->
+    <li class="menu-item">
+      <a href="#" class="has-chevron" data-toggle="collapse" data-target="#basic-elements" aria-expanded="false" aria-controls="basic-elements"> <span><i class="material-icons fs-16">filter_list</i>chart </span>
+      </a>
+      <ul id="basic-elements" class="collapse" aria-labelledby="basic-elements" data-parent="#side-nav-accordion">
+      
+        <li> <a href="{{ url('admin/chartTotalOrders') }}">Chart Orders</a>
+        </li>
+      
+   
+      </ul>
+    </li>
+    <!-- /Caisse Elements -->
   
     </ul>
   </aside>

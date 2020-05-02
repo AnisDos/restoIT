@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Employee;
-use App\User;
+use App\Admin;
 
 
 
@@ -19,9 +19,9 @@ class Privilege extends Model
 
 
 
-public function user()
+public function admin()
 {
-    return $this->belongsToMany(User::class);
+    return $this->belongsToMany(Admin::class);
 }
 
 

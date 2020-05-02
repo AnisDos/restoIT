@@ -15,16 +15,16 @@ class CreateEmployeesTable extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->text('idEmployee')->unique();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('restaurant_id');
             $table->string('nameEmployee');
             $table->double('tel', 15);
-            $table->string('email')->unique();
-            $table->string('password');
             $table->decimal('hWork', 5, 1);
             $table->decimal('price_ph', 12, 2);
             $table->enum('type', array('kashir', 'cook'));
             $table->string('active')->default(true);
+            $table->string('image')->default("employees/default.jpg");
             $table->timestamps();
         });
     }

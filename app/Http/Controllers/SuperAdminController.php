@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Privilege;
 use Carbon\Carbon;
 use App\Key;
+use App\Admin;
+
 use App\Employee;
 use Illuminate\Support\Facades\DB;
 
@@ -23,8 +25,77 @@ class superadminController extends Controller
 
     public function index()
     {
+
+        //partie chart===================================================================
+//$chart = [];
+
+$charts = array();
+
+//hadi ndirha dm1
+//$restaurants = User::where('is_admin',true)->where('id','!=',Auth::user()->id)->get();
+
+$restaurants = Admin::all();
+// feach all restaurant of this admin and try yo evry one put there name end revuen of year
+foreach($restaurants as $restaurant){
+
+
+
+    //$allrestaurants = User::where('user_id', $restaurant->id)->where('id','!=', $restaurant->id)->get();
+    $allrestaurants = $restaurant->restaurants()->get();
+    // feach all restaurant of this admin and try yo evry one put there name end revuen of year
+   
+    $mounthEvryRes = array(0,0,0,0,0,0,0,0,0,0,0,0);
+    foreach($allrestaurants as $allrestaurant){
+
+
+   
+        $year = 2020;
+        $tz = 'Europe/Madrid';
+       
+       $mounth = array();
+        for ($i=1; $i <13 ; $i++) { 
+        
+       
+        $order = DB::table('orders')
+       /*    ->select('orders.*') */
+        ->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+        ->where('caisses.restaurant_id', $allrestaurant->id )
+        ->where('orders.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+        ->where('orders.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+        ->sum('orders.priceOrder');
+       
+       
+       
+        array_push($mounth,  $order);
+       
+       
+       
+       }
+
+
+         //for evry res of admin add resultat of evry mounth
+       for ($j=0; $j <12 ; $j++) {
+        $mounthEvryRes[$j] =  $mounthEvryRes[$j] + $mounth[$j];
+
+        }
+      // array_push($charts,  array( $restaurant->name,$mounth));
+
+
+
+    }
     
-        return view('superadmin.home', );
+
+    array_push($charts,  array( $restaurant->name,$mounthEvryRes));
+
+
+ 
+
+}
+
+//end partie charts===================================================================
+//dd($charts[0][1],$order);
+    
+        return view('superadmin.home', compact('charts'));
 
     }
 
@@ -51,13 +122,13 @@ class superadminController extends Controller
             ->get(); */
 
 //======================================end test===============================================
-            $users = DB::table('users')
-            ->where('users.is_admin', true)
-            ->where('users.id','!=', Auth::user()->id)
+            $users = DB::table('admins')
+            ->select('admins.*','users.email')
+            ->join('users', 'admins.user_id', '=', 'users.id')
             ->whereNotExists( function ($query)  {
                 $query->select(DB::raw(1))
                 ->from('keys')
-                ->whereRaw('users.id = keys.user_id')
+                ->whereRaw('admins.id = keys.admin_id')
                 ->Where('keys.date_experation', '>', Carbon::now());
             })
        /*      ->orWhereExists(function ($query) {
@@ -108,7 +179,7 @@ class superadminController extends Controller
                 }
                 
                 
-                             $restaurant = User::find($data['id_restaurant']);	
+                             $restaurant = Admin::find($data['id_restaurant']);	
                 
                      //delete restaurant privilege and recreate theme
                 
@@ -177,10 +248,10 @@ class superadminController extends Controller
     public function showRestaurantWithKey()
     {
         //$users = User::all();
-        $users = DB::table('users')
-        ->join('keys', 'users.id', '=', 'keys.user_id')
-        ->where('users.id','!=', Auth::user()->id)
-        ->where('users.is_admin', true)
+        $users = DB::table('admins')
+        ->select('admins.*','users.email','keys.*')
+        ->join('keys', 'admins.id', '=', 'keys.admin_id')
+        ->join('users', 'admins.user_id', '=', 'users.id')
         /* ->Where('keys.date_experation', '>', Carbon::now()) */
         ->get();
     
@@ -198,10 +269,10 @@ class superadminController extends Controller
         ->where('users.is_admin', true)
         ->groupBy('users.id')
         ->get(); */
-        $users = DB::table('users')
-        ->join('keys', 'users.id', '=', 'keys.user_id')
-        ->where('users.id','!=', Auth::user()->id)
-        ->where('users.is_admin', true)
+        $users = DB::table('admins')
+        ->select('admins.*','users.email','keys.*')
+        ->join('keys', 'admins.id', '=', 'keys.admin_id')
+        ->join('users', 'admins.user_id', '=', 'users.id')
         /* ->Where('keys.date_experation', '>', Carbon::now()) */
         ->get();
         //dd($users);
@@ -213,21 +284,15 @@ class superadminController extends Controller
 
     
 
-    public function showRestaurantAllInfoByOne(User $user)
+    public function showRestaurantAllInfoByOne(Admin $user)
     {
 
-        if (!$user->is_admin) {
+      /*   if (!$user->admin->exists()) {
             return redirect()->back()->with("danger"," please don't play with that ! Do your job seriously");
 
-        } else {
-            if ($user->id == Auth::user()->id ) {
-                return redirect()->back()->with("danger"," please don't play with that ! Do your job seriously");
+        }  */
 
-            }
-         
-        }
-
-
+/* 
       
             $someInfoEmployees = DB::table('employees')
             ->select('employees.*','us1.name','us1.is_admin')
@@ -235,16 +300,114 @@ class superadminController extends Controller
             ->leftJoin('users as us2',  'us2.id', '=','us1.user_id')
             ->where('us2.id','!=', Auth::user()->id)
             ->where('us2.id', $user->id)
+            ->get(); */
+
+
+            
+            $someInfoEmployees = DB::table('employees')
+            ->select('employees.*','restaurants.name','users.email')
+            ->rightJoin('users',  'users.id', '=','employees.user_id')
+            ->leftJoin('restaurants',  'restaurants.id', '=','employees.restaurant_id')
+            ->leftJoin('admins',  'admins.id', '=','restaurants.admin_id')
+            ->where('admins.id', $user->id)
             ->get();
     
        
-        $restaurants =  User::where('user_id',$user->id)->get();
+        //$restaurants =  User::where('user_id',$user->id)->get();
+        $restaurants = $user->restaurants()->get();
 
    
         //dd($someInfoEmployees);
         return view('superadmin.showRestaurantAllInfoByOne',compact('user','someInfoEmployees','restaurants') );
 
     }
+
+
+
+
+
+
+
+    
+
+
+
+
+    public function showRevenu()
+    {
+        
+
+        $revenus = array();
+        $year = 2020;
+        $tz = 'Europe/Madrid';
+     
+     $mounth = array();
+        for ($i=1; $i <13 ; $i++) { 
+        
+     
+        $order = DB::table('keys')
+        ->where('keys.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+        ->where('keys.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+        ->sum('keys.priceKey');
+     
+     
+     
+        array_push($mounth,  $order);
+     
+        }
+
+        
+        array_push($revenus,  array( "revenus",$mounth));
+
+
+        return view('superadmin.showRevenu',compact('revenus') );
+
+    }
+
+
+
+
+    public function showtotalecompte()
+    {
+        
+
+        //totale compte
+        //$totalcomptes = User::where('id','!=',Auth::user()->id)->where('is_admin',true)->count();
+        $totalcomptes = Admin::count();
+        //coumpte activi
+       /*  $activcoupmtes = User::where('id','!=',Auth::user()->id)
+                          ->where('is_admin',true)
+                          ->where('verified',true)
+                          ->count(); */
+                          $activcoupmtes = Admin::
+                          where('verified',true)
+                          ->count();
+        //compte deactive
+        $deactuvcomptes = $totalcomptes -  $activcoupmtes;
+        //compte never get key 
+        $nokeycoupmtes =  DB::table('admins')
+        ->whereNotExists( function ($query)  {
+            $query->select(DB::raw(1))
+            ->from('keys')
+            ->whereRaw('admins.id = keys.admin_id');
+        })
+        ->count();
+        //compte khlasetlhom abonnement
+        $expirkeycoupmtes =  DB::table('admins')
+        ->where('verified',false)
+        ->whereExists( function ($query)  {
+            $query->select(DB::raw(1))
+            ->from('keys')
+            ->whereRaw('admins.id = keys.admin_id');
+        })
+        ->count();
+
+//dd($totalcomptes,$activcoupmtes,$nokeycoupmtes,$deactuvcomptes,$expirkeycoupmtes);
+        return view('superadmin.showtotalecompte',compact('activcoupmtes','expirkeycoupmtes','nokeycoupmtes') );
+
+    }
+
+
 
 
 

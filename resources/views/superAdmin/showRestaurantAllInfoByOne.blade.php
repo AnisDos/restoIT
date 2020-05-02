@@ -50,7 +50,7 @@ $('#successalert').fadeOut('fast');
             <div class="ms-card-body media">
               <div class="media-body">
                 <h6>Total Branches</h6>
-                <p class="ms-card-change"> <i class="material-icons">arrow_upward</i> {{$user->users()->count()}}</p>
+                <p class="ms-card-change"> <i class="material-icons">arrow_upward</i> {{$user->restaurants()->count()}}</p>
                 <p class="fs-12">48% From Last 24 Hours</p>
               </div>
             </div> <i class="flaticon-statistics"></i>
@@ -513,7 +513,7 @@ $('#successalert').fadeOut('fast');
     @foreach ($someInfoEmployees as $InfoEmployee)
                             
 
-   [ "  {{ $InfoEmployee->idEmployee }}", " {{ $InfoEmployee->email }}",  " {{ $InfoEmployee->type }}", "{{ $InfoEmployee->name }}@if ( $InfoEmployee->is_admin )<div style='color:red'> (ADMIN)</div> @endif"],
+   [ "  {{ $InfoEmployee->idEmployee }}", " {{ $InfoEmployee->email }}",  " {{ $InfoEmployee->type }}", "{{ $InfoEmployee->name }}"],
    
                             @endforeach
 ];

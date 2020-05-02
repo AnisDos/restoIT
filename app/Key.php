@@ -3,14 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\User;
+use App\Admin;
 
 class Key extends Model
 {
     protected $guarded =[];
-public function user()
+public function admin()
 {
-    return $this->belongsTo(User::class);
+    return $this->belongsTo(Admin::class);
 }
 
 

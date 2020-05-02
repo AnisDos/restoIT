@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-use App\User;
+use App\Admin;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,9 +10,9 @@ class Promo extends Model
     
 protected $guarded =[];
  
- public function user()
+ public function admin()
  {
-     return $this->belongsTo(User::class);
+     return $this->belongsTo(Admin::class);
  }
  
 }

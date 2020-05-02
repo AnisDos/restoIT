@@ -18,15 +18,28 @@ class CheckSuperAdmin
     public function handle($request, Closure $next)
     {
         if (Auth::user()) {
-            if (Auth::user()->is_admin) {
-                if (Auth::user()->superAdmin->is_super_admin) {
-                    
+
+            
+            if (Auth::user()->admin()->exists()) {
+                return redirect ('admin'); 
+                
+    
+            } elseif (Auth::user()->restaurant()->exists()) {
+                
+                return redirect ('restaurant'); 
+
+            }elseif (Auth::user()->employee()->exists()) {
+    
+                return redirect ('employee'); 
+
+    
+            }elseif (Auth::user()->superadmin()->exists()) {
+    
                 return $next($request);
-                }else{
-                    return redirect('admin');
-                }
+    
             }
-            return redirect('restaurant');
+       
+            
         }
         return redirect('/');
     }

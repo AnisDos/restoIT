@@ -45,6 +45,8 @@ Route::post('/superadmin/generatekeyform',   'SuperAdminController@generatekeyfo
 Route::get('/superadmin/showRestaurantWithKey',   'SuperAdminController@showRestaurantWithKey')->middleware('issuperadmin');
 Route::get('/superadmin/showRestaurantAllInfo',   'SuperAdminController@showRestaurantAllInfo')->middleware('issuperadmin');
 Route::get('/superadmin/showRestaurantAllInfoByOne/{user}',   'SuperAdminController@showRestaurantAllInfoByOne')->middleware('issuperadmin');
+Route::get('/superadmin/showRevenu',   'SuperAdminController@showRevenu')->middleware('issuperadmin');
+Route::get('/superadmin/showtotalecompte',   'SuperAdminController@showtotalecompte')->middleware('issuperadmin');
 
 
 
@@ -73,88 +75,125 @@ Route::post('/admin/addCategoryForm','AdminController@addCategoryForm')->middlew
 //admin product
 
 Route::get('/admin/addProduct','ProductController@adminAddProduct')->middleware('isadmin');
-Route::post('/admin/addProductForm','ProductController@addProductForm')->middleware('isadmin');
+Route::post('/admin/addProductForm','ProductController@adminaddProductForm')->middleware('isadmin');
 
 
 Route::post('/admin/chekKeyForm','KeyController@chekKeyForm');
 
+//admin chart
+
+
+
+Route::get('/admin/chartTotalOrders','AdminController@chartTotalOrders')->middleware('isadmin');
+
+
+
+
+
+
+
+
+
+
+
 
 
 // restaurant route
-Route::get('/restaurant', 'RestaurantController@index')->middleware('auth');
+Route::get('/restaurant', 'RestaurantController@index')->middleware('isrestaurant');
 
-Route::get('/restaurant/addCategory','RestaurantController@addCategory')->middleware('auth');
-Route::post('/restaurant/addCategoryForm','RestaurantController@addCategoryForm')->middleware('auth');
+Route::get('/restaurant/addCategory','RestaurantController@addCategory')->middleware('isrestaurant');
+Route::post('/restaurant/addCategoryForm','RestaurantController@addCategoryForm')->middleware('isrestaurant');
 
 
 
 
 //restaurant meal route
-Route::get('/restaurant/addMeal','RestaurantController@addMeal')->middleware('auth');
-Route::post('/restaurant/addMealForm','RestaurantController@addMealForm')->middleware('auth');
-Route::get('/restaurant/mealsList','RestaurantController@mealsList')->middleware('auth');
-Route::get('/restaurant/mealDetails/{meal}','RestaurantController@mealDetails')->middleware('auth');
-Route::get('/restaurant/updateMeal/{meal}','RestaurantController@updateMeal')->middleware('auth');
-Route::post('/restaurant/updateMealForm','RestaurantController@updateMealForm')->middleware('auth');
+Route::get('/restaurant/addMeal','RestaurantController@addMeal')->middleware('isrestaurant');
+Route::post('/restaurant/addMealForm','RestaurantController@addMealForm')->middleware('isrestaurant');
+Route::get('/restaurant/mealsList','RestaurantController@mealsList')->middleware('isrestaurant');
+Route::get('/restaurant/mealDetails/{meal}','RestaurantController@mealDetails')->middleware('isrestaurant');
+Route::get('/restaurant/updateMeal/{meal}','RestaurantController@updateMeal')->middleware('isrestaurant');
+Route::post('/restaurant/updateMealForm','RestaurantController@updateMealForm')->middleware('isrestaurant');
 
 
 
 //restaurant product
 
-Route::get('/restaurant/addProduct','ProductController@addProduct')->middleware('auth');
-Route::post('/restaurant/addProductForm','ProductController@addProductForm')->middleware('auth');
+Route::get('/restaurant/addProduct','ProductController@addProduct')->middleware('isrestaurant');
+Route::post('/restaurant/addProductForm','ProductController@addProductForm')->middleware('isrestaurant');
+Route::get('/restaurant/addVersionProduct','RestaurantController@addVersionProduct')->middleware('isrestaurant');
+Route::post('/restaurant/addVersionProductForm','RestaurantController@addVersionProductForm')->middleware('isrestaurant');
+Route::get('/restaurant/purchaseOrder/{product}','RestaurantController@purchaseOrder')->middleware('isrestaurant');
 
 
+//mail to provider
+Route::post('/restaurant/send_mail', 'RestaurantController@mailsend')->middleware('isrestaurant');
 
 //privilege
 
-Route::get('/restaurant/addPrivilegeToUser','PrivilegeController@addPrivilegeToUser')->middleware('auth');
-Route::get('/restaurant/addPrivilegeToUserFormForUpdate/{employee}','PrivilegeController@addPrivilegeToUserFormForUpdate')->middleware('auth');
-Route::post('/restaurant/updatePrivilege','PrivilegeController@updatePrivilege')->middleware('auth');
+Route::get('/restaurant/addPrivilegeToUser','PrivilegeController@addPrivilegeToUser')->middleware('isrestaurant');
+Route::get('/restaurant/addPrivilegeToUserFormForUpdate/{employee}','PrivilegeController@addPrivilegeToUserFormForUpdate')->middleware('isrestaurant');
+Route::post('/restaurant/updatePrivilege','PrivilegeController@updatePrivilege')->middleware('isrestaurant');
 
 
 //Provider
 
-Route::get('/restaurant/addProvider','RestaurantController@addProvider')->middleware('auth');
-Route::post('/restaurant/addProviderForm','RestaurantController@addProviderForm')->middleware('auth');
+Route::get('/restaurant/addProvider','RestaurantController@addProvider')->middleware('isrestaurant');
+Route::post('/restaurant/addProviderForm','RestaurantController@addProviderForm')->middleware('isrestaurant');
 
 
 //employee
-Route::get('/restaurant/addEmployee','RestaurantController@addEmployee')->middleware('auth');
-Route::post('/restaurant/addEmployeeForm','RestaurantController@addEmployeeForm')->middleware('auth');
-Route::get('/restaurant/employeeCharge','RestaurantController@employeeCharge')->middleware('auth');
-Route::post('/restaurant/validatePayEmployee','RestaurantController@validatePayEmployee')->middleware('auth');
+Route::get('/restaurant/addEmployee','RestaurantController@addEmployee')->middleware('isrestaurant');
+Route::post('/restaurant/addEmployeeForm','RestaurantController@addEmployeeForm')->middleware('isrestaurant');
+Route::get('/restaurant/employeeCharge','RestaurantController@employeeCharge')->middleware('isrestaurant');
+Route::post('/restaurant/validatePayEmployee','RestaurantController@validatePayEmployee')->middleware('isrestaurant');
+Route::get('/restaurant/allEmployee','RestaurantController@allEmployee')->middleware('isrestaurant');
+Route::get('/restaurant/checkEmployeeByOne/{employee}','RestaurantController@checkEmployeeByOne')->middleware('isrestaurant');
+Route::post('/restaurant/updateEmployyeInfo','RestaurantController@updateEmployyeInfo')->middleware('isrestaurant');
+Route::post('/restaurant/updatePasswordEmployee',   'RestaurantController@updatePasswordEmployee')->middleware('isrestaurant');
+Route::post('/restaurant/decativateEmployee',   'RestaurantController@decativateEmployee')->middleware('isrestaurant');
+
+
 
 //Caisse
-Route::get('/restaurant/addCaisse','RestaurantController@addCaisse')->middleware('auth');
-Route::post('/restaurant/addCaisseForm','RestaurantController@addCaisseForm')->middleware('auth');
+Route::get('/restaurant/addCaisse','RestaurantController@addCaisse')->middleware('isrestaurant');
+Route::post('/restaurant/addCaisseForm','RestaurantController@addCaisseForm')->middleware('isrestaurant');
+
+
+//charge
+Route::get('/restaurant/addSupCharge','RestaurantController@addSupCharge')->middleware('isrestaurant');
+Route::post('/restaurant/addSupChargeForm','RestaurantController@addSupChargeForm')->middleware('isrestaurant');
+
+
 
 
 
 // employee route
 
 //Route::group(['prefix'=>'employee', 'middleware' => 'isemployee'], function(){
-Route::group(['prefix'=>'employee'], function(){
 
-Route::get('/login','AuthEmployee\LoginController@showLoginForm')->name('employee.login');
-Route::post('/login','AuthEmployee\LoginController@login')->name('employee.login.submit');
-Route::get('/','EmployeeController@index')->name('employee.home') ;
-Route::get('/stocks','EmployeeController@stocks') ;
-Route::get('/tomatich','EmployeeController@tomatich') ;
+
+/* Route::get('/login','AuthEmployee\LoginController@showLoginForm')->name('employee.login');
+Route::post('/login','AuthEmployee\LoginController@login')->name('employee.login.submit'); */
+
+
+
+
+Route::get('/employee','EmployeeController@index')->name('employee.home')->middleware('isemployee') ;
+Route::get('/employee/stocks','EmployeeController@stocks')->middleware('isemployee') ;
+Route::get('/employee/tomatich','EmployeeController@tomatich')->middleware('isemployee') ;
 //caisse
-Route::get('/caisse','EmployeeController@caisse') ;
+Route::get('/employee/caisse','EmployeeController@caisse')->middleware('isemployee') ;
 
 
 //stocks
-Route::get('/stocks/UpdateQnttToProduct','EmployeeController@stocksUpdateQnttToProduct') ;
-Route::post('/stocks/addQntProduct','EmployeeController@addQntProduct') ;
-Route::post('/stocks/revokeQntProduct','EmployeeController@revokeQntProduct') ;
-Route::post('/stocks/DeleteVersionProduct','EmployeeController@DeleteVersionProduct') ;
-Route::get('/stocks/versionProduct','EmployeeController@stocksversionProduct') ;
-Route::post('/stocks/addVersionProductForm','EmployeeController@addVersionProductForm') ;
+Route::get('/employee/stocks/UpdateQnttToProduct','EmployeeController@stocksUpdateQnttToProduct')->middleware('isemployee') ;
+Route::post('/employee/stocks/addQntProduct','EmployeeController@addQntProduct')->middleware('isemployee') ;
+Route::post('/employee/stocks/revokeQntProduct','EmployeeController@revokeQntProduct')->middleware('isemployee') ;
+Route::post('/employee/stocks/DeleteVersionProduct','EmployeeController@DeleteVersionProduct')->middleware('isemployee') ;
+Route::get('/employee/stocks/versionProduct','EmployeeController@stocksversionProduct')->middleware('isemployee') ;
+Route::post('/employee/stocks/addVersionProductForm','EmployeeController@addVersionProductForm')->middleware('isemployee') ;
 
-
-});
 
 
 

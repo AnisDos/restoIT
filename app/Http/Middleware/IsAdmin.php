@@ -17,10 +17,27 @@ class IsAdmin
     public function handle($request, Closure $next)
     {
         if (Auth::user()) {
-            if (Auth::user()->is_admin) {
+
+            
+            if (Auth::user()->admin()->exists()) {
+           
                 return $next($request);
+    
+            } elseif (Auth::user()->restaurant()->exists()) {
+                
+            return redirect ('restaurant'); 
+    
+            }elseif (Auth::user()->employee()->exists()) {
+    
+                return redirect ('employee'); 
+    
+            }elseif (Auth::user()->superadmin()->exists()) {
+    
+                return redirect ('superadmin'); 
+    
             }
-            return redirect('restaurant');
+       
+            
         }
         return redirect('/');
     }

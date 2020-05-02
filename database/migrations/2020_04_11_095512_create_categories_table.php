@@ -15,8 +15,10 @@ class CreateCategoriesTable extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('admin_id')->nullable();
+            $table->unsignedBigInteger('restaurant_id')->nullable();
             $table->string('categoryName');
+            $table->string('categoryName_ar')->nullable();
             $table->timestamps();
         });
     }

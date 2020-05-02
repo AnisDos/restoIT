@@ -22,7 +22,7 @@ class EmployeeController extends Controller
         
     public function __construct()
     {
-        $this->middleware(['auth:employee','isusernotconfirmedEmployee']);
+        $this->middleware(['employee','isusernotconfirmedEmployee']);
     }
 
 

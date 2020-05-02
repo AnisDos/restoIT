@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePrivilegeUserTable extends Migration
+class CreateAdminPrivilegeTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreatePrivilegeUserTable extends Migration
      */
     public function up()
     {
-        Schema::create('privilege_user', function (Blueprint $table) {
+        Schema::create('admin_privilege', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('admin_id');
             $table->unsignedBigInteger('privilege_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
             $table->foreign('privilege_id')->references('id')->on('privileges')->onDelete('cascade');
-          
+         
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ class CreatePrivilegeUserTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('privilege_user');
+        Schema::dropIfExists('admin_privilege');
     }
 }

@@ -9,9 +9,14 @@ use App\Product;
 use App\Ingredient;
 use App\Employee;
 use App\Charge;
+use App\User;
+use App\Provider;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Hash;
 use DB;
+use App\TransactionHistory;
+
+use App\mail\SendMail;
 
 
 use Image;
@@ -27,24 +32,290 @@ class RestaurantController extends Controller
     }
 
 
+    public function productNoQntfunction(){
+        
+       // $products = Product::where('user_id',Auth::user()->id)->get();
+        $products = Auth::user()->restaurant->products()->get();
+
+$productNoQnt = array();
+foreach($products as $product)
+{
+    
+    $productWest = DB::table('product_versions')
+    ->where('product_id',$product->id)
+    ->sum('product_versions.qntSTK');
+    
+
+    if ($product->limiteSTK >= $productWest) {
+   
+        array_push($productNoQnt,  $product);
+
+    }
+
+
+}
+
+//dd($productNoQnt);
+return $productNoQnt;
+
+    }
+
 
     public function index()
     {
+
+        
+$productNoQnt = $this->productNoQntfunction();
+
+
+
+
     
-        return view('restaurant.home', );
+        return view('restaurant.home', compact('productNoQnt') );
 
     }
 
     
 
 
+
+    public function addVersionProduct()
+    {
+             
+$productNoQnt = $this->productNoQntfunction();
+
+
+
+       // $this->checkPrivilege(2);
+               
+            //$privileges = Auth::user()->privileges()->get();
+      /*   $products = DB::select("select *  from products  LEFT JOIN product_versions ON product_versions.product_id = products.id
+        where  products.user_id =  " . Auth::user()->user_id ." " );
+         */
+        //$products = Product::where('user_id',Auth::user()->id)->get();
+        $products = Auth::user()->restaurant->products()->get();
+        //$providers = Provider::where('user_id',Auth::user()->id)->get();
+        $providers = Auth::user()->restaurant->providers()->get();
+       
+        return view('product.addVersionProduct', compact('products','providers','productNoQnt'));
+    
+    }
+
+
+
+
+
+    
+public function addVersionProductForm() 
+{
+    $data = request()->validate([
+        'id_product' => 'required',
+        'qntSTK' => 'required',
+        'price' => 'required',
+        'return' => '',
+        'date_experation_bool' => '',
+        'date_experation' => '',
+        'codebare' => 'required',
+        'provider_id' => '',
+      
+    ]);
+
+ 
+
+    if (empty($data['date_experation_bool'])){
+        $date_experation_bool=false;
+        
+                }else {
+                    $date_experation_bool=true;
+                }
+
+
+                if (empty($data['return'])){
+                    $return=false;
+                    
+                            }else {
+                                $return=true;
+                            }         
+
+
+              
+
+
+
+    if ($date_experation_bool) {
+
+
+
+        $me = Product::find($data['id_product']);
+
+            $version = $me->productVersions()->create([
+                
+            'qntSTK'=>  $data['qntSTK'],
+            'price'=>  $data['price'],
+            'return'=>  $return,
+            'date_experation_bool'=>  $date_experation_bool,
+            'date_experation'=>  $data['date_experation'],
+            'codebare'=>  $data['codebare'],
+            ]);
+
+            $provider = Provider::find($data['provider_id']);
+
+            if ($provider) 
+            { 
+            $version->provider()->associate($provider);
+            }
+
+        
+    }else{
+        $me = Product::find($data['id_product']);
+
+
+            $version = $me->productVersions()->create([
+                
+            'qntSTK'=>  $data['qntSTK'],
+            'price'=>  $data['price'],
+            'return'=>  $return,
+            'date_experation_bool'=>  $date_experation_bool,
+            'codebare'=>  $data['codebare'],
+            ]);
+
+            $provider = Provider::find($data['provider_id']);
+
+            if ($provider) 
+            { 
+            $version->provider()->associate($provider);
+            }
+
+
+    }
+
+
+
+    
+
+      
+    //registre the transation of this employee adding version 
+         
+    $transactionHistory = new TransactionHistory;
+    $transactionHistory->qnt = $data['qntSTK'];
+    $transactionHistory->type = "addnew";
+    //$transactionHistory->employee()->associate(Auth::user());
+    $transactionHistory->productVersion()->associate($version);
+    $transactionHistory->save();
+
+ 
+
+        
+     return redirect()->back()->with("success"," Product added with success !! you can check it :)");
+
+}
+    
+
+
+
+
+
+
+
+public function purchaseOrder(product $product){
+
+if($product->user_id != Auth::user()->id){
+    
+    return redirect()->back()->with("danger"," please don't play with that ! Do your job seriously");
+    
+}
+
+    $productNoQnt = $this->productNoQntfunction();
+
+  
+    $productWest = DB::table('product_versions')
+    ->where('product_id',$product->id)
+    ->sum('product_versions.qntSTK');
+    
+
+   // $providers = Provider::where('user_id',Auth::user()->id)->get();
+    $providers = Auth::user()->restaurant->providers()->get();
+
+
+    return view('restaurant.purchaseOrder', compact('product','productNoQnt','productWest','providers'));
+
+
+}
+
+
+
+
+
+
+
+public function mailsend() {
+   
+    $data = request()->validate([
+        'provider_id' => '',
+        'qntSTK' => 'required',
+        'product_id' => '',
+        'message' => ['required', 'string'],
+          
+    ]);
+
+
+    $product = Product::find($data['product_id']);
+    $provider = Provider::find($data['provider_id']);
+
+    $message = " salam chikh  :" . $provider->providerName ." khesna produit :" . $product->productName . " o djibelna menou :" .$data['qntSTK'] . " ". $product->unity . " " . $data['message'];
+
+
+
+
+    $details = [
+        'email' => $provider->email,
+        'title' =>"monque ta3 sel3a",
+        'body' =>  $message
+    ];
+   
+    \Mail::to( $provider->email)->send(new SendMail($details));
+   
+       
+    return redirect()->back()->with("success"," Mail sended with success !");
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function addMeal()
     {
+        $productNoQnt = $this->productNoQntfunction();
         
-        $categories = Category::where('user_id',Auth::user()->id)->get();
-        $products = Product::all();
+        
+        //$categories = Category::where('user_id',Auth::user()->id)->get();
+        //$products = Product::all();
 
-        return view('restaurant.addMeal', compact('categories','products')  );
+        $categories = Auth::user()->restaurant->categories()->get();
+        $products = Auth::user()->restaurant->products()->get();
+    
+
+        return view('restaurant.addMeal', compact('categories','products' , 'productNoQnt')  );
 
     }
 
@@ -159,9 +430,10 @@ if (count($dataIngridient) > 1 ) {
 
     public function addCategory()
     {
+        $productNoQnt = $this->productNoQntfunction();
         
 
-        return view('restaurant.addCategory', );
+        return view('restaurant.addCategory',compact('productNoQnt') );
 
     }
 
@@ -180,7 +452,7 @@ if (count($dataIngridient) > 1 ) {
 
   
 
-$me =   Auth::user()->categories()->create([
+$me =   Auth::user()->restaurant->categories()->create([
         
              'categoryName'=> $data['categoryName'] ,
         
@@ -199,10 +471,18 @@ $me =   Auth::user()->categories()->create([
     
     public function mealsList()
     {
+        $productNoQnt = $this->productNoQntfunction();
         
-        $meals = Meal::all();
+       // $meals = Meal::all();
+       $meals =  DB::table('meals')
+       ->select('meals.*')
+       ->leftJoin('categories',  'categories.id', '=','meals.category_id')
+       ->leftJoin('restaurants',  'restaurants.id', '=','categories.restaurant_id')
+       ->where('restaurants.user_id', Auth::user()->id )
+       ->get();
 
-        return view('restaurant.mealsList', compact('meals')  );
+
+        return view('restaurant.mealsList', compact('meals','productNoQnt')  );
 
     }
 
@@ -213,21 +493,28 @@ $me =   Auth::user()->categories()->create([
     public function mealDetails(Meal $meal)
     {
   
+        $productNoQnt = $this->productNoQntfunction();
 
-        return view('restaurant.mealDetails', compact('meal')  );
+        return view('restaurant.mealDetails', compact('meal','productNoQnt')  );
 
     }
 
     public function updateMeal(Meal $meal)
     {
+        
 
+        $productNoQnt = $this->productNoQntfunction();
         $ingredients = Ingredient::where('meal_id', $meal->id)->get();
       
-        $categories = Category::where('user_id',Auth::user()->id)->get();
-        $products = Product::all();
+      //  $categories = Category::where('user_id',Auth::user()->id)->get();
+      //  $products = Product::all();
+
+        
+    $categories = Auth::user()->restaurant->categories()->get();
+    $products = Auth::user()->restaurant->products()->get();
 
  
-        return view('restaurant.updateMeal', compact('meal','categories','products','ingredients')  );
+        return view('restaurant.updateMeal', compact('meal','categories','products','ingredients','productNoQnt')  );
 
     }
     
@@ -324,9 +611,9 @@ $me =   Auth::user()->categories()->create([
 
     public function addEmployee()
     {
-        
+        $productNoQnt = $this->productNoQntfunction();
 
-        return view('employee.addEmployee',);
+        return view('employee.addEmployee',compact('productNoQnt'));
 
     }
 
@@ -334,11 +621,11 @@ $me =   Auth::user()->categories()->create([
 
     public function addEmployeeForm() 
     {
-//dd(request());
+
       
         $data = request()->validate([
             'nameEmployee' => 'required',
-            'email' => 'unique:employees',
+            'email' => 'unique:users',
             'password' => 'required|confirmed|min:5',
             'tel' => 'required',
             'type' => 'required',
@@ -346,11 +633,11 @@ $me =   Auth::user()->categories()->create([
             'hWork' => 'required',
           
         ]);
-
+  
         
         do
     {
-        $token = Auth::user()->id;
+        $token = Auth::user()->restaurant->id;
         $tok= substr($data['type'], 0, -3);
         $idEmployee = 'RS'. $token . '-'. $tok  . '-'. strftime(time());
         $user_code = Employee::where('idEmployee', $idEmployee)->get();
@@ -366,12 +653,15 @@ $me =   Auth::user()->categories()->create([
 
     //dd($idEmployee,$password);
 
-       Auth::user()->employees()->create([
+    $compte = new User;
+    $compte->email = $data['email'];
+    $compte->password = $password;
+    $compte->save();
+
+      $employee = Auth::user()->restaurant->employees()->create([
         
             'idEmployee'=>  $idEmployee,
-            'email'=> $data['email'] ,
             'nameEmployee'=> $data['nameEmployee'] ,
-            'password'=> $password,
             'tel'=>  $data['tel'],
             'type'=>  $data['type'],
             'price_ph'=>  $data['price_ph'],
@@ -379,6 +669,9 @@ $me =   Auth::user()->categories()->create([
             
         
             ]);
+            $employee->user()->associate($compte);
+            $employee->save();
+
 
          return redirect()->back()->with("success"," Employye added with success !");
 
@@ -388,7 +681,9 @@ $me =   Auth::user()->categories()->create([
     
     public function employeeCharge()
     {
-        $employees = Employee::where('user_id',Auth::user()->id)->get();
+        $productNoQnt = $this->productNoQntfunction();
+       // $employees = Employee::where('user_id',Auth::user()->id)->get();
+        $employees =Auth::user()->restaurant->employees()->get();
   /*       $employees = DB::table('employees')
         ->select('employees.*',DB::raw('(employees.hWork*employees.price_ph) as total') , 'charges.created_at')
         ->whereExists( function ($query)  {
@@ -420,7 +715,7 @@ $me =   Auth::user()->categories()->create([
         ->get(); */
 
 
-        return view('restaurant.employeeCharge',compact('employees'));
+        return view('restaurant.employeeCharge',compact('employees','productNoQnt'));
 
     }
 
@@ -440,7 +735,7 @@ $me =   Auth::user()->categories()->create([
         ]);
 
 
-        $charge = Auth::user()->charges()->create([
+        $charge = Auth::user()->restaurant->charges()->create([
         
             'priceCharge'=> $data['total'] ,
             'type'=> 'employee' ,
@@ -458,13 +753,144 @@ $me =   Auth::user()->categories()->create([
 
         }
 
+
+
+        
+        public function allEmployee()
+        {
+            $productNoQnt = $this->productNoQntfunction();
+
+          //  $employees = Auth::user()->employees()->get();
+            
+          $employees =Auth::user()->restaurant->employees()->get();
+
+            return view('restaurant.allEmployee',compact('employees','productNoQnt'));
+    
+        }
+
+        
+       
+        public function checkEmployeeByOne(Employee $employee)
+        {
+            $productNoQnt = $this->productNoQntfunction();
+
+            if ($employee->restaurant_id != Auth::user()->restaurant->id) {
+                return redirect()->back()->with("danger"," please don't play with that ! Do your job seriously");
+    
+            }
+
+           $employeeAllCharges = Charge::where('restaurant_id',Auth::user()->restaurant->id)
+                                 ->where('employee_id',$employee->id)
+                                 ->where('type',"employee")
+                                 ->get();
+            
+    
+            return view('restaurant.checkEmployeeByOne',compact('employee','employeeAllCharges','productNoQnt'));
+    
+        }
+
+
+        
+
+
+        public function updateEmployyeInfo(){
+            
+            $employee = Employee::find(request('id_emplo'));
+            $em = User::find($employee->user_id);
+           
+            $data = request()->validate([
+                'id_emplo'=> '',
+                'nameEmployee' => 'required|min:3|max:50',
+                'email' => ['required','email', \Illuminate\Validation\Rule::unique('users')->ignore($em->id)],
+               // 'email'=>'',
+                'tel'=>'required',
+                'price_ph'=>'required',
+                'type'=>'required',
+            ]);
+        
+          
+         
+           
+            $em->email = $data['email'];
+            $em->save();
+        
+        
+           // $employee = Employee::find($data['id_emplo']);
+            //dd($employee,$data['id_res']);
+            $employee->nameEmployee = $data['nameEmployee'];
+            $employee->tel = $data['tel'];
+            $employee->price_ph = $data['price_ph'];
+            $employee->type = $data['type'];
+        
+     
+            $employee->save();
+        
+            return redirect()->back()->with("success","employee information Updated with success !! ");
+        
+        
+        }
+        
+        
+
+public function updatePasswordEmployee()
+{
+
+    
+    $data = request()->validate([
+        'id_emplo'=> '',
+        'Activate'=> '',
+        'password' => 'confirmed|min:6',
+       
+    ]);
+
+    $password = \Hash::make($data['password']);
+
+    $employee = Employee::find($data['id_emplo']);
+    $compte = User::find($employee->user_id);
+    $compte->password = $password;
+    $compte->save();
+    if (request('Activate') == "activih"){$employee->active = true;}
+    
+    $employee->save();
+    return redirect()->back()->with("success","employee Password Updated with success !! ");
+
+
+}
+
+public function decativateEmployee()
+{
+
+        
+    $data = request()->validate([
+        'id_emplo'=> 'required',
+
+       
+    ]);
+
+    $password = "djit nkasi la routine";
+
+    $employee = Employee::find($data['id_emplo']);
+    $compte = User::find($employee->user_id);
+    $compte->password = $password;
+    $compte->save();
+
+   $employee->active = false;
+    
+    $employee->save();
+    return redirect()->back()->with("danger","Employee Blocked with success !! ");
+
+
+
+}
+
     //==========================================================================================================
     //=======================================================================================================
     public function addProvider()
     {
         
+        $productNoQnt = $this->productNoQntfunction();
 
-        return view('restaurant.addProvider',);
+        return view('restaurant.addProvider',compact('productNoQnt'));
 
     }
 
@@ -483,7 +909,7 @@ $me =   Auth::user()->categories()->create([
         ]);
 
         
-       Auth::user()->providers()->create([
+       Auth::user()->restaurant->providers()->create([
         
             'providerName'=> $data['providerName'] ,
             'email'=>  $data['email'],
@@ -503,9 +929,10 @@ $me =   Auth::user()->categories()->create([
 
     public function addCaisse()
     {
+        $productNoQnt = $this->productNoQntfunction();
         
 
-        return view('restaurant.addCaisse',);
+        return view('restaurant.addCaisse',compact('productNoQnt'));
 
     }
 
@@ -522,7 +949,7 @@ $me =   Auth::user()->categories()->create([
         ]);
 
   
-       Auth::user()->Caisses()->create([
+       Auth::user()->restaurant->Caisses()->create([
         
             'caisseName'=> $data['caisseName'] ,
             'cacheInit'=>  $data['cacheInit'],
@@ -536,8 +963,72 @@ $me =   Auth::user()->categories()->create([
     }
 
 
+      //==========================================================================================================
+    //=======================================================================================================
     
+    public function addSupCharge()
+    {
+        
+        $productNoQnt = $this->productNoQntfunction();
+
+        return view('restaurant.addSupCharge',compact('productNoQnt'));
+
+    }
+
+
     
+
+    
+    public function addSupChargeForm() 
+    {
+
+      
+        $data = request()->validate([
+            'priceCharge' => 'required',
+            'note' => 'required',
+            'image' => '',
+      
+        ]);
+
+        
+        if (request('image')){
+
+            $imagePath = request('image')->store('charges','public');
+            
+            $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
+           
+            $image->save();
+           
+        }
+
+        if (request('image')){
+
+            Auth::user()->charges()->create([
+        
+                'priceCharge'=> $data['priceCharge'] ,
+                'note'=>  $data['note'],
+                'image'=>  $imagePath,
+               'type'=> "additional",
+            
+                ]);
+    
+            
+          }else {
+            Auth::user()->charges()->create([
+        
+                'priceCharge'=> $data['priceCharge'] ,
+                'note'=>  $data['note'],
+                'type'=> "additional",
+               
+            
+                ]);
+          }
+  
+    
+
+         return redirect()->back()->with("success"," Charge added with success !");
+
+    }
 
 
 
