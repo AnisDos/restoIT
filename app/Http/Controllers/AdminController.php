@@ -157,7 +157,7 @@ $compte->save();
     $restaurant->user()->associate($compte);
     $restaurant->save();
 
-    //assign menus to new restaurant=============================================================================
+    //assign menus to new restaurant===========================================================================
 
     $categories = Auth::user()->admin->categories()->get();
    
