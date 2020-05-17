@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App;
+use Session;
 
 class HomeController extends Controller
 {
@@ -23,6 +25,39 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        return view('index');
     }
+
+
+    public function changeLang()
+    {
+
+        $data = request()->validate([
+            'lang' => 'required',
+        
+        ]);
+
+      //  dd($data);
+
+        //App::setlocale($data['lang']);
+
+      //  dd(App::getlocale());
+      Session::put('locale', $data['lang']);
+
+      
+
+
+       // return redirect()->back()->with("success"," Product added with success !");
+       return redirect()->back();
+
+
+
+
+    }
+
+
+  
+
+
+
 }

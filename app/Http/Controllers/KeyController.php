@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Key;
 use App\User;
+use App\Admin;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -25,7 +26,7 @@ class KeyController extends Controller
             'pinKey'=>  'required',
         ]);
 
-$chekKey = Key::where('user_id',Auth::user()->id)
+$chekKey = Key::where('admin_id',Auth::user()->admin->id)
                 ->where("restaurant_key",$data['pinKey'])
                 ->where('date_experation', '>', Carbon::now())
                 ->exists();
@@ -34,7 +35,7 @@ $chekKey = Key::where('user_id',Auth::user()->id)
                 if ($chekKey) {
                 
                   
-                   $u = User::find(Auth::user()->id);
+                   $u = Admin::find(Auth::user()->admin->id);
                    $u->verified = true;
                    $u->save();
                    return redirect('admin')->with("success","your acount is activated make some delicious food !");

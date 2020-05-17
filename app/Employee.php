@@ -4,10 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Restaurant;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+
 use App\Privilege;
-use App\TransactioHistory;
+use App\TransactionHistory;
 use App\Charge;
 use App\User;
 use App\Caisse;
@@ -16,21 +15,20 @@ use App\OrderDelivery;
 
 
 
-class Employee extends Authenticatable
+class Employee extends Model
 {
 
     //protected $guarded =[];
-    use Notifiable;
+  //  use Notifiable;
 
-    protected $guard = 'employee';
+    //protected $guard = 'employee';
 
-    protected $table = 'employees';
+   // protected $table = 'employees';
 
     protected $guarded =[];
 
 
-    protected $hidden = ['password'];
-
+   
     
     public function restaurant()
     {
@@ -50,9 +48,9 @@ class Employee extends Authenticatable
 
   
     
-    public function transactioHistories()
+    public function transactionHistories()
     {
-        return $this->hasMany(TransactioHistory::class);
+        return $this->hasMany(TransactionHistory::class);
     }
 
     

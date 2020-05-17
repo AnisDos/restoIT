@@ -19,7 +19,7 @@ class CreateRestaurantsTable extends Migration
             $table->unsignedBigInteger('admin_id');
             $table->string('name');
             $table->string('address')->nullable();
-            $table->string('image')->default("restaurants/default.jpg");
+            $table->string('image')->default("users/default.jpg");
             $table->string('active')->default(true);
             $table->timestamps();
         });

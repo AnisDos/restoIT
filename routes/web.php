@@ -16,12 +16,9 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-
-
-/* Route::get('/', function () {
+Route::get('/khra', function () {
     return view('welcome');
-}); */
+});
 Route::get('/', function () {
     return redirect('home');
 });
@@ -37,6 +34,23 @@ Route::get('/notVerifiedForEmployee', function () {
 
 
 
+
+Route::get('/lang', function () {
+  
+    App::setlocale('ar');
+    dd(App::getlocale());
+
+
+});
+
+
+
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::post('/changeLang', 'HomeController@changeLang');
+
+
 //super Admin
 
 Route::get('/superadmin',   'SuperAdminController@index')->middleware('issuperadmin');
@@ -47,6 +61,10 @@ Route::get('/superadmin/showRestaurantAllInfo',   'SuperAdminController@showRest
 Route::get('/superadmin/showRestaurantAllInfoByOne/{user}',   'SuperAdminController@showRestaurantAllInfoByOne')->middleware('issuperadmin');
 Route::get('/superadmin/showRevenu',   'SuperAdminController@showRevenu')->middleware('issuperadmin');
 Route::get('/superadmin/showtotalecompte',   'SuperAdminController@showtotalecompte')->middleware('issuperadmin');
+Route::post('/superadmin/adminUpdatePrivileges',   'SuperAdminController@adminUpdatePrivileges')->middleware('issuperadmin');
+Route::get('/superadmin/accountsettings/{superadmin}',   'SuperAdminController@accountsettings')->middleware('issuperadmin');
+Route::post('/superadmin/updateSuperadminInfo',   'SuperAdminController@updateSuperadminInfo')->middleware('issuperadmin');
+Route::post('/superadmin/updatePasswordSuperadmin',   'SuperAdminController@updatePasswordSuperadmin')->middleware('issuperadmin');
 
 
 
@@ -60,6 +78,9 @@ Route::get('/admin/restaurantDetails/{restaurant}',   'AdminController@restauran
 Route::post('/admin/updateRestaurantInfo',   'AdminController@updateRestaurantInfo')->middleware('isadmin');
 Route::post('/admin/updatePasswordRestaurant',   'AdminController@updatePasswordRestaurant')->middleware('isadmin');
 Route::post('/admin/decativateRestaurant',   'AdminController@decativateRestaurant')->middleware('isadmin');
+Route::get('/admin/accountsettings/{admin}',   'AdminController@accountsettings')->middleware('isadmin');
+Route::post('/admin/updateadminInfo',   'AdminController@updateadminInfo')->middleware('isadmin');
+Route::post('/admin/updatePasswordadmin',   'AdminController@updatePasswordadmin')->middleware('isadmin');
 
 
 
@@ -76,6 +97,12 @@ Route::post('/admin/addCategoryForm','AdminController@addCategoryForm')->middlew
 
 Route::get('/admin/addProduct','ProductController@adminAddProduct')->middleware('isadmin');
 Route::post('/admin/addProductForm','ProductController@adminaddProductForm')->middleware('isadmin');
+
+
+//admin customers
+
+Route::get('/admin/allCustomers','AdminController@allCustomers')->middleware('isadmin');
+
 
 
 Route::post('/admin/chekKeyForm','KeyController@chekKeyForm');
@@ -114,6 +141,9 @@ Route::get('/restaurant/mealsList','RestaurantController@mealsList')->middleware
 Route::get('/restaurant/mealDetails/{meal}','RestaurantController@mealDetails')->middleware('isrestaurant');
 Route::get('/restaurant/updateMeal/{meal}','RestaurantController@updateMeal')->middleware('isrestaurant');
 Route::post('/restaurant/updateMealForm','RestaurantController@updateMealForm')->middleware('isrestaurant');
+Route::post('/restaurant/deactivateMeal','RestaurantController@deactivateMeal')->middleware('isrestaurant');
+Route::post('/restaurant/activateMeal','RestaurantController@activateMeal')->middleware('isrestaurant');
+
 
 
 
@@ -124,6 +154,14 @@ Route::post('/restaurant/addProductForm','ProductController@addProductForm')->mi
 Route::get('/restaurant/addVersionProduct','RestaurantController@addVersionProduct')->middleware('isrestaurant');
 Route::post('/restaurant/addVersionProductForm','RestaurantController@addVersionProductForm')->middleware('isrestaurant');
 Route::get('/restaurant/purchaseOrder/{product}','RestaurantController@purchaseOrder')->middleware('isrestaurant');
+Route::get('/restaurant/productsList','ProductController@productsListRes')->middleware('isrestaurant');
+
+
+
+//retaurant customers
+
+Route::get('/restaurant/allCustomers','RestaurantController@allCustomers')->middleware('isrestaurant');
+
 
 
 //mail to provider
@@ -140,6 +178,7 @@ Route::post('/restaurant/updatePrivilege','PrivilegeController@updatePrivilege')
 
 Route::get('/restaurant/addProvider','RestaurantController@addProvider')->middleware('isrestaurant');
 Route::post('/restaurant/addProviderForm','RestaurantController@addProviderForm')->middleware('isrestaurant');
+Route::get('/restaurant/allProviders','RestaurantController@allProviders')->middleware('isrestaurant');
 
 
 //employee
@@ -158,13 +197,34 @@ Route::post('/restaurant/decativateEmployee',   'RestaurantController@decativate
 //Caisse
 Route::get('/restaurant/addCaisse','RestaurantController@addCaisse')->middleware('isrestaurant');
 Route::post('/restaurant/addCaisseForm','RestaurantController@addCaisseForm')->middleware('isrestaurant');
+Route::get('/restaurant/allCaisses','RestaurantController@allCaisses')->middleware('isrestaurant');
 
 
 //charge
 Route::get('/restaurant/addSupCharge','RestaurantController@addSupCharge')->middleware('isrestaurant');
 Route::post('/restaurant/addSupChargeForm','RestaurantController@addSupChargeForm')->middleware('isrestaurant');
 
+//weekProgram
+Route::get('/restaurant/weekProgram','RestaurantController@weekProgram')->middleware('isrestaurant');
+Route::post('/restaurant/weekProgramForm','RestaurantController@weekProgramForm')->middleware('isrestaurant');
+Route::post('/restaurant/updateOneWeekProgramForm','RestaurantController@updateOneWeekProgramForm')->middleware('isrestaurant');
+Route::post('/restaurant/deleteOneWeekProgramForm','RestaurantController@deleteOneWeekProgramForm')->middleware('isrestaurant');
 
+//stockEstimate
+Route::get('/restaurant/stockEstimate','RestaurantController@stockEstimate')->middleware('isrestaurant');
+Route::post('/restaurant/estimationMealForm','RestaurantController@estimationMealForm')->middleware('isrestaurant');
+
+
+
+//Caisse
+Route::get('/restaurant/addDeliveryCompany','RestaurantController@addDeliveryCompany')->middleware('isrestaurant');
+Route::post('/restaurant/addDeliveryCompanyForm','RestaurantController@addDeliveryCompanyForm')->middleware('isrestaurant');
+
+
+Route::get('/restaurant/liveOrders','RestaurantController@liveOrders')->middleware('isrestaurant');
+
+
+Route::get('/restaurant/historyTransactions','RestaurantController@historyTransactions')->middleware('isrestaurant');
 
 
 
@@ -179,7 +239,8 @@ Route::post('/login','AuthEmployee\LoginController@login')->name('employee.login
 
 
 
-Route::get('/employee','EmployeeController@index')->name('employee.home')->middleware('isemployee') ;
+//Route::get('/employee','EmployeeController@index')->name('employee.home')->middleware('isemployee') ;
+Route::get('/employee','EmployeeController@index')->middleware('isemployee') ;
 Route::get('/employee/stocks','EmployeeController@stocks')->middleware('isemployee') ;
 Route::get('/employee/tomatich','EmployeeController@tomatich')->middleware('isemployee') ;
 //caisse
@@ -193,6 +254,9 @@ Route::post('/employee/stocks/revokeQntProduct','EmployeeController@revokeQntPro
 Route::post('/employee/stocks/DeleteVersionProduct','EmployeeController@DeleteVersionProduct')->middleware('isemployee') ;
 Route::get('/employee/stocks/versionProduct','EmployeeController@stocksversionProduct')->middleware('isemployee') ;
 Route::post('/employee/stocks/addVersionProductForm','EmployeeController@addVersionProductForm')->middleware('isemployee') ;
+
+
+
 
 
 

@@ -22,40 +22,7 @@
 
 
 
-          
-        <script type="text/javascript" > 
-          setTimeout(function() {
-       $('#successalert').fadeOut('fast');
-     }, 8000); // <-- time in milliseconds
-     </script>
-    
-   
-        
-        <?php if(session('success')): ?>
-        <div class="x_content bs-example-popovers" id="successalert" >
-          <div class="alert alert-success" role="alert" >
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-              </button>
-              <strong>well done!</strong> <?php echo e(session('success')); ?>
 
-            </div>
-          </div>
-
-        
-          <?php endif; ?>
-
-  <?php if(session('danger')): ?>
-<div class="x_content bs-example-popovers" id="successalert" >
-  <div class="alert alert-danger" role="alert" >
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-      </button>
-      <strong>DANGER!</strong> <?php echo e(session('danger')); ?>
-
-    </div>
-  </div>
-
-
-  <?php endif; ?>
     
         </div>
 
@@ -63,7 +30,7 @@
 <div class="col-xl-12 col-md-12 ms-deletable ms-todo-list">
   <div class="ms-card ms-widget ms-card-fh">
     <div class="ms-card-header clearfix">
-      <h6 class="ms-card-title">Ingredients Lists</h6>
+      <h6 class="ms-card-title">Privileges Lists</h6>
 
 <button  onclick="addLine()" data-toggle="tooltip" data-placement="left" title="Add a Task to this block" class="ms-btn-icon float-right"> <i class="material-icons text-disabled">add</i> </button>
    
@@ -206,7 +173,7 @@
                       <div class="col-md-12 mb-3">
                         <label for="validationCustom25">PriceKey</label>
                         <div class="input-group">
-                          <input type="number" name="priceKey" value="<?php echo e(old('priceKey')); ?>" required  class="form-control <?php $__errorArgs = ['caisseName'];
+                          <input type="number" min="0" step=".01" name="priceKey" value="<?php echo e(old('priceKey')); ?>" required  class="form-control <?php $__errorArgs = ['caisseName'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }

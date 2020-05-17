@@ -4,41 +4,12 @@
 
 
 <?php $__env->startSection('content'); ?>
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
 
    
-<script type="text/javascript" > 
-  setTimeout(function() {
-$('#successalert').fadeOut('fast');
-}, 12000); // <-- time in milliseconds
-</script>
 
 
-
-<?php if(session('success')): ?>
-<div class="x_content bs-example-popovers" id="successalert" >
-  <div class="alert alert-success" role="alert" >
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-      </button>
-      <strong>well done!</strong> <?php echo e(session('success')); ?>
-
-    </div>
-  </div>
-
-
-  <?php endif; ?>
-
-  <?php if(session('danger')): ?>
-<div class="x_content bs-example-popovers" id="successalert" >
-  <div class="alert alert-danger" role="alert" >
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-      </button>
-      <strong>DANGER!</strong> <?php echo e(session('danger')); ?>
-
-    </div>
-  </div>
-
-
-  <?php endif; ?>
+ 
 
 
     <!-- Body Content Wrapper -->
@@ -47,51 +18,7 @@ $('#successalert').fadeOut('fast');
         <div class="col-md-12">
           <h1  class="db-header-title"><?php echo e($employee->name); ?> <?php if($employee->is_admin): ?> (ADMIN) <?php endif; ?></h1>
         </div>
-        <div class="col-xl-3 col-md-6">
-          <div class="ms-card card-gradient-success ms-widget ms-infographics-widget">
-            <div class="ms-card-body media">
-              <div class="media-body">
-                <h6>Total Branches</h6>
-                <p class="ms-card-change"> <i class="material-icons">arrow_upward</i></p>
-                <p class="fs-12">48% From Last 24 Hours</p>
-              </div>
-            </div> <i class="flaticon-statistics"></i>
-          </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-          <div class="ms-card card-gradient-secondary ms-widget ms-infographics-widget">
-            <div class="ms-card-body media">
-              <div class="media-body">
-                <h6>Budgets</h6>
-                <p class="ms-card-change">$80,950</p>
-                <p class="fs-12">2% Decreased from last budget</p>
-              </div>
-            </div> <i class="flaticon-stats"></i>
-          </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-          <div class="ms-card card-gradient-success ms-widget ms-infographics-widget">
-            <div class="ms-card-body media">
-              <div class="media-body">
-                <h6>Total Employees</h6>
-                <p class="ms-card-change"> <i class="material-icons">arrow_upward</i> </p>
-                <p class="fs-12">48% From Last 24 Hours</p>
-              </div>
-            </div> <i class="flaticon-user"></i>
-          </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-          <div class="ms-card card-gradient-secondary ms-widget ms-infographics-widget">
-            <div class="ms-card-body media">
-              <div class="media-body">
-                <h6>Conversions</h6>
-                <p class="ms-card-change">$80,950</p>
-                <p class="fs-12">2% Decreased from last budget</p>
-              </div>
-            </div> <i class="flaticon-reuse"></i>
-          </div>
-        </div>
-
+     
 
 
 
@@ -99,7 +26,7 @@ $('#successalert').fadeOut('fast');
         <div class="col-xl-6 col-md-12">
           <div class="ms-panel">
               <div class="ms-card-header clearfix">
-                  <h6 class="ms-card-title">Historique Charge</h6>
+                  <h6 class="ms-card-title"><?php echo e(__('Historique Charge')); ?></h6>
       
                 </div>
               <div class="ms-panel-body">
@@ -155,93 +82,20 @@ $('#successalert').fadeOut('fast');
 <!--============================================================================================-->
  
 
-<!--==============================================================================================-->        
-        <div class="col-xl-7 col-md-12">
-          <div class="ms-panel ms-panel-fh">
-            <div class="ms-panel-header header-mini">
-              <div class="d-flex justify-content-between">
-                <div>
-                  <h6>Project Sales</h6>
-                  <p>Monitor how much sales your product does</p>
-                </div>
-                <div class="btn-group btn-group-toggle ms-graph-metrics" data-toggle="buttons">
-                  <label class="btn btn-sm btn-outline-primary active day">
-                    <input type="radio" checked="">Day</label>
-                  <label class="btn btn-sm btn-outline-primary month">
-                    <input type="radio">Month</label>
-                  <label class="btn btn-sm btn-outline-primary year">
-                    <input type="radio">Year</label>
-                </div>
-              </div>
-              <div class="d-flex justify-content-between ms-graph-meta">
-                <div class="ms-graph-labels"> <span class="ms-graph-decrease"></span>
-                  <p>Traffic</p> <span class="ms-graph-regular"></span>
-                  <p>Sales</p>
-                </div>
-              </div>
-            </div>
-            <div class="ms-panel-body">
-              <canvas id="pm-chart"></canvas>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-5 col-md-12">
-          <div class="ms-panel">
-            <div class="ms-panel-header">
-              <h6>most sellings projects</h6>
-            </div>
-            <div class="ms-panel-body"> <span class="progress-label">HTML & CSS Projects</span><span class="progress-status">83%</span>
-              <div class="progress progress-tiny">
-                <div class="progress-bar bg-primary" role="progressbar" style="width: 83%" aria-valuenow="83" aria-valuemin="0" aria-valuemax="100"></div>
-              </div> <span class="progress-label">Wordpress Projects</span><span class="progress-status">50%</span>
-              <div class="progress progress-tiny">
-                <div class="progress-bar bg-secondary" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-              </div> <span class="progress-label">PSD Projects</span><span class="progress-status">75%</span>
-              <div class="progress progress-tiny">
-                <div class="progress-bar bg-success" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-              </div> <span class="progress-label">Code Snippets</span><span class="progress-status">92%</span>
-              <div class="progress progress-tiny">
-                <div class="progress-bar bg-danger" role="progressbar" style="width: 92%" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-            </div>
-          </div>
-          <div class="ms-panel">
-            <div class="ms-panel-header">
-              <h6>Top Sales</h6>
-              <p>Your highest selling projects</p>
-            </div>
-            <div class="ms-panel-body p-0">
-              <div class="ms-quick-stats">
-                <div class="ms-stats-grid">
-                  <p class="ms-text-success">+47.18%</p>
-                  <p class="ms-text-dark">8,033</p> <span>Admin Dashboard</span>
-                </div>
-                <div class="ms-stats-grid">
-                  <p class="ms-text-success">+17.24%</p>
-                  <p class="ms-text-dark">6,039</p> <span>Wordpress Theme</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-  
 
-
-
-<!--=================================================================================-->
 
 <!--//////////////////////////////////////////////////////////////// -->
 
 
 
-<!--update info restaurant -->
+<!--update info employees -->
 
 
 <!--//////////////////////////////////////////////////////////////// -->
 <div class="col-xl-6 col-md-12">
     <div class="ms-panel ms-panel-fh">
       <div class="ms-panel-header">
-        <h6>Update informations restaurant Form</h6>
+        <h6><?php echo e(__('Update informations Employee Form')); ?></h6>
       </div>
       <div class="ms-panel-body">
         <form method="POST"  action="<?php echo e(url('restaurant/updateEmployyeInfo')); ?>"  class="needs-validation clearfix" novalidate>
@@ -254,7 +108,7 @@ $('#successalert').fadeOut('fast');
             <input type="hidden" name="id_emplo" value="<?php echo e($employee->id); ?>" >
                       
             <div class="col-md-12 mb-3">
-                <label for="validationCustom18">id Employee</label>
+                <label for="validationCustom18"><?php echo e(__('id Employee')); ?></label>
                 <div class="input-group">
                   <input type="text"  value="<?php echo e($employee->idEmployee); ?>"  class="form-control" id="validationCustom18" placeholder="id Employee" readonly >
             
@@ -263,7 +117,7 @@ $('#successalert').fadeOut('fast');
               
    
             <div class="col-md-12 mb-3">
-                <label for="validationCustom18">Name Employee</label>
+                <label for="validationCustom18"><?php echo e(__('Name Employee')); ?></label>
                 <div class="input-group">
                   <input type="text" name="nameEmployee" value="<?php echo e($employee->nameEmployee); ?>"  class="form-control <?php $__errorArgs = ['nameEmployee'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -292,7 +146,7 @@ unset($__errorArgs, $__bag); ?>
               </div>
               
               <div class="col-md-12 mb-3">
-                <label for="validationCustom18">tel</label>
+                <label for="validationCustom18"><?php echo e(__('telephone')); ?></label>
                 <div class="input-group">
                   <input type="number" name="tel" value="<?php echo e($employee->tel); ?>"  class="form-control <?php $__errorArgs = ['tel'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -349,7 +203,7 @@ unset($__errorArgs, $__bag); ?>
         
 
                 <div class="col-md-12 mb-3">
-                    <label for="validationCustom18">price per hour</label>
+                    <label for="validationCustom18"><?php echo e(__('price per hour')); ?></label>
                     <div class="input-group">
                       <input type="number" name="price_ph" value="<?php echo e($employee->price_ph); ?>"  class="form-control <?php $__errorArgs = ['price_ph'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -378,7 +232,7 @@ unset($__errorArgs, $__bag); ?>
                   </div>
     
                   <div class="col-md-12 mb-3">
-                    <label for="validationCustom18">type</label>
+                    <label for="validationCustom18"><?php echo e(__('type')); ?></label>
                     <div class="input-group">
                    
                       
@@ -441,7 +295,7 @@ unset($__errorArgs, $__bag); ?>
 
 
           <div class="ms-panel-header new">
-            <button class="btn btn-primary d-block" type="submit">Update Employee Information</button>
+            <button class="btn btn-primary d-block" type="submit"><?php echo e(__('Update Employee Information')); ?></button>
           </div>
 
 
@@ -489,7 +343,7 @@ unset($__errorArgs, $__bag); ?>
 
 
           <div class="ms-panel-header new">
-            <button class="btn btn-primary-info d-block" type="submit">block Employee</button>
+            <button class="btn btn-primary-info d-block" type="submit"><?php echo e(__('block Employee')); ?></button>
           </div>
 
 
@@ -513,7 +367,7 @@ unset($__errorArgs, $__bag); ?>
                   
 
 <div class="col-md-12 mb-2">
-      <label for="validationCustom09">Password</label>
+      <label for="validationCustom09"><?php echo e(__('Password')); ?></label>
       <div class="input-group">
         <input type="password" class="form-control <?php $__errorArgs = ['password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -539,7 +393,7 @@ unset($__errorArgs, $__bag); ?>
     </div>
 
     <div class="col-md-12 mb-2">
-      <label for="validationCustom09">Repeat Password</label>
+      <label for="validationCustom09"><?php echo e(__('Repeat Password')); ?></label>
       <div class="input-group">
         <input type="password" class="form-control <?php $__errorArgs = ['password_confirmation'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -570,7 +424,7 @@ unset($__errorArgs, $__bag); ?>
 
 
       <div class="ms-panel-header new">
-        <button class="btn btn-primary d-block" type="submit">activate compte Employee</button>
+        <button class="btn btn-primary d-block" type="submit"><?php echo e(__('activate compte Employee')); ?></button>
       </div>
 
 
@@ -595,7 +449,7 @@ unset($__errorArgs, $__bag); ?>
   <div class="col-xl-6 col-md-12">
     <div class="ms-panel ms-panel-fh">
       <div class="ms-panel-header">
-        <h6>Update Password Form</h6>
+        <h6><?php echo e(__('Update Password Form')); ?></h6>
       </div>
       <div class="ms-panel-body">
  
@@ -641,7 +495,7 @@ unset($__errorArgs, $__bag); ?>
         </div>
 
         <div class="col-md-12 mb-2">
-          <label for="validationCustom09">Repeat Password</label>
+          <label for="validationCustom09"><?php echo e(__('Repeat Password')); ?></label>
           <div class="input-group">
             <input type="password" class="form-control <?php $__errorArgs = ['password_confirmation'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -672,7 +526,7 @@ unset($__errorArgs, $__bag); ?>
 
 
           <div class="ms-panel-header new">
-            <button class="btn btn-primary d-block" type="submit">Update paasword</button>
+            <button class="btn btn-primary d-block" type="submit"><?php echo e(__('Update paasword')); ?></button>
           </div>
 
 

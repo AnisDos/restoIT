@@ -4,36 +4,9 @@
 
 
 @section('content')
-<script type="text/javascript" > 
-    setTimeout(function() {
- $('#successalert').fadeOut('fast');
-}, 8000); // <-- time in milliseconds
-</script>
+{{App::setLocale(Session::get('locale'))}}
 
 
-  
-  @if (session('success'))
-  <div class="x_content bs-example-popovers" id="successalert" >
-    <div class="alert alert-success" role="alert" >
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-        </button>
-        <strong>well done!</strong> {{ session('success') }}
-      </div>
-    </div>
-
-  
-    @endif
-@if (session('danger'))
-<div class="x_content bs-example-popovers" id="successalert" >
-  <div class="alert alert-danger" role="alert" >
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-      </button>
-      <strong>DANGER!</strong> {{ session('danger') }}
-    </div>
-  </div>
-
-
-  @endif
 
 
 
@@ -142,10 +115,10 @@
                   <div class="col-md-12 mb-3">
                     <label for="validationCustom22">Select provider</label>
                     <div class="input-group">
-                      <select class="form-control @error('provider_id') is-invalid @enderror " name="provider_id" id="validationCustom22" >
+                      <select class="form-control @error('provider_id') is-invalid @enderror " name="provider_id" id="validationCustom22" required >
                  
                         
-              {{--         <option value=""> no provider now  </option> --}}
+          
                      @foreach ($providers as $provider)
                             
 
@@ -156,7 +129,7 @@
 
                       </select>
                       <div class="invalid-feedback">
-                        Please select a Catagory.
+                        Please select a Provider.
                       </div>
                     </div>
                   </div>

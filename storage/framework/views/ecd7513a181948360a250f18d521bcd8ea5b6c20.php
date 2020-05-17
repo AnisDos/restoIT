@@ -4,6 +4,8 @@
 
 
 <?php $__env->startSection('content'); ?>
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
+
 
 
     <!-- Body Content Wrapper -->
@@ -13,37 +15,18 @@
         <div class="col-md-12">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb pl-0">
-              <li class="breadcrumb-item"><a href="#"><i class="material-icons">home</i> Home</a></li>
-              <li class="breadcrumb-item"><a href="#">Menu</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Add Product</li>
+              <li class="breadcrumb-item"><a href="#"><i class="material-icons">home</i> <?php echo e(__('Home')); ?></a></li>
+              <li class="breadcrumb-item"><a href="#"><?php echo e(__('Menu')); ?></a></li>
+              <li class="breadcrumb-item active" aria-current="page"><?php echo e(__('Add Product')); ?></li>
             </ol>
           </nav>
 
 
 
 
-          
-        <script type="text/javascript" > 
-          setTimeout(function() {
-       $('#successalert').fadeOut('fast');
-     }, 8000); // <-- time in milliseconds
-     </script>
-    
+       
    
-        
-        <?php if(session('success')): ?>
-        <div class="x_content bs-example-popovers" id="successalert" >
-          <div class="alert alert-success" role="alert" >
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-              </button>
-              <strong>well done!</strong> <?php echo e(session('success')); ?>
-
-            </div>
-          </div>
-
-        
-          <?php endif; ?>
-
+     
          
 
 
@@ -59,7 +42,7 @@
         <div class="col-xl-6 col-md-12">
           <div class="ms-panel ms-panel-fh">
             <div class="ms-panel-header">
-              <h6>Add Meal Form</h6>
+              <h6><?php echo e(__('Add Meal Form')); ?></h6>
             </div>
             <div class="ms-panel-body">
               <form onsubmit="return submitForm();" id="ratinoupikamila" method="POST"  action="<?php echo e(url('restaurant/addMealForm')); ?>" enctype="multipart/form-data" class="needs-validation clearfix" novalidate>
@@ -74,7 +57,7 @@
     
 
                   <div class="col-md-12 mb-3">
-                    <label for="validationCustom18">Meal Name</label>
+                    <label for="validationCustom18"><?php echo e(__('Meal Name')); ?></label>
                     <div class="input-group">
                       <input id="validationCustom36" name="var[]" type="hidden" value="" />
 
@@ -87,7 +70,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" id="validationCustom18" placeholder="Meal Name" required >
                       <div class="valid-feedback">
-                        Looks good!
+                        <?php echo e(__('Looks good')); ?>!
                       </div>
                       <?php $__errorArgs = ['mealName'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -120,7 +103,7 @@ unset($__errorArgs, $__bag); ?>
                
 
                   <div class="col-md-12 mb-3">
-                    <label for="validationCustom22">Select Catagory</label>
+                    <label for="validationCustom22"><?php echo e(__('Select Catagory')); ?></label>
                     <div class="input-group">
                       <select class="form-control <?php $__errorArgs = ['category'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -141,20 +124,18 @@ unset($__errorArgs, $__bag); ?> " name="category" id="validationCustom22" >
 
                       </select>
                       <div class="invalid-feedback">
-                        Please select a Catagory.
+                        <?php echo e(__('Please select a Catagory')); ?>.
                       </div>
                     </div>
                   </div>
-           
-              
-
+          
 
 
 
                   <div class="col-md-12 mb-3">
-                    <label for="validationCustom25">Price</label>
+                    <label for="validationCustom25"><?php echo e(__('Price')); ?></label>
                     <div class="input-group">
-                      <input type="number" value="<?php echo e(old('price')); ?>"  class="form-control <?php $__errorArgs = ['price'];
+                      <input type="number" min="0" step=".01" value="<?php echo e(old('price')); ?>"  class="form-control <?php $__errorArgs = ['price'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -179,9 +160,9 @@ unset($__errorArgs, $__bag); ?>
                   </div>
 
                   <div class="col-md-12 mb-3">
-                    <label for="validationCustom25">tax</label>
+                    <label for="validationCustom25"><?php echo e(__('tax')); ?></label>
                     <div class="input-group">
-                      <input type="number" value="<?php echo e(old('tax')); ?>"  class="form-control <?php $__errorArgs = ['tax'];
+                      <input type="number" min="0" step=".01" value="<?php echo e(old('tax')); ?>"  class="form-control <?php $__errorArgs = ['tax'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -210,7 +191,7 @@ unset($__errorArgs, $__bag); ?>
 
                   
                   <div class="col-md-12 mb-3">
-                    <label for="validationCustom12">Description</label>
+                    <label for="validationCustom12"><?php echo e(__('Description')); ?></label>
                     <div class="input-group">
                       <textarea rows="5"  name="description" id="validationCustom12"   class="form-control <?php $__errorArgs = ['price'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -235,7 +216,7 @@ unset($__errorArgs, $__bag); ?>
                     </div>
                   </div>
                   <div class="col-md-12 mb-3">
-                    <label for="validationCustom12">Product Image</label>
+                    <label for="validationCustom12"><?php echo e(__('Meal Image')); ?></label>
                     <div class="custom-file">
                       <input type="file" name="image" value="<?php echo e(old('image')); ?>"  class="custom-file-input <?php $__errorArgs = ['image'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -268,7 +249,7 @@ unset($__errorArgs, $__bag); ?>
        
 
                 <div class="ms-panel-header new">
-                  <button  class="btn btn-primary d-block" type="submit">Add Meal</button>
+                  <button  class="btn btn-primary d-block" type="submit"><?php echo e(__('Add Meal')); ?></button>
                 </div>
 
 
@@ -280,59 +261,40 @@ unset($__errorArgs, $__bag); ?>
 
         </div>
 
-        <div class="col-xl-6 col-md-12">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="ms-panel">
-                <div class="ms-panel-header">
-                  <h6>Product </h6>
-                </div>
-                <div class="ms-panel-body">
-                  <div id="imagesSlider" class="ms-image-slider carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                      <div class="carousel-item active">
-                        <img class="d-block w-100" src="<?php echo e(asset ('styleRestoIT/assets/img/costic/add-product-1.jpg')); ?>" alt="First slide">
-                      </div>
-                      <div class="carousel-item">
-                        <img class="d-block w-100" src="<?php echo e(asset ('styleRestoIT/assets/img/costic/add-product-2.jpg')); ?>" alt="Second slide">
-                      </div>
-                      <div class="carousel-item">
-                        <img class="d-block w-100" src="<?php echo e(asset ('styleRestoIT/assets/img/costic/add-product-3.jpg')); ?>" alt="Third slide">
-                      </div>
-                    </div>
-                    <ol class="carousel-indicators">
-                      <li data-target="#imagesSlider" data-slide-to="0" class="active"> <img class="d-block w-100" src="<?php echo e(asset ('styleRestoIT/assets/img/costic/add-product-1.jpg')); ?>" alt="First slide"></li>
-                      <li data-target="#imagesSlider" data-slide-to="1"><img class="d-block w-100" src="<?php echo e(asset ('styleRestoIT/assets/img/costic/add-product-2.jpg')); ?>" alt="Second slide"></li>
-                      <li data-target="#imagesSlider" data-slide-to="2"><img class="d-block w-100" src="<?php echo e(asset ('styleRestoIT/assets/img/costic/add-product-3.jpg')); ?>" alt="Third slide"></li>
-                    </ol>
-                  </div>
-                </div>
-                <div class="ms-panel-header new">
-                  <p class="medium">Status Available</p>
-                  <div>
-                    <label class="ms-switch">
-                      <input type="checkbox">
-                      <span class="ms-switch-slider round"></span>
-                    </label>
-                  </div>
-                </div>
-                <div class="ms-panel-header new">
-                  <p class="medium">Discount Active</p>
-                  <div>
-                    <label class="ms-switch">
-                      <input type="checkbox" checked="">
-                      <span class="ms-switch-slider round"></span>
-                    </label>
-                  </div>
-                </div>
-                <div class="ms-panel-header new">
-                  <button class="btn btn-secondary d-block" type="submit">Save</button>
-                  <button class="btn btn-primary d-block" type="submit">Save and Add</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -377,24 +339,19 @@ unset($__errorArgs, $__bag); ?>
            <div class="col-xl-6 col-md-12 ms-deletable ms-todo-list">
             <div class="ms-card ms-widget ms-card-fh">
               <div class="ms-card-header clearfix">
-                <h6 class="ms-card-title">Ingredients Lists</h6>
-            
-      <button  onclick="addLine()" data-toggle="tooltip" data-placement="left" title="Add a Task to this block" class="ms-btn-icon float-right"> <i class="material-icons text-disabled">add</i> </button>
+                <h6 class="ms-card-title"><?php echo e(__('Ingredients Lists')); ?></h6>
+          
+      <button  onclick="addLine()" data-toggle="tooltip" data-placement="left" title="Add a Task to this block" class="ms-btn-icon float-right"> <i class="material-icons text-disabled"><?php echo e(__('add')); ?></i> </button>
              
              
               </div>
               <div class="ms-card-body">
                 <ul id="uldin" class="ms-list ms-task-block">
              
-             
-            
-      
-             
                 </ul>
               </div>
               <div class="ms-card-footer clearfix">
-                <a href="#" class="text-disabled mr-2"> <i class="flaticon-archive"> </i> Archive </a>
-                <a href="#" class="text-disabled ms-delete-trigger float-right"> <i class="flaticon-trash"> </i> Delete </a>
+           
               </div>
             </div>
           </div>

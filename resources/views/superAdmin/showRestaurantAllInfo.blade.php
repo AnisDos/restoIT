@@ -82,7 +82,7 @@ use Carbon\Carbon;
     @foreach ($users as $user)
                             
 
-   [ " {{ $user->name }}","{{ $user->email }}",  "{{ $user->address }}", "{{ $user->restaurant_key }}", "{{ $user->date_experation }}","@if($user->date_experation < Carbon::now()) - @endif{{(Carbon::parse($user->date_experation))->diffInDays(Carbon::now())}} ","@if($user->verified)<div style='color:green'> active </div> @else <div style='color:red'> noActive </div> @endif","<a href='/superadmin/showRestaurantAllInfoByOne/{{$user->user_id}}'> check =></a>"],
+   [ " {{ $user->name }}","{{ $user->email }}",  "{{ $user->address }}", "{{ $user->restaurant_key }}", "{{ $user->date_experation }}","@if($user->date_experation < Carbon::now()) - @endif{{(Carbon::parse($user->date_experation))->diffInDays(Carbon::now())}} ","@if($user->verified)<div style='color:green'> active </div> @else <div style='color:red'> noActive </div> @endif","<a href='/superadmin/showRestaurantAllInfoByOne/{{$user->admin_id}}'> check =></a>"],
    
                             @endforeach
  ];

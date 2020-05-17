@@ -17,7 +17,7 @@ class CreateSuperAdminsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('name');
-            $table->string('image')->default("superadmins/default.jpg");
+            $table->string('image')->default("users/default.jpg");
             $table->timestamps();
         });
     }

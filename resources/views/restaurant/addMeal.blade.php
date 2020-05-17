@@ -4,6 +4,7 @@
 
 
 @section('content')
+{{App::setLocale(Session::get('locale'))}}
 
 
     <!-- Body Content Wrapper -->
@@ -13,36 +14,18 @@
         <div class="col-md-12">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb pl-0">
-              <li class="breadcrumb-item"><a href="#"><i class="material-icons">home</i> Home</a></li>
-              <li class="breadcrumb-item"><a href="#">Menu</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Add Product</li>
+              <li class="breadcrumb-item"><a href="#"><i class="material-icons">home</i> {{__('Home')}}</a></li>
+              <li class="breadcrumb-item"><a href="#">{{__('Menu')}}</a></li>
+              <li class="breadcrumb-item active" aria-current="page">{{__('Add Product')}}</li>
             </ol>
           </nav>
 
 
 
 
-          
-        <script type="text/javascript" > 
-          setTimeout(function() {
-       $('#successalert').fadeOut('fast');
-     }, 8000); // <-- time in milliseconds
-     </script>
-    
+       
    
-        
-        @if (session('success'))
-        <div class="x_content bs-example-popovers" id="successalert" >
-          <div class="alert alert-success" role="alert" >
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-              </button>
-              <strong>well done!</strong> {{ session('success') }}
-            </div>
-          </div>
-
-        
-          @endif
-
+     
          
 
 
@@ -58,7 +41,7 @@
         <div class="col-xl-6 col-md-12">
           <div class="ms-panel ms-panel-fh">
             <div class="ms-panel-header">
-              <h6>Add Meal Form</h6>
+              <h6>{{__('Add Meal Form')}}</h6>
             </div>
             <div class="ms-panel-body">
               <form onsubmit="return submitForm();" id="ratinoupikamila" method="POST"  action="{{ url('restaurant/addMealForm') }}" enctype="multipart/form-data" class="needs-validation clearfix" novalidate>
@@ -73,13 +56,13 @@
     
 
                   <div class="col-md-12 mb-3">
-                    <label for="validationCustom18">Meal Name</label>
+                    <label for="validationCustom18">{{__('Meal Name')}}</label>
                     <div class="input-group">
                       <input id="validationCustom36" name="var[]" type="hidden" value="" />
 
                       <input type="text" name="mealName" value="{{ old('mealName') }}"  class="form-control @error('mealName') is-invalid @enderror" id="validationCustom18" placeholder="Meal Name" required >
                       <div class="valid-feedback">
-                        Looks good!
+                        {{{__('Looks good')}}}!
                       </div>
                       @error('mealName')
                       <span class="invalid-feedback" role="alert">
@@ -105,7 +88,7 @@
                
 
                   <div class="col-md-12 mb-3">
-                    <label for="validationCustom22">Select Catagory</label>
+                    <label for="validationCustom22">{{__('Select Catagory')}}</label>
                     <div class="input-group">
                       <select class="form-control @error('category') is-invalid @enderror " name="category" id="validationCustom22" >
                  
@@ -119,41 +102,18 @@
 
                       </select>
                       <div class="invalid-feedback">
-                        Please select a Catagory.
+                        {{__('Please select a Catagory')}}.
                       </div>
                     </div>
                   </div>
-           {{--        <div class="col-md-6 mb-3">
-                    <label for="validationCustom23">Currency</label>
-                    <div class="input-group">
-                      <select class="form-control" id="validationCustom23" >
-                        <option value="">USD</option>
-                        <option value="">Bitcoins</option>
-                        <option value="">EURO</option>
-
-                      </select>
-                      <div class="invalid-feedback">
-                        Please select a Currency
-                      </div>
-                    </div>
-                  </div> --}}
-              {{--     <div class="col-md-6 mb-3">
-                    <label for="validationCustom24">Quantity</label>
-                    <div class="input-group">
-                      <input type="text" class="form-control" id="validationCustom24" placeholder="01" >
-                      <div class="invalid-feedback">
-                        Quantity
-                      </div>
-                    </div>
-                  </div> --}}
-
+          
 
 
 
                   <div class="col-md-12 mb-3">
-                    <label for="validationCustom25">Price</label>
+                    <label for="validationCustom25">{{__('Price')}}</label>
                     <div class="input-group">
-                      <input type="number" value="{{ old('price') }}"  class="form-control @error('price') is-invalid @enderror " name="price" id="validationCustom25" placeholder="price" required>
+                      <input type="number" min="0" step=".01" value="{{ old('price') }}"  class="form-control @error('price') is-invalid @enderror " name="price" id="validationCustom25" placeholder="price" required>
                      
                       @error('price')
                       <span class="invalid-feedback" role="alert">
@@ -164,9 +124,9 @@
                   </div>
 
                   <div class="col-md-12 mb-3">
-                    <label for="validationCustom25">tax</label>
+                    <label for="validationCustom25">{{__('tax')}}</label>
                     <div class="input-group">
-                      <input type="number" value="{{ old('tax') }}"  class="form-control @error('tax') is-invalid @enderror " name="tax" id="validationCustom25" placeholder="tax" required>
+                      <input type="number" min="0" step=".01" value="{{ old('tax') }}"  class="form-control @error('tax') is-invalid @enderror " name="tax" id="validationCustom25" placeholder="tax" required>
                      
                       @error('tax')
                       <span class="invalid-feedback" role="alert">
@@ -181,7 +141,7 @@
 
                   
                   <div class="col-md-12 mb-3">
-                    <label for="validationCustom12">Description</label>
+                    <label for="validationCustom12">{{__('Description')}}</label>
                     <div class="input-group">
                       <textarea rows="5"  name="description" id="validationCustom12"   class="form-control @error('price') is-invalid @enderror" placeholder="Message" required >{{ old('description') }}</textarea>
                       @error('description')
@@ -192,7 +152,7 @@
                     </div>
                   </div>
                   <div class="col-md-12 mb-3">
-                    <label for="validationCustom12">Product Image</label>
+                    <label for="validationCustom12">{{__('Meal Image')}}</label>
                     <div class="custom-file">
                       <input type="file" name="image" value="{{ old('image') }}"  class="custom-file-input @error('image') is-invalid @enderror" id="validatedCustomFile">
                       <label class="custom-file-label" for="validatedCustomFile">Upload Images...</label>
@@ -211,7 +171,7 @@
        
 
                 <div class="ms-panel-header new">
-                  <button  class="btn btn-primary d-block" type="submit">Add Meal</button>
+                  <button  class="btn btn-primary d-block" type="submit">{{__('Add Meal')}}</button>
                 </div>
 
 
@@ -223,59 +183,40 @@
 
         </div>
 
-        <div class="col-xl-6 col-md-12">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="ms-panel">
-                <div class="ms-panel-header">
-                  <h6>Product </h6>
-                </div>
-                <div class="ms-panel-body">
-                  <div id="imagesSlider" class="ms-image-slider carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                      <div class="carousel-item active">
-                        <img class="d-block w-100" src="{{ asset ('styleRestoIT/assets/img/costic/add-product-1.jpg') }}" alt="First slide">
-                      </div>
-                      <div class="carousel-item">
-                        <img class="d-block w-100" src="{{ asset ('styleRestoIT/assets/img/costic/add-product-2.jpg') }}" alt="Second slide">
-                      </div>
-                      <div class="carousel-item">
-                        <img class="d-block w-100" src="{{ asset ('styleRestoIT/assets/img/costic/add-product-3.jpg') }}" alt="Third slide">
-                      </div>
-                    </div>
-                    <ol class="carousel-indicators">
-                      <li data-target="#imagesSlider" data-slide-to="0" class="active"> <img class="d-block w-100" src="{{ asset ('styleRestoIT/assets/img/costic/add-product-1.jpg') }}" alt="First slide"></li>
-                      <li data-target="#imagesSlider" data-slide-to="1"><img class="d-block w-100" src="{{ asset ('styleRestoIT/assets/img/costic/add-product-2.jpg') }}" alt="Second slide"></li>
-                      <li data-target="#imagesSlider" data-slide-to="2"><img class="d-block w-100" src="{{ asset ('styleRestoIT/assets/img/costic/add-product-3.jpg') }}" alt="Third slide"></li>
-                    </ol>
-                  </div>
-                </div>
-                <div class="ms-panel-header new">
-                  <p class="medium">Status Available</p>
-                  <div>
-                    <label class="ms-switch">
-                      <input type="checkbox">
-                      <span class="ms-switch-slider round"></span>
-                    </label>
-                  </div>
-                </div>
-                <div class="ms-panel-header new">
-                  <p class="medium">Discount Active</p>
-                  <div>
-                    <label class="ms-switch">
-                      <input type="checkbox" checked="">
-                      <span class="ms-switch-slider round"></span>
-                    </label>
-                  </div>
-                </div>
-                <div class="ms-panel-header new">
-                  <button class="btn btn-secondary d-block" type="submit">Save</button>
-                  <button class="btn btn-primary d-block" type="submit">Save and Add</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -320,66 +261,21 @@
            <div class="col-xl-6 col-md-12 ms-deletable ms-todo-list">
             <div class="ms-card ms-widget ms-card-fh">
               <div class="ms-card-header clearfix">
-                <h6 class="ms-card-title">Ingredients Lists</h6>
-            {{--     <button data-toggle="tooltip" data-placement="left" title="Add a Task to this block" class="ms-add-task-to-block ms-btn-icon float-right"> <i class="material-icons text-disabled">add</i> </button>
-                 --}}
-      <button  onclick="addLine()" data-toggle="tooltip" data-placement="left" title="Add a Task to this block" class="ms-btn-icon float-right"> <i class="material-icons text-disabled">add</i> </button>
+                <h6 class="ms-card-title">{{__('Ingredients Lists')}}</h6>
+          
+      <button  onclick="addLine()" data-toggle="tooltip" data-placement="left" title="Add a Task to this block" class="ms-btn-icon float-right"> <i class="material-icons text-disabled">{{__('add')}}</i> </button>
              
              
               </div>
               <div class="ms-card-body">
                 <ul id="uldin" class="ms-list ms-task-block">
              
-             {{-- 
-                  <li class="ms-list-item ms-to-do-task ms-deletable">
-                
-                     <div class="col-md-6 mb-3">
-
-                    <div class="input-group">
-                      <select class="form-control @error('category') is-invalid @enderror " name="category" id="validationCustom22" >
-                 
-                      @foreach ($products as $product)
-                                
-
-                      <option value="{{ $product->id }}">{{ $product->productName }}</option>
-
-                      @endforeach
-
-
-                      </select>
-                      <div class="invalid-feedback">
-                        Please select a Catagory.
-                      </div>
-                    </div>
-                   </div>
-
-                  
-                   <div class="col-md-6 mb-3">
-                    <label for="validationCustom25">qnt</label>
-                    <div class="input-group">
-                      <input type="number" value="{{ old('price') }}"  class="form-control @error('price') is-invalid @enderror " name="price" id="validationCustom25" placeholder="quantity" required>
-                     
-                      @error('price')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                      @enderror
-                    </div>
-                   </div>
-
-
-
-                    <button type="submit" class="close"><i class="flaticon-trash ms-delete-trigger"> </i></button>
-                  </li>
-             --}}
-            
-      
-             
                 </ul>
               </div>
               <div class="ms-card-footer clearfix">
-                <a href="#" class="text-disabled mr-2"> <i class="flaticon-archive"> </i> Archive </a>
+           {{--      <a href="#" class="text-disabled mr-2"> <i class="flaticon-archive"> </i> Archive </a>
                 <a href="#" class="text-disabled ms-delete-trigger float-right"> <i class="flaticon-trash"> </i> Delete </a>
+             --}}
               </div>
             </div>
           </div>

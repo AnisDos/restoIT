@@ -18,7 +18,7 @@ class CreateAdminsTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('name');
             $table->string('address')->nullable();
-            $table->string('image')->default("admins/default.jpg");
+            $table->string('image')->default("users/default.jpg");
             $table->string('verified')->default(false);
             $table->string('active')->default(true);
             $table->timestamps();

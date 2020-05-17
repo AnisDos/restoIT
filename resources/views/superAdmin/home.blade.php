@@ -8,6 +8,11 @@
 
 
 @section('content')
+{{App::setLocale(Session::get('locale'))}}
+<?php
+
+use Carbon\Carbon;
+?>
 
 
 
@@ -17,36 +22,20 @@
 <div class="ms-content-wrapper">
   <div class="row">
 
-    <script type="text/javascript" > 
-      setTimeout(function() {
-   $('#successalert').fadeOut('fast');
- }, 20000); // <-- time in milliseconds
- </script>
-
+   
 
     
-    @if (session('success'))
-    <div class="x_content bs-example-popovers" id="successalert" >
-      <div class="alert alert-success" role="alert" >
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-          </button>
-          <strong>well done!</strong> {{ session('success') }}
-        </div>
-      </div>
-
-    
-      @endif
 
     <div class="col-md-12">
-      <h1 class="db-header-title">Welcome, Anny</h1>
+      <h1 class="db-header-title">{{__('Welcome')}}, {{Auth::user()->superadmin->name}}</h1>
     </div>
     <div class="col-xl-3 col-lg-6 col-md-6">
       <div class="ms-card ms-widget has-graph-full-width ms-infographics-widget">
-        <span class="ms-chart-label bg-black"><i class="material-icons">arrow_upward</i> 3.2%</span>
+        <span class="ms-chart-label bg-black"><i class="material-icons"></i>{{Carbon::now()->year}}</span>
         <div class="ms-card-body media">
           <div class="media-body">
-            <span class="black-text"><strong>Sells Graph</strong></span>
-            <h2>$8,451</h2>
+            <span class="black-text"><strong>Total Customers</strong></span>
+            <h2>{{$totalCustomers}}</h2>
           </div>
         </div>
         <canvas id="line-chart"></canvas>
@@ -54,11 +43,11 @@
     </div>
     <div class="col-xl-3 col-lg-6 col-md-6">
       <div class="ms-card ms-widget has-graph-full-width ms-infographics-widget">
-        <span class="ms-chart-label bg-red"><i class="material-icons">arrow_downward</i> 4.5%</span>
+        <span class="ms-chart-label bg-red"><i class="material-icons"></i>active</span>
         <div class="ms-card-body media">
           <div class="media-body">
-            <span class="black-text"><strong>Total Visitors</strong></span>
-            <h2>3,973</h2>
+            <span class="black-text"><strong>Total Admins</strong></span>
+          <h2>{{$totalAdminActives}}</h2>
           </div>
         </div>
         <canvas id="line-chart-2"></canvas>
@@ -66,11 +55,11 @@
     </div>
     <div class="col-xl-3 col-lg-6 col-md-6">
       <div class="ms-card ms-widget has-graph-full-width ms-infographics-widget">
-        <span class="ms-chart-label bg-black"><i class="material-icons">arrow_upward</i> 12.5%</span>
+        <span class="ms-chart-label bg-black"><i class="material-icons"></i>active</span>
         <div class="ms-card-body media">
           <div class="media-body">
-            <span class="black-text"><strong>New Users</strong></span>
-            <h2>7,333</h2>
+            <span class="black-text"><strong>Total Restaurants</strong></span>
+            <h2> {{$totalRestauransActives}} </h2>
           </div>
         </div>
         <canvas id="line-chart-3"></canvas>
@@ -78,11 +67,11 @@
     </div>
     <div class="col-xl-3 col-lg-6 col-md-6">
       <div class="ms-card ms-widget has-graph-full-width ms-infographics-widget">
-        <span class="ms-chart-label bg-red"><i class="material-icons">arrow_upward</i> 9.5%</span>
+        <span class="ms-chart-label bg-red"><i class="material-icons"></i>active</span>
         <div class="ms-card-body media">
           <div class="media-body">
-            <span class="black-text"><strong>Total Orders</strong></span>
-            <h2>48,973</h2>
+            <span class="black-text"><strong>Total Employees</strong></span>
+            <h2> {{$totalEmployeesActives}} </h2>
           </div>
         </div>
         <canvas id="line-chart-4"></canvas>
@@ -678,8 +667,8 @@ background: #f1f7ff;
       <div class="ms-panel-header header-mini">
         <div class="d-flex justify-content-between">
           <div>
-            <h6>Project Sales</h6>
-            <p>Monitor how much sales your product does</p>
+            <h6>Admins Revenue</h6>
+           
           </div>
         </div>
 
@@ -705,17 +694,25 @@ background: #f1f7ff;
           Highcharts.chart('container', {
 
 title: {
-text: 'Revenu of all your restaurant, 2020'
+text: 'Revenue of all active Admins in your system,  {{Carbon::now()->year}}'
 },
 
 subtitle: {
-text: 'Source: thesolarfoundation.com'
+text: ''
 },
 
 yAxis: {
 title: {
-  text: 'Number of Employees'
+  text: 'SAR'
 }
+},
+tooltip: {
+headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+'<td style="padding:0"><b>{point.y:.2f} SAR</b></td></tr>',
+footerFormat: '</table>',
+shared: true,
+useHTML: true
 },
 
 xAxis: {
@@ -757,26 +754,7 @@ name: '{{ $chart[0] }}',
 data: [  {{ $chart[1][0] }}, {{ $chart[1][1] }}, {{ $chart[1][2] }}, {{ $chart[1][3] }}, {{ $chart[1][4] }}, {{ $chart[1][5] }}, {{ $chart[1][6] }}, {{ $chart[1][7] }}, {{ $chart[1][8] }}, {{ $chart[1][9] }}, {{ $chart[1][10] }}, {{ $chart[1][11] }},]
 }, 
   @endforeach
-/* {
-name: 'Installation',
-data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175,1236,5465,5465,54654]
-}, 
-{
-name: 'Manufacturing',
-data: [24916, 24064, 29742, 29851, 32490, 30282, 38121, 40434,1236,5465,5465,54654]
-}, 
-{
-name: 'Sales & Distribution',
-data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387,1236,5465,5465,54654]
-},
-{
-name: 'Project Development',
-data: [null, null, 7988, 12169, 15112, 22452, 34400, 34227,1236,5465,5465,54654]
-},
-{
-name: 'Other',
-data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111,1236,5465,5465,54654]
-}, */
+
 
 
 ],
@@ -816,6 +794,155 @@ rules: [{
 <!--===============================================================================================-->
 <!--===============================================================================================-->
 <!--===============================================================================================-->  
+
+
+
+
+
+
+<!--===============================================================================================-->
+<!--===============================================================================================-->
+<!--===============================================================================================-->
+<!--===============================================================================================-->
+<!--===============================================================================================-->
+
+
+
+  <div class="col-xl-12 col-md-12">
+    <div class="ms-panel ms-panel-fh">
+      <div class="ms-panel-header header-mini">
+        <div class="d-flex justify-content-between">
+          <div>
+            <h6>Admins Expenses </h6>
+      
+          </div>
+        </div>
+
+
+
+
+    
+        
+        <figure class="highcharts-figure">
+            <div id="container1"></div>
+            <p class="highcharts-description">
+                Basic line chart showing trends in a dataset. This chart includes the
+                <code>series-label</code> module, which adds a label to each line for
+                enhanced readability.
+            </p>
+        </figure>
+        
+        <script>
+          Highcharts.chart('container1', {
+
+title: {
+text: 'Expenses of all active Admins in your system,  {{Carbon::now()->year}}'
+},
+
+subtitle: {
+text: ''
+},
+
+yAxis: {
+title: {
+  text: 'SAR'
+}
+},
+tooltip: {
+headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+'<td style="padding:0"><b>{point.y:.2f} SAR</b></td></tr>',
+footerFormat: '</table>',
+shared: true,
+useHTML: true
+},
+
+xAxis: {
+  categories: [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ],
+   
+},
+
+legend: {
+layout: 'vertical',
+align: 'right',
+verticalAlign: 'middle'
+},
+
+plotOptions: {
+    column: {
+      pointPadding: 0.2,
+      borderWidth: 0
+    }
+  },
+
+series: [
+
+  @foreach ($chartsExpenses as $chart)
+  {
+name: '{{ $chart[0] }}',
+data: [  {{ $chart[1][0] }}, {{ $chart[1][1] }}, {{ $chart[1][2] }}, {{ $chart[1][3] }}, {{ $chart[1][4] }}, {{ $chart[1][5] }}, {{ $chart[1][6] }}, {{ $chart[1][7] }}, {{ $chart[1][8] }}, {{ $chart[1][9] }}, {{ $chart[1][10] }}, {{ $chart[1][11] }},]
+}, 
+  @endforeach
+
+
+
+],
+
+responsive: {
+rules: [{
+  condition: {
+      maxWidth: 500
+  },
+  chartOptions: {
+      legend: {
+          layout: 'horizontal',
+          align: 'center',
+          verticalAlign: 'bottom'
+      }
+  }
+}]
+}
+
+});
+        </script>
+        
+
+
+
+      </div>
+      <div class="ms-panel-body">
+        <canvas id="pm-chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+
+
+<!--===============================================================================================-->
+<!--===============================================================================================-->
+<!--===============================================================================================-->
+<!--===============================================================================================-->
+<!--===============================================================================================-->  
+
+
+
+
+
+
+
 
 
 

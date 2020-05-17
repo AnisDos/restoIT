@@ -9,6 +9,7 @@
 
 <?php $__env->startSection('content'); ?>
 
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
 
 
 
@@ -18,28 +19,7 @@
     <div class="ms-content-wrapper">
       <div class="row">
 
-        <script type="text/javascript" > 
-          setTimeout(function() {
-       $('#successalert').fadeOut('fast');
-     }, 20000); // <-- time in milliseconds
-     </script>
-    
-   
         
-        <?php if(session('success')): ?>
-        <div class="x_content bs-example-popovers" id="successalert" >
-          <div class="alert alert-success" role="alert" >
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-              </button>
-              <strong>well done!</strong> <?php echo e(session('success')); ?>
-
-            </div>
-          </div>
-
-        
-          <?php endif; ?>
-
-      
 
 
 

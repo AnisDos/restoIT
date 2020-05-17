@@ -62,7 +62,7 @@
     <ul class="accordion ms-main-aside fs-14" id="side-nav-accordion">
       <!-- Dashboard -->
       <li class="menu-item">
-        <a href="#" class="has-chevron" data-toggle="collapse" data-target="#dashboard" aria-expanded="false" aria-controls="dashboard"> <span><i class="material-icons fs-16">dashboard</i>Dashboard </span>
+        <a href="#" class="has-chevron" data-toggle="collapse" data-target="#dashboard" aria-expanded="false" aria-controls="dashboard"> <span><i class="material-icons fs-16">dashboard</i>{{__('Dashboard')}} </span>
         </a>
         <ul id="dashboard" class="collapse" aria-labelledby="dashboard" data-parent="#side-nav-accordion">
           <li> <a href="{{ url('restaurant') }}">Costic</a>
@@ -70,79 +70,154 @@
         </ul>
       </li>
       <!-- /Dashboard -->
+      @foreach ($privileges as $privilege)
+
+      @if ($privilege->privilegeName == "menus")
       <!-- product -->
       <li class="menu-item">
-        <a href="#" class="has-chevron" data-toggle="collapse" data-target="#product" aria-expanded="false" aria-controls="product"> <span><i class="fa fa-archive fs-16"></i>Menus </span>
+        <a href="#" class="has-chevron" data-toggle="collapse" data-target="#product" aria-expanded="false" aria-controls="product"> <span><i class="fa fa-archive fs-16"></i>{{__('Menus')}} </span>
         </a>
         <ul id="product" class="collapse" aria-labelledby="product" data-parent="#side-nav-accordion">
          
-          <li> <a href="{{ url('restaurant/mealsList') }}">Meals List</a>
+          <li> <a href="{{ url('restaurant/mealsList') }}">{{__('Meals List')}}</a>
           </li>
         
-          <li> <a href="{{ url('restaurant/addMeal') }}">Add Meal</a>
+          <li> <a href="{{ url('restaurant/addMeal') }}">{{__('Add Meal')}}</a>
           </li>
-        {{--   <li> <a href="{{ url('restaurant/mealDetails') }}">Meal Detail</a>
-          </li> --}}
+       
+        
         </ul>
       </li>
       <!-- product end -->
+@endif
+
+
+
+
+
+
+@if ($privilege->privilegeName == "stocks")
+
 
            <!-- stock product -->
            <li class="menu-item">
-        <a href="#" class="has-chevron" data-toggle="collapse" data-target="#product1" aria-expanded="false" aria-controls="product1"> <span><i class="fa fa-archive fs-16"></i>Stock Products </span>
+        <a href="#" class="has-chevron" data-toggle="collapse" data-target="#product1" aria-expanded="false" aria-controls="product1"> <span><i class="fa fa-archive fs-16"></i>{{__('Stock Products')}} </span>
         </a>
         <ul id="product1" class="collapse" aria-labelledby="product1" data-parent="#side-nav-accordion">
     
-          <li> <a href="{{ url('restaurant/mealsList') }}">Meals List</a>
+          <li> <a href="{{ url('restaurant/productsList') }}">Products List</a>
           </li>
       
-          <li> <a href="{{ url('restaurant/addProduct') }}">Add Product</a>
+  
+          <li> <a href="{{ url('restaurant/addProduct') }}">{{__('Add Product')}}</a>
           </li>
            
-          <li> <a href="{{ url('restaurant/addVersionProduct') }}">Add Version Product</a>
+          <li> <a href="{{ url('restaurant/addVersionProduct') }}">{{__('Add Version Product')}}</a>
           </li>
-          <li> <a href="{{ url('restaurant/addCategory') }}">Add Category</a>
+          <li> <a href="{{ url('restaurant/addCategory') }}">{{__('Add Category')}}</a>
           </li>
-          <li> <a href="{{ url('restaurant/mealDetails') }}">Meal Detail</a>
-          </li>
+
+         {{--  <li> <a href="{{ url('restaurant/mealDetails') }}">Meal Detail</a>
+          </li> --}}
         </ul>
       </li>
       <!-- stock product end -->
+
+
+      @endif
+
+
+
+
+
+
+
+
+
+      @if ($privilege->privilegeName == "employee")
+
       <!-- employee-->
       <li class="menu-item">
-        <a href="#" class="has-chevron" data-toggle="collapse" data-target="#customer" aria-expanded="false" aria-controls="customer"> <span><i class="fas fa-user-friends fs-16"></i>Empolyees </span>
+        <a href="#" class="has-chevron" data-toggle="collapse" data-target="#customer" aria-expanded="false" aria-controls="customer"> <span><i class="fas fa-user-friends fs-16"></i>{{__('Empolyees')}} </span>
         </a>
         <ul id="customer" class="collapse" aria-labelledby="customer" data-parent="#side-nav-accordion">
-          <li> <a href="{{ url('restaurant/addEmployee') }}"> Add Employee </a>
+          <li> <a href="{{ url('restaurant/addEmployee') }}"> {{__('Add Employee')}} </a>
           </li>
-          <li> <a href="{{ url('restaurant/addProvider') }}"> Add Provider </a>
+          <li> <a href="{{ url('restaurant/allEmployee') }}">{{__('all Employee')}}</a>
           </li>
-          <li> <a href="{{ url('restaurant/allEmployee') }}">all Employee</a>
-          </li>
-          <li> <a href="{{ url('restaurant/employeeCharge') }}">Employee Charget</a>
+          <li> <a href="{{ url('restaurant/employeeCharge') }}">{{__('Employee Charget')}}</a>
           </li>
         
         </ul>
       </li>
-      <!-- employee  end -->     
+      <!-- employee  end -->    
+      
+      
+
+@endif
+
+
+
+
+
+
+
+@if ($privilege->privilegeName == "providers")
+
+<!-- Provider-->
+<li class="menu-item">
+  <a href="#" class="has-chevron" data-toggle="collapse" data-target="#providertlj" aria-expanded="false" aria-controls="providertlj"> <span><i class="fas fa-user-friends fs-16"></i>{{__('Providers')}} </span>
+  </a>
+  <ul id="providertlj" class="collapse" aria-labelledby="providertlj" data-parent="#side-nav-accordion">
+    <li> <a href="{{ url('restaurant/addProvider') }}"> {{__('Add Provider')}} </a>
+    </li>
+    <li> <a href="{{ url('restaurant/allProviders') }}">{{__('all Providers')}}</a>
+    </li>
+  
+  
+  </ul>
+</li>
+<!-- Provider  end -->    
+
+
+
+@endif
+
+
+
+
+
+@if ($privilege->privilegeName == "employee")
+
+
+
+
     <!-- Privilege -->
     <li class="menu-item">
-      <a href="#" class="has-chevron" data-toggle="collapse" data-target="#icons" aria-expanded="false" aria-controls="icons"> <span><i class="material-icons fs-16">border_color</i>Privileges</span>
+      <a href="#" class="has-chevron" data-toggle="collapse" data-target="#icons" aria-expanded="false" aria-controls="icons"> <span><i class="material-icons fs-16">border_color</i>{{__('Privileges')}}</span>
       </a>
       <ul id="icons" class="collapse" aria-labelledby="icons" data-parent="#side-nav-accordion">
-        <li> <a href="{{ url('restaurant/addPrivilegeToUser') }}">Add Privilege to user</a>
+        <li> <a href="{{ url('restaurant/addPrivilegeToUser') }}">{{('Add Privilege to Employee')}}</a>
         </li>
        
       </ul>
     </li>
     <!-- /Privilege --> 
+
+@endif
+    
+
+@if ($privilege->privilegeName == "caisses")
+
   <!-- Caisse Elements -->
   <li class="menu-item">
-    <a href="#" class="has-chevron" data-toggle="collapse" data-target="#basic-elements" aria-expanded="false" aria-controls="basic-elements"> <span><i class="material-icons fs-16">filter_list</i>Caisse </span>
+    <a href="#" class="has-chevron" data-toggle="collapse" data-target="#basic-elements" aria-expanded="false" aria-controls="basic-elements"> <span><i class="material-icons fs-16">filter_list</i>{{__('Caisse')}} </span>
     </a>
     <ul id="basic-elements" class="collapse" aria-labelledby="basic-elements" data-parent="#side-nav-accordion">
     
-      <li> <a href="{{ url('restaurant/addCaisse') }}">Add Caisse</a>
+      <li> <a href="{{ url('restaurant/addCaisse') }}">{{__('Add Caisse')}}</a>
+      </li>
+      <li> <a href="{{ url('restaurant/allCaisses') }}">{{__('All Caisses')}}</a>
       </li>
     
  
@@ -150,19 +225,112 @@
   </li>
   <!-- /Caisse Elements -->
 
+@endif
 
+@if ($privilege->privilegeName == "charges")
           <!-- charge -->
           <li class="menu-item">
-            <a href="#" class="has-chevron" data-toggle="collapse" data-target="#invoice" aria-expanded="false" aria-controls="invoice"> <span><i class="fas fa-file-invoice fs-16"></i>Charge </span>
+            <a href="#" class="has-chevron" data-toggle="collapse" data-target="#invoice" aria-expanded="false" aria-controls="invoice"> <span><i class="fas fa-file-invoice fs-16"></i>{{__('Charge')}} </span>
             </a>
             <ul id="invoice" class="collapse" aria-labelledby="invoice" data-parent="#side-nav-accordion">
   
-              <li> <a href="{{ url('restaurant/addSupCharge') }}">Charge</a>
+              <li> <a href="{{ url('restaurant/addSupCharge') }}">{{__('Charge')}}</a>
               </li>
             </ul>
           </li>
           <!-- charge end -->
 
+@endif
+
+
+@if ($privilege->privilegeName == "customers")
+
+<!-- Provider-->
+<li class="menu-item">
+  <a href="#" class="has-chevron" data-toggle="collapse" data-target="#customershh" aria-expanded="false" aria-controls="customershh"> <span><i class="fas fa-user-friends fs-16"></i>{{__('Customers')}} </span>
+  </a>
+  <ul id="customershh" class="collapse" aria-labelledby="customershh" data-parent="#side-nav-accordion">
+ 
+    <li> <a href="{{ url('restaurant/allCustomers') }}">{{__('all Customers')}}</a>
+    </li>
+  
+  
+  </ul>
+</li>
+<!-- Provider  end -->    
+
+
+
+@endif
+
+@if ($privilege->privilegeName == "stocks")
+
+<li class="menu-item">
+  <a href="{{ url('restaurant/stockEstimate') }}" aria-expanded="false" aria-controls="customershh"> <span>{{__('stock estimate')}} </span>
+  </a>
+  
+</li>
+  @endif
+
+
+
+  @if ($privilege->privilegeName == "deliveryCompany")
+
+  <!-- DeliveryCompany Elements -->
+  <li class="menu-item">
+    <a href="#" class="has-chevron" data-toggle="collapse" data-target="#basic-elements" aria-expanded="false" aria-controls="basic-elements"> <span>Delivery Company </span>
+    </a>
+    <ul id="basic-elements" class="collapse" aria-labelledby="basic-elements" data-parent="#side-nav-accordion">
+    
+      <li> <a href="{{ url('restaurant/addDeliveryCompany') }}"> Delivery Company</a>
+      </li>
+   
+ 
+    </ul>
+  </li>
+  <!-- /delevryCompany Elements -->
+
+@endif
+
+
+@endforeach
+
+  <!-- weekProgram Elements -->
+  <li class="menu-item">
+    <a href="#" class="has-chevron" data-toggle="collapse" data-target="#weekelementbas" aria-expanded="false" aria-controls="weekelementbas"> <span><i class="material-icons fs-16">filter_list</i>{{__('Week Program')}} </span>
+    </a>
+    <ul id="weekelementbas" class="collapse" aria-labelledby="weekelementbas" data-parent="#side-nav-accordion">
+    
+      <li> <a href="{{ url('restaurant/weekProgram') }}">{{__('Week Program')}}</a>
+      </li>
+     {{--  <li> <a href="{{ url('restaurant/allweekProgram') }}">All weekPrograms</a>
+      </li>
+     --}}
+ 
+    </ul>
+  </li>
+  <!-- /weekProgram Elements -->
+
+
+
+
+    <!-- live Order Elements -->
+    <li class="menu-item">
+      <a href="{{ url('restaurant/liveOrders') }}"  > <span><i class="material-icons fs-16">filter_list</i>Live Orders </span>
+      </a>
+ 
+    </li>
+    <!-- /live Order Elements -->
+
+
+
+     <!-- History of Actions Elements -->
+     <li class="menu-item">
+      <a href="{{ url('restaurant/historyTransactions') }}"  > <span><i class="material-icons fs-17"></i>History of Actions </span>
+      </a>
+ 
+    </li>
+    <!-- /History of Actions Elements --> 
 
 
     </ul>
@@ -239,7 +407,7 @@
         <span class="ms-toggler-bar bg-primary"></span>
       </div>
       <div class="logo-sn logo-sm ms-d-block-sm">
-        <a class="pl-0 ml-0 text-center navbar-brand mr-0" href="{{ url('restaurant') }}"><img src="assets/img/costic/costic-logo-84x41.png" alt="logo"> </a>
+        <a class="pl-0 ml-0 text-center navbar-brand mr-0" href="{{ url('restaurant') }}"><img src="{{  asset ('styleRestoIT/assets/img/costic/costic-logo-84x41.png') }}" alt="logo"> </a>
       </div>
       <ul class="ms-nav-list ms-inline mb-0" id="ms-nav-options">
         <li class="ms-nav-item ms-search-form pb-0 py-0">
@@ -287,7 +455,7 @@
               </a> --}}
             </li>
             <li class="dropdown-divider"></li>
-            <li class="dropdown-menu-footer text-center"> <a href="#">View all Notifications</a>
+            <li class="dropdown-menu-footer text-center"> <a href="#">{{__('View all Notifications')}}</a>
             </li>
           </ul>
         </li>
@@ -295,6 +463,29 @@
 
 
 
+
+
+
+{{App::setLocale(Session::get('locale'))}}
+
+    
+          <select id="youpider"  >
+            <option value="en" @if(Session::get('locale') == "en" ) selected @endif  > <span class="flag-icon flag-icon-us"></span> English</option>
+          <option  value="ar"  @if(Session::get('locale') == "ar" ) selected @endif  > <span class="flag-icon flag-icon-mx"></span> Arab</option>
+        </select>
+
+     
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script>
+  $('#youpider').on('change', function (e) {
+    var valueSelected = this.value;
+    $('#inputLangHid').val(valueSelected);
+    $("#myFormlang").submit();
+    console.log(valueSelected);
+    
+});
+</script>
 
 
 
@@ -313,27 +504,23 @@
           </a>
           <ul class="dropdown-menu dropdown-menu-right user-dropdown" aria-labelledby="userDropdown">
             <li class="dropdown-menu-header">
-              <h6 class="dropdown-header ms-inline m-0"><span class="text-disabled">Welcome, Anny Farisha</span></h6>
+              <h6 class="dropdown-header ms-inline m-0"><span class="text-disabled">{{ Auth::user()->email }}</span></h6>
             </li>
             <li class="dropdown-divider"></li>
             <li class="ms-dropdown-list">
-              <a class="media fs-14 p-2" href="pages/prebuilt-pages/user-profile.html"> <span><i class="flaticon-user mr-2"></i> Profile</span>
+              <a class="media fs-14 p-2" href="{{ url('restaurant') }}"> <span><i class="flaticon-user mr-2"></i> {{__('Profile')}}</span>
               </a>
-              <a class="media fs-14 p-2" href="pages/apps/email.html"> <span><i class="flaticon-mail mr-2"></i> Inbox</span> <span class="badge badge-pill badge-info">3</span>
-              </a>
-            <a class="media fs-14 p-2" href="{{ url('restaurant/accountSetting') }}"> <span><i class="flaticon-gear mr-2"></i> Account Settings</span>
-              </a>
+           
             </li>
             <li class="dropdown-divider"></li>
             <li class="dropdown-menu-footer">
-              <a class="media fs-14 p-2" href="pages/prebuilt-pages/lock-screen.html"> <span><i class="flaticon-security mr-2"></i> Lock</span>
-              </a>
+            
             </li>
             <li class="dropdown-menu-footer">
               <a class="media fs-14 p-2" href="{{ route('logout') }}" onclick="event.preventDefault();
-              document.getElementById('logout-form').submit();"> <span><i class="flaticon-shut-down mr-2"></i> Logout</span>
+              document.getElementById('logout-form').submit();"> <span><i class="flaticon-shut-down mr-2"></i> {{__('Logout')}}</span>
                 
-     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                      <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf
                                     </form>
               </a>
@@ -358,9 +545,47 @@
    
 
 
+ <form id="myFormlang"  method="POST" action="{{ url('changeLang') }}" >
+  @csrf
+  <input type="hidden" id="inputLangHid" name="lang" value="" >
+
+</form>
 
 
 
+
+
+     
+<script type="text/javascript" > 
+  setTimeout(function() {
+$('#successalert').fadeOut('fast');
+}, 21000); // <-- time in milliseconds
+</script>
+
+
+
+@if (session('success'))
+<div class="x_content bs-example-popovers" id="successalert" >
+  <div class="alert alert-success" role="alert" style="text-align: center;" >
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+      </button>
+      <strong>{{__('well done')}}!</strong> {{ session('success') }}
+    </div>
+  </div>
+
+
+  @endif
+@if (session('danger'))
+<div class="x_content bs-example-popovers" id="successalert" >
+<div class="alert alert-danger" role="alert" style="text-align: center;" >
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+    </button>
+    <strong>{{__('DANGER')}}!</strong> {{ session('danger') }}
+  </div>
+</div>
+
+
+@endif
 
  @yield('content')
 
@@ -689,7 +914,7 @@
                 <h4 class="section-title bold">Customize</h4>
                 <div>
                   <label class="ms-switch">
-                    <input type="checkbox" id="dark-mode">
+                    <input type="checkbox" id="dark-mode" >
                     <span class="ms-switch-slider round"></span>
                   </label>
                   <span> Dark Mode </span>
@@ -794,6 +1019,7 @@
     </div>
   </div>
   <!-- SCRIPTS -->
+  
   <!-- Global Required Scripts Start -->
   <script src="{{  asset ('styleRestoIT/assets/js/jquery-3.3.1.min.js') }}"></script>
   <script src="{{  asset ('styleRestoIT/assets/js/popper.min.js') }}"></script>

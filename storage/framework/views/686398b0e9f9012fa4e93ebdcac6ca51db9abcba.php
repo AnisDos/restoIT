@@ -27,6 +27,7 @@
   <link href="<?php echo e(asset ('styleRestoIT/assets/css/style.css')); ?>" rel="stylesheet">
   <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.ico">
+ 
 </head>
 
 <body class="ms-body ms-aside-left-open ms-primary-theme ms-has-quickbar">
@@ -47,7 +48,7 @@
       <div class="ms-circle12 ms-child"></div>
     </div>
   </div>
-  <!-- Overlays -->
+  <!-- Overlays  -->
   <div class="ms-aside-overlay ms-overlay-left ms-toggler" data-target="#ms-side-nav" data-toggle="slideLeft"></div>
   <div class="ms-aside-overlay ms-overlay-right ms-toggler" data-target="#ms-recent-activity" data-toggle="slideRight"></div>
   <!-- Sidebar Navigation Left -->
@@ -74,6 +75,8 @@
         </ul>
       </li>
       <!-- /Restaurant -->
+<?php $__currentLoopData = $privileges; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $privilege): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+      <?php if($privilege->privilegeName == "stocks"): ?>
       <!-- product -->
       <li class="menu-item">
         <a href="#" class="has-chevron" data-toggle="collapse" data-target="#product" aria-expanded="false" aria-controls="product"> <span><i class="fa fa-archive fs-16"></i>Menus </span>
@@ -91,7 +94,11 @@
         </ul>
       </li>
       <!-- product end -->
+      <?php endif; ?>
 
+
+
+      <?php if($privilege->privilegeName == "stocks"): ?>
            <!-- stock product -->
            <li class="menu-item">
         <a href="#" class="has-chevron" data-toggle="collapse" data-target="#product1" aria-expanded="false" aria-controls="product1"> <span><i class="fa fa-archive fs-16"></i>Stock Products </span>
@@ -104,20 +111,41 @@
         </ul>
       </li>
       <!-- stock product end -->
-    <!-- Caisse Elements -->
-    <li class="menu-item">
-      <a href="#" class="has-chevron" data-toggle="collapse" data-target="#basic-elements" aria-expanded="false" aria-controls="basic-elements"> <span><i class="material-icons fs-16">filter_list</i>chart </span>
-      </a>
-      <ul id="basic-elements" class="collapse" aria-labelledby="basic-elements" data-parent="#side-nav-accordion">
-      
-        <li> <a href="<?php echo e(url('admin/chartTotalOrders')); ?>">Chart Orders</a>
-        </li>
-      
+      <?php endif; ?>
+
+    
+
    
-      </ul>
-    </li>
-    <!-- /Caisse Elements -->
   
+
+
+
+    <?php if($privilege->privilegeName == "customers"): ?>
+
+<!-- Provider-->
+<li class="menu-item">
+  <a href="#" class="has-chevron" data-toggle="collapse" data-target="#customershh" aria-expanded="false" aria-controls="customershh"> <span><i class="fas fa-user-friends fs-16"></i>Customers </span>
+  </a>
+  <ul id="customershh" class="collapse" aria-labelledby="customershh" data-parent="#side-nav-accordion">
+ 
+    <li> <a href="<?php echo e(url('admin/allCustomers')); ?>">all Customers</a>
+    </li>
+  
+  
+  </ul>
+</li>
+<!-- Provider  end -->    
+
+
+
+<?php endif; ?>
+
+<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+ <!-- chart Elements -->
+
+<!-- /chart Elements -->
+
+
     </ul>
   </aside>
   <!-- Sidebar Right -->
@@ -203,12 +231,6 @@
           </form>
         </li>
 
-        <?php if(Auth::user()->superAdmin): ?>
-        <li class="ms-nav-item dropdown"> <a href="<?php echo e(url('superadmin')); ?>"   ><i class="flaticon-hammer"></i></a>
-        </li>
-
-        <?php endif; ?>
-       
 
       
         <li class="ms-nav-item dropdown"> <a href="#" class="text-disabled ms-has-notification" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="flaticon-bell"></i></a>
@@ -245,27 +267,68 @@
           </ul>
         </li>
 
+
+
+
+
+
+        
+
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
+
+
+    
+<select id="youpider" class="dropdown dropdown-lang"  >
+  <option value="en" <?php if(Session::get('locale') == "en" ): ?> selected <?php endif; ?>  > <span class="flag-icon flag-icon-us"></span>English</option>
+<option  value="ar"  <?php if(Session::get('locale') == "ar" ): ?> selected <?php endif; ?>  > <span class="flag-icon flag-icon-mx"></span> Arab</option>
+</select>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script>
+$('#youpider').on('change', function (e) {
+var valueSelected = this.value;
+$('#inputLangHid').val(valueSelected);
+$("#myFormlang").submit();
+console.log(valueSelected);
+
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <li class="ms-nav-item ms-nav-user dropdown">
           <a href="#" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <img class="ms-user-img ms-img-round float-right" src="/storage/<?php echo e(Auth::user()->image); ?>" alt="people">
+            <img class="ms-user-img ms-img-round float-right" src="/storage/<?php echo e(Auth::user()->admin->image); ?>" alt="people">
           </a>
           <ul class="dropdown-menu dropdown-menu-right user-dropdown" aria-labelledby="userDropdown">
             <li class="dropdown-menu-header">
-              <h6 class="dropdown-header ms-inline m-0"><span class="text-disabled">Welcome, Anny Farisha</span></h6>
+              <h6 class="dropdown-header ms-inline m-0"><span class="text-disabled"><?php echo e(Auth::user()->email); ?></span></h6>
             </li>
             <li class="dropdown-divider"></li>
             <li class="ms-dropdown-list">
-              <a class="media fs-14 p-2" href="pages/prebuilt-pages/user-profile.html"> <span><i class="flaticon-user mr-2"></i> Profile</span>
-              </a>
-              <a class="media fs-14 p-2" href="pages/apps/email.html"> <span><i class="flaticon-mail mr-2"></i> Inbox</span> <span class="badge badge-pill badge-info">3</span>
-              </a>
-              <a class="media fs-14 p-2" href="pages/prebuilt-pages/user-profile.html"> <span><i class="flaticon-gear mr-2"></i> Account Settings</span>
+             
+              <a class="media fs-14 p-2" href="/admin/accountsettings/<?php echo e(Auth::user()->admin->id); ?>"> <span><i class="flaticon-gear mr-2"></i> Account Settings</span>
               </a>
             </li>
             <li class="dropdown-divider"></li>
             <li class="dropdown-menu-footer">
-              <a class="media fs-14 p-2" href="pages/prebuilt-pages/lock-screen.html"> <span><i class="flaticon-security mr-2"></i> Lock</span>
-              </a>
+             
             </li>
             <li class="dropdown-menu-footer">
               <a class="media fs-14 p-2" href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
@@ -287,6 +350,69 @@
     
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <form id="myFormlang"  method="POST" action="<?php echo e(url('changeLang')); ?>" >
+      <?php echo csrf_field(); ?>
+      <input type="hidden" id="inputLangHid" name="lang" value="" >
+    
+    </form>
+    
+
+
+
+
+
+
+
+
+
+
+
+    <script type="text/javascript" > 
+      setTimeout(function() {
+    $('#successalert').fadeOut('fast');
+    }, 19000); // <-- time in milliseconds
+    </script>
+    
+    
+    
+    <?php if(session('success')): ?>
+    <div class="x_content bs-example-popovers" id="successalert" >
+      <div class="alert alert-success" role="alert" style="text-align: center;" >
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+          </button>
+          <strong>well done!</strong> <?php echo e(session('success')); ?>
+
+        </div>
+      </div>
+    
+    
+      <?php endif; ?>
+    <?php if(session('danger')): ?>
+    <div class="x_content bs-example-popovers" id="successalert" >
+    <div class="alert alert-danger" role="alert" style="text-align: center;" >
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+        </button>
+        <strong>DANGER!</strong> <?php echo e(session('danger')); ?>
+
+      </div>
+    </div>
+    
+    
+    <?php endif; ?>
+    
 
 
 

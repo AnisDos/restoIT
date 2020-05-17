@@ -9,7 +9,12 @@
 
 <?php $__env->startSection('content'); ?>
 
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
 
+<?php
+
+use Carbon\Carbon;
+?>
 
 
 
@@ -18,27 +23,7 @@
     <div class="ms-content-wrapper">
       <div class="row">
 
-        <script type="text/javascript" > 
-          setTimeout(function() {
-       $('#successalert').fadeOut('fast');
-     }, 20000); // <-- time in milliseconds
-     </script>
-    
    
-        
-        <?php if(session('success')): ?>
-        <div class="x_content bs-example-popovers" id="successalert" >
-          <div class="alert alert-success" role="alert" >
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-              </button>
-              <strong>well done!</strong> <?php echo e(session('success')); ?>
-
-            </div>
-          </div>
-
-        
-          <?php endif; ?>
-
       
 
 
@@ -112,8 +97,8 @@
         <div class="ms-panel-header header-mini">
           <div class="d-flex justify-content-between">
             <div>
-              <h6>Project Sales</h6>
-              <p>Monitor how much sales your product does</p>
+              <h6>Keys Sales</h6>
+              <p>How Much you get from selling keys?</p>
             </div>
           </div>
   
@@ -139,18 +124,27 @@
             Highcharts.chart('container', {
   
   title: {
-  text: 'Revenu of all your restaurant, 2020'
+  text: 'Your Revenue from Keys, <?php echo e(Carbon::now()->year); ?>'
   },
   
   subtitle: {
-  text: 'Source: thesolarfoundation.com'
+  text: ''
   },
   
   yAxis: {
   title: {
-    text: 'Number of Employees'
+    text: 'Sar'
   }
   },
+  tooltip: {
+headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+'<td style="padding:0"><b>{point.y:.2f} SAR</b></td></tr>',
+footerFormat: '</table>',
+shared: true,
+useHTML: true
+},
+
   
   xAxis: {
     categories: [

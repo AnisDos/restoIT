@@ -75,9 +75,9 @@
           <ul id="basic-elements" class="collapse" aria-labelledby="basic-elements" data-parent="#side-nav-accordion">
             <li> <a href="{{ url('superadmin/generatekey') }}">Generate Key</a>
             </li>
-            <li> <a href="{{ url('superadmin/showRestaurantWithKey') }}">Restaurant With Key</a>
-            </li>  
-             <li> <a href="{{ url('superadmin/showRestaurantAllInfo') }}">Restaurant </a>
+          {{--   <li> <a href="{{ url('superadmin/showRestaurantWithKey') }}">Restaurant With Key</a>
+            </li>   --}}
+             <li> <a href="{{ url('superadmin/showRestaurantAllInfo') }}">All Admins </a>
             </li>
           </ul>
         </li>
@@ -184,7 +184,7 @@
         <span class="ms-toggler-bar bg-primary"></span>
       </div>
       <div class="logo-sn logo-sm ms-d-block-sm">
-        <a class="pl-0 ml-0 text-center navbar-brand mr-0" href="{{ url('superadmin') }}"><img src="assets/img/costic/costic-logo-84x41.png" alt="logo"> </a>
+        <a class="pl-0 ml-0 text-center navbar-brand mr-0" href="{{ url('superadmin') }}"><img src="{{  asset ('styleRestoIT/assets/img/costic/costic-logo-84x41.png') }}" alt="logo"> </a>
       </div>
       <ul class="ms-nav-list ms-inline mb-0" id="ms-nav-options">
         <li class="ms-nav-item ms-search-form pb-0 py-0">
@@ -194,9 +194,7 @@
             </div>
           </form>
         </li>
-        <li class="ms-nav-item dropdown"> <a href="{{ url('superadmin') }}"   ><i class="flaticon-hammer"></i></a>
-          
-        </li>
+     
         
         <li class="ms-nav-item dropdown"> <a href="#" class="text-disabled ms-has-notification" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="flaticon-bell"></i></a>
           <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="notificationDropdown">
@@ -232,20 +230,85 @@
           </ul>
         </li>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+{{App::setLocale(Session::get('locale'))}}
+
+    
+<select id="youpider"  >
+  <option value="en" @if(Session::get('locale') == "en" ) selected @endif  > <span class="flag-icon flag-icon-us"></span> English</option>
+<option  value="ar"  @if(Session::get('locale') == "ar" ) selected @endif  > <span class="flag-icon flag-icon-mx"></span> Arab</option>
+</select>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script>
+$('#youpider').on('change', function (e) {
+var valueSelected = this.value;
+$('#inputLangHid').val(valueSelected);
+$("#myFormlang").submit();
+console.log(valueSelected);
+
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <li class="ms-nav-item ms-nav-user dropdown">
           <a href="#" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <img class="ms-user-img ms-img-round float-right" src="/storage/{{Auth::user()->image}}" alt="people">
+            <img class="ms-user-img ms-img-round float-right" src="/storage/{{Auth::user()->superadmin->image}}" alt="people">
           </a>
           <ul class="dropdown-menu dropdown-menu-right user-dropdown" aria-labelledby="userDropdown">
             <li class="dropdown-menu-header">
-              <h6 class="dropdown-header ms-inline m-0"><span class="text-disabled">Welcome, Anny Farisha</span></h6>
+              <h6 class="dropdown-header ms-inline m-0"><span class="text-disabled">{{{Auth::user()->email}}}</span></h6>
             </li>
             <li class="dropdown-divider"></li>
             <li class="ms-dropdown-list">
-              <a class="media fs-14 p-2" href="pages/prebuilt-pages/user-profile.html"> <span><i class="flaticon-user mr-2"></i> Profile</span>
-              </a>
-           
-              <a class="media fs-14 p-2" href="pages/prebuilt-pages/user-profile.html"> <span><i class="flaticon-gear mr-2"></i> Account Settings</span>
+             
+            <a class="media fs-14 p-2" href="/superadmin/accountsettings/{{Auth::user()->superadmin->id}}"> <span><i class="flaticon-gear mr-2"></i> Account Settings</span>
               </a>
             </li>
             <li class="dropdown-divider"></li>
@@ -280,7 +343,44 @@
 
  <!-- page content -->
    
+     
 
+ <form id="myFormlang"  method="POST" action="{{ url('changeLang') }}" >
+  @csrf
+  <input type="hidden" id="inputLangHid" name="lang" value="" >
+
+</form>
+
+ <script type="text/javascript" > 
+  setTimeout(function() {
+$('#successalert').fadeOut('fast');
+}, 21000); // <-- time in milliseconds
+</script>
+
+
+
+@if (session('success'))
+<div class="x_content bs-example-popovers" id="successalert" >
+  <div class="alert alert-success" role="alert" style="text-align: center;" >
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+      </button>
+      <strong>{{__('well done')}}!</strong> {{ session('success') }}
+    </div>
+  </div>
+
+
+  @endif
+@if (session('danger'))
+<div class="x_content bs-example-popovers" id="successalert" >
+<div class="alert alert-danger" role="alert" style="text-align: center;" >
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+    </button>
+    <strong>{{__('DANGER')}}!</strong> {{ session('danger') }}
+  </div>
+</div>
+
+
+@endif
 
 
 

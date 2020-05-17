@@ -138,13 +138,12 @@
 </div>
             <div class="content">
                 <div class="title m-b-md">
-                    <?php $__env->startComponent('components.who'); ?>
-                  
-                    <?php if (isset($__componentOriginal647eb0f6470bbcabb710a928133507bfd00b970e)): ?>
-<?php $component = $__componentOriginal647eb0f6470bbcabb710a928133507bfd00b970e; ?>
-<?php unset($__componentOriginal647eb0f6470bbcabb710a928133507bfd00b970e); ?>
-<?php endif; ?>
-<?php echo $__env->renderComponent(); ?>
+                    <?php echo e(App::setlocale('ar')); ?>
+
+                    <?php echo e(App::getlocale()); ?>
+
+           <?php echo e(__('khra')); ?>
+
                 </div>
 
                 <div class="links">

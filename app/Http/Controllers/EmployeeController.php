@@ -22,7 +22,7 @@ class EmployeeController extends Controller
         
     public function __construct()
     {
-        $this->middleware(['employee','isusernotconfirmedEmployee']);
+        $this->middleware(['auth','isusernotconfirmedEmployee']);
     }
 
 
@@ -31,7 +31,7 @@ class EmployeeController extends Controller
     {
         // dd(Auth::user()->email,Auth::user()->idEmployee);
 
-        $privileges = Auth::user()->privileges()->get();
+        $privileges = Auth::user()->employee->privileges()->get();
         //dd($privileges);
 
         return view('employee.home',compact('privileges'));
@@ -45,10 +45,10 @@ class EmployeeController extends Controller
 
 
 // check if employee has privilage
-public function checkPrivilege(String $id)
+public function checkPrivilege(String $name)
 {
   
-    $exists = Auth::user()->privileges->contains($id);
+    $exists = Auth::user()->employee->privileges->contains($name);
 
     return $exists;
     if (!$exists) {
@@ -65,7 +65,7 @@ public function checkPrivilege(String $id)
 
 public function stocks()
 {
-    $this->checkPrivilege(2);
+    $this->checkPrivilege("stocks");
        
    
     return view('employee.stocks');
@@ -74,16 +74,16 @@ public function stocks()
 
 public function stocksUpdateQnttToProduct()
 {
-    $this->checkPrivilege(2);
+    $this->checkPrivilege("stocks");
 
-    $privileges = Auth::user()->privileges()->get();
+    $privileges = Auth::user()->employee->privileges()->get();
     
 //this requet is not 100% correct check it again please
 //get all version of product of
 //  products.id as prod_id product_versions.id as vers_id product_versions.product_id product_versions.provider_id product_versions.price product_versions.return product_versions.date_experation_bool product_versions.date_experation product_versions.qntSTK product_versions.codebare product_versions.created_at product_versions.updated_at products.user_id products.productName products.unity products.limiteSTK
  
    $products = DB::select("select *  from products  LEFT JOIN product_versions ON product_versions.product_id = products.id
-    where  products.user_id =  " . Auth::user()->user_id ." " );
+   where  products.restaurant_id =  " . Auth::user()->employee->restaurant_id ." " );
 
 //this loop for testing
     /*     $stack=[];
@@ -100,7 +100,7 @@ public function stocksUpdateQnttToProduct()
 
 public function addQntProduct()
 {
-    $this->checkPrivilege(2);
+    $this->checkPrivilege("stocks");
 
     $data = request()->validate([
         'id_product' => 'required',
@@ -120,7 +120,8 @@ public function addQntProduct()
     $transactionHistory->oldqnt = $oldqnt;
     $transactionHistory->qnt = $data['qntToAdd'];
     $transactionHistory->type = "addqnt";
-    $transactionHistory->employee()->associate(Auth::user());
+    $transactionHistory->restaurant()->associate(Auth::user()->employee->restaurant);
+    $transactionHistory->employee()->associate(Auth::user()->employee);
     $transactionHistory->productVersion()->associate($productVersion);
     $transactionHistory->save();
 
@@ -155,7 +156,8 @@ public function revokeQntProduct()
     $transactionHistory->oldqnt = $oldqnt;
     $transactionHistory->qnt = $data['qntToAdd'];
     $transactionHistory->type = "revokeqnt";
-    $transactionHistory->employee()->associate(Auth::user());
+    $transactionHistory->restaurant()->associate(Auth::user()->employee->restaurant);
+    $transactionHistory->employee()->associate(Auth::user()->employee);
     $transactionHistory->productVersion()->associate($productVersion);
     $transactionHistory->save();
 
@@ -192,7 +194,8 @@ public function DeleteVersionProduct()
     $transactionHistory = new TransactionHistory;
     $transactionHistory->type = "delete";
     $transactionHistory->noteIfDelete =$text ;
-    $transactionHistory->employee()->associate(Auth::user());
+    $transactionHistory->restaurant()->associate(Auth::user()->employee->restaurant);
+    $transactionHistory->employee()->associate(Auth::user()->employee);
     $transactionHistory->save();
 
 
@@ -205,15 +208,18 @@ public function DeleteVersionProduct()
 
 public function stocksversionProduct()
 {
-    $this->checkPrivilege(2);
+    $this->checkPrivilege("stocks");
            
-        $privileges = Auth::user()->privileges()->get();
+        $privileges = Auth::user()->employee->privileges()->get();
   /*   $products = DB::select("select *  from products  LEFT JOIN product_versions ON product_versions.product_id = products.id
     where  products.user_id =  " . Auth::user()->user_id ." " );
      */
-    $products = Product::where('user_id',Auth::user()->user_id)->get();
+  /*   $products = Product::where('user_id',Auth::user()->user_id)->get();
     
-    $providers = Provider::where('user_id',Auth::user()->user_id)->get();
+    $providers = Provider::where('user_id',Auth::user()->user_id)->get(); */
+
+    $products = Auth::user()->employee->restaurant->products()->get();
+    $providers = Auth::user()->employee->restaurant->providers()->get();
    
     return view('product.stocksversionProduct', compact('products','providers','privileges'));
 
@@ -312,11 +318,21 @@ public function addVersionProductForm()
     $transactionHistory = new TransactionHistory;
     $transactionHistory->qnt = $data['qntSTK'];
     $transactionHistory->type = "addnew";
-    $transactionHistory->employee()->associate(Auth::user());
+    $transactionHistory->restaurant()->associate(Auth::user()->employee->restaurant);
+    $transactionHistory->employee()->associate(Auth::user()->employee);
     $transactionHistory->productVersion()->associate($version);
     $transactionHistory->save();
 
- 
+ //add charge  mazalha f test
+
+ $charge = new Charge;
+ $charge->priceCharge = $data['price'];
+ $charge->type = "stock";
+ $charge->note = "employee added new version of product";
+ $charge->employee()->associate(Auth::user()->employee);
+ $charge->restaurant()->associate(Auth::user()->employee->restaurant);
+ $charge->save();
+
 
         
      return redirect()->back()->with("success"," Product added with success !! you can check it :)");

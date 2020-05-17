@@ -15,12 +15,12 @@ class CreateDeliveryCompaniesTable extends Migration
     {
         Schema::create('delivery_companies', function (Blueprint $table) {
             $table->id();   
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('restaurant_id')->nullable();
             $table->string('deliveryCompaniesName');
             $table->string('email')->nullable();
-            $table->string('adresse');
-            $table->double('tel', 15);
-            $table->decimal('percentage', 10, 2);
+            $table->string('adresse')->nullable();
+            $table->double('tel', 15)->nullable();
+            $table->decimal('percentage', 10, 2)->nullable();
             $table->timestamps();
         });
     }

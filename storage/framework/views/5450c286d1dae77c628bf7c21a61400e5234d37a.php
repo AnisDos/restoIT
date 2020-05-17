@@ -51,7 +51,7 @@
 
 
                 <div class="col-md-12 ">
-                  <label for="validationCustom01">Name</label>
+                  <label for="validationCustom01">Name  <?php echo e(__('name')); ?> </label>
                   <div class="input-group">
                     <input type="text" class="form-control <?php $__errorArgs = ['name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');

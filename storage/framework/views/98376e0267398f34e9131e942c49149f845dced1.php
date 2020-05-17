@@ -8,7 +8,12 @@
 
 
 <?php $__env->startSection('content'); ?>
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
 
+<?php
+
+use Carbon\Carbon;
+?>
 
 
 
@@ -18,26 +23,9 @@
     <div class="ms-content-wrapper">
       <div class="row">
 
-        <script type="text/javascript" > 
-          setTimeout(function() {
-       $('#successalert').fadeOut('fast');
-     }, 20000); // <-- time in milliseconds
-     </script>
     
-   
         
-        <?php if(session('success')): ?>
-        <div class="x_content bs-example-popovers" id="successalert" >
-          <div class="alert alert-success" role="alert" >
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-              </button>
-              <strong>well done!</strong> <?php echo e(session('success')); ?>
-
-            </div>
-          </div>
-
-        
-          <?php endif; ?>
+    
 
       
 
@@ -108,8 +96,8 @@
               <div class="ms-panel-header header-mini">
                 <div class="d-flex justify-content-between">
                   <div>
-                    <h6>Project Sales</h6>
-                    <p>Monitor how much sales your product does</p>
+                    <h6>Admins Accounts</h6>
+                    
                   </div>
                 </div>
   
@@ -141,7 +129,7 @@ Highcharts.chart('container', {
         type: 'pie'
     },
     title: {
-        text: 'Browser market shares in January, 2018'
+        text: 'Admins Accounts in your system'
     },
     tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -162,10 +150,10 @@ Highcharts.chart('container', {
         }
     },
     series: [{
-        name: 'Brands',
+        name: 'accounts',
         colorByPoint: true,
         data: [{
-            name: 'activi',
+            name: 'active',
             y: <?php echo e($activcoupmtes); ?>,
             sliced: true,
             selected: true
@@ -174,7 +162,7 @@ Highcharts.chart('container', {
             y: <?php echo e($nokeycoupmtes); ?>
 
         }, {
-            name: ' khlasetlhom abonnement',
+            name: 'key expired',
             y: <?php echo e($expirkeycoupmtes); ?>
 
         }]

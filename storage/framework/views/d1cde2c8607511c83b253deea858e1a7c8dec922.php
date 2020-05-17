@@ -4,38 +4,10 @@
 
 
 <?php $__env->startSection('content'); ?>
-<script type="text/javascript" > 
-    setTimeout(function() {
- $('#successalert').fadeOut('fast');
-}, 8000); // <-- time in milliseconds
-</script>
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
 
 
-  
-  <?php if(session('success')): ?>
-  <div class="x_content bs-example-popovers" id="successalert" >
-    <div class="alert alert-success" role="alert" >
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-        </button>
-        <strong>well done!</strong> <?php echo e(session('success')); ?>
 
-      </div>
-    </div>
-
-  
-    <?php endif; ?>
-<?php if(session('danger')): ?>
-<div class="x_content bs-example-popovers" id="successalert" >
-  <div class="alert alert-danger" role="alert" >
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-      </button>
-      <strong>DANGER!</strong> <?php echo e(session('danger')); ?>
-
-    </div>
-  </div>
-
-
-  <?php endif; ?>
 
 
 
@@ -179,7 +151,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?> " name="provider_id" id="validationCustom22" >
+unset($__errorArgs, $__bag); ?> " name="provider_id" id="validationCustom22" required >
                  
                         
               
@@ -193,7 +165,7 @@ unset($__errorArgs, $__bag); ?> " name="provider_id" id="validationCustom22" >
 
                       </select>
                       <div class="invalid-feedback">
-                        Please select a Catagory.
+                        Please select a Provider.
                       </div>
                     </div>
                   </div>

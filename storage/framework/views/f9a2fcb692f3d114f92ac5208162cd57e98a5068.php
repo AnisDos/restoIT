@@ -4,6 +4,7 @@
 
 
 <?php $__env->startSection('content'); ?>
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
 
 
 
@@ -169,7 +170,7 @@ function changeTextOfLabelInCOnfermationAlert(id,idEmployee,employeeName,total){
                             
 
    [ "<?php echo e($employee->idEmployee); ?>",
-   "  <?php echo e($employee->email); ?>",  
+   "  <?php echo e($employee->user->email); ?>",  
    "<?php echo e($employee->type); ?>",
     "<?php echo e($employee->hWork); ?>", 
     "<?php echo e($employee->price_ph); ?>",

@@ -4,6 +4,9 @@
 
 
 @section('content')
+{{App::setLocale(Session::get('locale'))}}
+
+
 
 
 
@@ -29,7 +32,7 @@
 
           <div class="ms-panel">
             <div class="ms-panel-header">
-              <h6>Product List</h6>
+              <h6>Meals List</h6>
             </div>
             <div class="ms-panel-body">
               <div class="table-responsive">
@@ -79,7 +82,7 @@
     @foreach ($meals as $meal)
                             
 
-   [ "{{ $meal->id }}","  <img src='/storage/{{$meal->image}}' style='width:50px; height:30px;'>{{ $meal->mealName }}",  "46546", "In Stock", "$32","<a href='/restaurant/mealDetails/{{$meal->id}}  '> 3abez</a>"],
+   [ "{{ $meal->id }}","  <img src='/storage/{{$meal->image}}' style='width:50px; height:30px;'>{{ $meal->mealName }}",   "@if($meal->public) Activate @else Deactivate @endif", "{{ $meal->price }} SAR","{{ $meal->priceMealIng }} SAR","<a href='/restaurant/mealDetails/{{$meal->id}}  '> Show</a>"],
    
                             @endforeach
 ];
@@ -95,12 +98,12 @@
   var tableFour = $('#data-table-123').DataTable( {
     data: dataSet12,
     columns: [
-      { title: "Product ID" },
-      { title: "Product Name" },
+      { title: "Meal ID" },
+      { title: "Meal Name" },
 
-      { title: "Quantity" },
       { title: "Status" },
       { title: "Price" },
+      { title: "Cost" },
       { title: "details" },
 
 

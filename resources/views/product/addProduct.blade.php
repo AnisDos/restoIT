@@ -5,6 +5,7 @@
 
 @section('content')
 
+{{App::setLocale(Session::get('locale'))}}
 
     <!-- Body Content Wrapper -->
     <div class="ms-content-wrapper">
@@ -23,25 +24,9 @@
 
 
           
-        <script type="text/javascript" > 
-          setTimeout(function() {
-       $('#successalert').fadeOut('fast');
-     }, 8000); // <-- time in milliseconds
-     </script>
-    
+      
    
         
-        @if (session('success'))
-        <div class="x_content bs-example-popovers" id="successalert" >
-          <div class="alert alert-success" role="alert" >
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-              </button>
-              <strong>well done!</strong> {{ session('success') }}
-            </div>
-          </div>
-
-        
-          @endif
 
          
 
@@ -128,7 +113,7 @@
                   <div class="col-md-12 mb-3">
                     <label for="validationCustom18">price</label>
                     <div class="input-group">
-                      <input type="number" name="price" value="{{ old('price') }}"  class="form-control @error('price') is-invalid @enderror" id="validationCustom18" placeholder="price" required >
+                      <input type="number" min="0" step=".01" name="price" value="{{ old('price') }}"  class="form-control @error('price') is-invalid @enderror" id="validationCustom18" placeholder="price" required >
                       <div class="valid-feedback">
                         Looks good!
                       </div>
@@ -145,7 +130,7 @@
                   <div class="col-md-12 mb-3">
                     <label for="validationCustom18">tax</label>
                     <div class="input-group">
-                      <input type="number" name="tax" value="{{ old('tax') }}"  class="form-control @error('tax') is-invalid @enderror" id="validationCustom18" placeholder="tax" required >
+                      <input type="number" min="0" step=".01"  name="tax" value="{{ old('tax') }}"  class="form-control @error('tax') is-invalid @enderror" id="validationCustom18" placeholder="tax" required >
                       <div class="valid-feedback">
                         Looks good!
                       </div>

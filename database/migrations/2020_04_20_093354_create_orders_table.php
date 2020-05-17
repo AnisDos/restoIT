@@ -19,7 +19,8 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->unsignedBigInteger('promo_id')->nullable();
             $table->unsignedBigInteger('caisse_id');
-            $table->decimal('taux', 10, 2);
+            $table->decimal('taux', 10, 2)->nullable();
+            $table->enum('orderType', array('local', 'delivery', 'delevryCompany', 'delevryboy'));
             $table->string('orderStatus');
             $table->decimal('priceOrder', 15, 2);
             $table->string('paymentStatus');

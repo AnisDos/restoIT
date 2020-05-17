@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\category;
 use App\Ingridient;
 use App\OrderMeals;
-
+use App\WeekProgram;
 
 class Meal extends Model
 {
@@ -30,6 +30,12 @@ class Meal extends Model
         return $this->hasMany(OrderMeals::class);
     }
 
+
+public function weekProgram()
+  {
+      return $this->hasOne(WeekProgram::class);
+  }
+    
   
 
 }

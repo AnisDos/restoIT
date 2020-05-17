@@ -26,7 +26,7 @@ class UserIsNotConfirmed
                 
     
             } elseif (Auth::user()->restaurant()->exists()) {
-                
+            
                 if (!Auth::user()->restaurant->admin->verified) {
                     return redirect('notVerifiedRestaurant');
                 }

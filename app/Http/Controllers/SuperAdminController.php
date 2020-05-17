@@ -9,13 +9,15 @@ use App\Privilege;
 use Carbon\Carbon;
 use App\Key;
 use App\Admin;
-
+use App\SuperAdmin;
+use Image;
 use App\Employee;
 use Illuminate\Support\Facades\DB;
 
 
-class superadminController extends Controller
+class SuperAdminController extends Controller
 {
+    
     public function __construct()
     {
         $this->middleware(['auth','issuperadmin']);
@@ -26,36 +28,30 @@ class superadminController extends Controller
     public function index()
     {
 
-        //partie chart===================================================================
+
+//partie chart===================================================================
 //$chart = [];
 
 $charts = array();
+$chartsExpenses = array();
 
-//hadi ndirha dm1
+
 //$restaurants = User::where('is_admin',true)->where('id','!=',Auth::user()->id)->get();
 
-$restaurants = Admin::all();
+$restaurants = Admin::where('active' , true)->get();
 // feach all restaurant of this admin and try yo evry one put there name end revuen of year
 foreach($restaurants as $restaurant){
-
-
-
     //$allrestaurants = User::where('user_id', $restaurant->id)->where('id','!=', $restaurant->id)->get();
     $allrestaurants = $restaurant->restaurants()->get();
     // feach all restaurant of this admin and try yo evry one put there name end revuen of year
    
     $mounthEvryRes = array(0,0,0,0,0,0,0,0,0,0,0,0);
+    $mounthEvryResExpenses = array(0,0,0,0,0,0,0,0,0,0,0,0);
     foreach($allrestaurants as $allrestaurant){
-
-
-   
-        $year = 2020;
+        $year = carbon::now()->year;
         $tz = 'Europe/Madrid';
-       
        $mounth = array();
         for ($i=1; $i <13 ; $i++) { 
-        
-       
         $order = DB::table('orders')
        /*    ->select('orders.*') */
         ->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
@@ -64,28 +60,38 @@ foreach($restaurants as $restaurant){
         ->where('orders.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
         ->sum('orders.priceOrder');
        
-       
-       
         array_push($mounth,  $order);
-       
-       
-       
        }
 
-
+       //--------------------------------------//
+       $mounthexpeses = array();
+       for ($i=1; $i <13 ; $i++) { 
+        $expeses = DB::table('charges')
+        ->where('charges.restaurant_id', $allrestaurant->id )
+        ->where('charges.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+        ->where('charges.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+        ->sum('charges.priceCharge');
+       
+        array_push($mounthexpeses,  $expeses);
+       }
+       //--------------------------------------//
          //for evry res of admin add resultat of evry mounth
        for ($j=0; $j <12 ; $j++) {
         $mounthEvryRes[$j] =  $mounthEvryRes[$j] + $mounth[$j];
-
         }
-      // array_push($charts,  array( $restaurant->name,$mounth));
-
+      //--------------------------------------//
+        //for evry res of admin add resultat of evry mounth
+        for ($j=0; $j <12 ; $j++) {
+            $mounthEvryResExpenses[$j] =  $mounthEvryResExpenses[$j] + $mounthexpeses[$j];
+            }
+        
 
 
     }
     
 
     array_push($charts,  array( $restaurant->name,$mounthEvryRes));
+    array_push($chartsExpenses,  array( $restaurant->name,$mounthEvryResExpenses));
 
 
  
@@ -93,9 +99,36 @@ foreach($restaurants as $restaurant){
 }
 
 //end partie charts===================================================================
-//dd($charts[0][1],$order);
-    
-        return view('superadmin.home', compact('charts'));
+
+
+//home boites===================================================================
+$year = Carbon::now()->year;
+$tz = 'Europe/Madrid';
+//totalCustomers in this year
+$totalCustomers   = DB::table('customers')
+->where('customers.created_at', '>=', Carbon::createFromDate($year, 1,0, $tz) )
+->where('customers.created_at', '<',Carbon::createFromDate($year, 12,31, $tz) )
+->count();
+
+
+
+
+//totalAdminActives
+$totalAdminActives = Admin::where('active',true)->count();
+
+$totalRestauransActives = DB::table('restaurants')
+->leftJoin('admins',  'restaurants.admin_id', '=','admins.id')
+->where('admins.active', true)
+->count();
+
+$totalEmployeesActives = DB::table('employees')
+->leftJoin('restaurants',  'restaurants.id', '=','employees.restaurant_id')
+->leftJoin('admins',  'restaurants.admin_id', '=','admins.id')
+->where('admins.active', true)
+->count();
+//home boites===================================================================
+  //  dd($totalCustomers,$totalAdminActives,$totalRestauransActives,$totalEmployeesActives);
+        return view('superadmin.home', compact('chartsExpenses','charts','totalCustomers','totalAdminActives','totalRestauransActives','totalEmployeesActives'));
 
     }
 
@@ -286,6 +319,65 @@ foreach($restaurants as $restaurant){
 
     public function showRestaurantAllInfoByOne(Admin $user)
     {
+        //partie chart===================================================================
+$charts = array();
+$restaurants = $user->restaurants()->get();
+// feach all restaurant of this admin and try yo evry one put there name end revuen of year
+foreach($restaurants as $restaurant){
+   $year = 2020;
+   $tz = 'Europe/Madrid';
+$mounth = array();
+   for ($i=1; $i <13 ; $i++) { 
+   $order = DB::table('orders')
+   ->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+   ->where('caisses.restaurant_id', $restaurant->id )
+   ->where('orders.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+   ->where('orders.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+   ->sum('orders.priceOrder');
+   array_push($mounth,  $order);
+}
+   array_push($charts,  array( $restaurant->name,$mounth));
+}
+//end partie charts===================================================================
+
+
+/// partie chart orders===============================================================
+$chartOrders = array();
+
+$year = carbon::now()->year;
+$tz = 'Europe/Madrid';
+$rests = $user->restaurants()->get();
+
+//$mounth = array();
+
+foreach($rests as $restaurant){
+    $mounth =array();
+for ($i=1; $i <13 ; $i++) { 
+
+   
+$order = DB::table('orders')
+->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+->leftJoin('restaurants',  'restaurants.id', '=','caisses.restaurant_id')
+->where('restaurants.id',$restaurant->id)
+->where('orders.orderStatus',"completed")
+->where('orders.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+->where('orders.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+->count('*');
+
+array_push($mounth, $order );
+
+
+}
+array_push($chartOrders, array( $restaurant->name,$mounth) );
+
+}
+//dd($chartOrders);
+//end partie chart orders=============================================================
+
+
+
+
+
 
       /*   if (!$user->admin->exists()) {
             return redirect()->back()->with("danger"," please don't play with that ! Do your job seriously");
@@ -316,9 +408,21 @@ foreach($restaurants as $restaurant){
         //$restaurants =  User::where('user_id',$user->id)->get();
         $restaurants = $user->restaurants()->get();
 
-   
+        $allprivileges =array();
+        //privilege he doesn't have
+        $privileges = Privilege::all();
+        //$myprivileges = $user->privileges()->get();
+        foreach($privileges as $pr){
+
+           if(!$user->privileges->contains($pr->id)){
+            array_push($allprivileges,  $pr);
+        }
+        }
+
+      //  dd($allprivileges);
+        
         //dd($someInfoEmployees);
-        return view('superadmin.showRestaurantAllInfoByOne',compact('user','someInfoEmployees','restaurants') );
+        return view('superadmin.showRestaurantAllInfoByOne',compact('chartOrders','charts','user','someInfoEmployees','restaurants','allprivileges') );
 
     }
 
@@ -338,7 +442,8 @@ foreach($restaurants as $restaurant){
         
 
         $revenus = array();
-        $year = 2020;
+        //  $year = 2020;
+        $year = Carbon::now()->year;
         $tz = 'Europe/Madrid';
      
      $mounth = array();
@@ -408,7 +513,153 @@ foreach($restaurants as $restaurant){
     }
 
 
+    
 
+    public function adminUpdatePrivileges() {
+        
+       
+        $data = request()->validate([
+            'id_admin' => 'required',
+            'var'=>  '',
+        ]);
+
+    
+
+                //put string geted from form too a array 
+                $dataprivileges= preg_split("/[,]/",$data['var'][0]);
+
+
+                $stack = array();
+                
+                for ($i=0; $i < count($dataprivileges) ; $i++) { 
+                
+                    if(!in_array($dataprivileges[$i], $stack))
+                {
+                  
+                    array_push($stack, $dataprivileges[$i]);
+                
+                }
+                
+                }
+
+           
+                if ($stack[0] == "" ) {
+                    return redirect()->back()->with("danger"," empty privileges ! ");
+            }
+             
+               
+                
+                             $restaurant = Admin::find($data['id_admin']);	
+               
+                  
+                     
+                         //create restaurant privilege of meal
+                   
+                
+                         if ($stack[0] != "" ) {
+                   
+                           
+                            $restaurant->privileges()->attach($stack);
+                
+                        
+                        
+                        }
+
+
+
+                        return redirect()->back()->with("success","  key added to Restaurant with success !! ");
+
+                       
+                        
+                      
+
+                
+
+    }
+
+    public function accountsettings(SuperAdmin $superadmin) 
+    {
+
+        if(auth::user()->superadmin->id != $superadmin->id){
+
+            return redirect()->back()->with("danger"," You try to do a danger things be careful I will punish you ! ");
+
+        }
+
+
+        return view('superadmin.accountsettings',compact('superadmin') );
+
+
+
+    }
+
+
+
+    public function updateSuperadminInfo(){
+        $data = request()->validate([
+            'id_res'=> '',
+            'name' => 'required|min:3|max:50',
+            //'email' => 'unique:users'.request()['email'],
+           // 'email'=>'',
+           'email' => ['required','email', \Illuminate\Validation\Rule::unique('users')->ignore(request()['id_res'])],
+           // 'password' => 'confirmed|min:6',
+        
+            'image' => '',
+        ]);
+    
+      
+     
+        if (request('image') != null){
+          
+            $imagePath = request('image')->store('users','public');
+            
+            $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
+           
+            $image->save();
+           
+        }
+      
+    
+    
+    
+        $superadmin = SuperAdmin::find(Auth::user()->superadmin->id);
+        $compte = User::find(Auth::user()->id);
+        $superadmin->name = $data['name'];
+    
+        $compte->email = $data['email'];
+        if (request('image') != null){$superadmin->image = $imagePath;}
+        
+        $superadmin->save();
+        $compte->save();
+    
+        return redirect()->back()->with("success","SuperAdmin information Updated with success !! ");
+    
+    
+    }
+
+    public function updatePasswordSuperadmin()
+    {
+    
+        
+        $data = request()->validate([
+            'id_res'=> '',
+            'Activate'=> '',
+            'password' => 'confirmed|min:6',
+           
+        ]);
+    
+        $password = \Hash::make($data['password']);
+    
+        $restaurant = User::find($data['id_res']);
+        $restaurant->password = $password;
+    
+    
+        
+        $restaurant->save();
+        return redirect()->back()->with("success","SuperAdmin Password Updated with success !! ");
+    
+    
+    }
 
 
 }

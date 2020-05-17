@@ -8,6 +8,10 @@ use App\ProductVersion;
 use Illuminate\Support\Facades\Auth;
 use App\Provider;
 use DB;
+use App\TransactionHistory;
+use App\Charge;
+
+
 
 class ProductController extends Controller
 {
@@ -18,6 +22,39 @@ class ProductController extends Controller
     {
         $this->middleware(['auth','isusernotconfirmed']);
     }
+
+ // check if admin has privilage
+ public function checkPrivilegeadmin(String $name)
+ {
+   
+     $exists = Auth::user()->admin->privileges->contains($name);
+ 
+     return $exists;
+     if (!$exists) {
+        
+         return redirect()->back();
+     }
+ 
+     return true;
+ 
+ }
+
+    
+               // check if employee has privilage
+public function checkPrivilege(String $name)
+{
+  
+    $exists = Auth::user()->restaurant->admin->privileges->contains($name);
+
+    return $exists;
+    if (!$exists) {
+       
+        return redirect()->back();
+    }
+
+    return true;
+
+}
 
     public function productNoQntfunction(){
         
@@ -46,13 +83,46 @@ class ProductController extends Controller
         
             }
 
+
+
+public function productsListRes(){
+
+        
+$this->checkPrivilege("stocks");
+$productNoQnt = $this->productNoQntfunction();
+$privileges = Auth::user()->restaurant->admin->privileges()->get();
+
+$products = DB::table('products')
+->select('products.*', DB::raw("SUM(product_versions.qntSTK) as qntSTKto"))
+->leftJoin('product_versions',  'product_versions.product_id', '=','products.id')
+->leftJoin('restaurants',  'restaurants.id', '=','products.restaurant_id')
+->where('restaurants.id', Auth::user()->restaurant->id )
+->groupBy('products.id')
+->get();
+
+
+
+
+
+return view('product.productsListRes',compact('productNoQnt','privileges','products'));
+
+
+
+}
+
+
+
+
+
+
     public function addProduct()
     {
         $productNoQnt = $this->productNoQntfunction();
+        $privileges = Auth::user()->restaurant->admin->privileges()->get();
 
      //   $providers = Provider::where('user_id',Auth::user()->id)->get();
         $providers = Auth::user()->restaurant->providers()->get();
-        return view('product.addProduct',compact('providers','productNoQnt'));
+        return view('product.addProduct',compact('providers','productNoQnt','privileges'));
 
     }
 
@@ -159,6 +229,29 @@ class ProductController extends Controller
     
           $me->restaurant()->associate(Auth::user()->restaurant);
           $me->save();
+
+
+           //registre the transation of this employee adding version 
+         
+    $transactionHistory = new TransactionHistory;
+    $transactionHistory->qnt = $data['qntSTK'];
+    $transactionHistory->type = "addnew";
+    $transactionHistory->restaurant()->associate(Auth::user()->restaurant);
+    $transactionHistory->productVersion()->associate($version);
+    $transactionHistory->save();
+
+ 
+
+    //add charge   mazalha f test
+
+    $charge = new Charge;
+    $charge->priceCharge = $data['price'];
+    $charge->type = "stock";
+    $charge->note = "restaurant added new version of product";
+    //$charge->employee()->associate(Auth::user());
+    $charge->restaurant()->associate(Auth::user()->restaurant);
+    $charge->save();
+
      
     
             
@@ -205,11 +298,16 @@ class ProductController extends Controller
 
     public function adminAddProduct()
     {
+
+        $this->checkPrivilegeadmin("customers");
+        $privileges = Auth::user()->admin->privileges()->get();
+
+
         
       //  $providers = Provider::where('user_id',Auth::user()->id)->get();
      
 
-        return view('product.adminAddProduct',);
+        return view('product.adminAddProduct',compact('privileges'));
 
     }
 

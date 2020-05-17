@@ -82,7 +82,7 @@ use Carbon\Carbon;
     <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             
 
-   [ " <?php echo e($user->name); ?>","<?php echo e($user->email); ?>",  "<?php echo e($user->address); ?>", "<?php echo e($user->restaurant_key); ?>", "<?php echo e($user->date_experation); ?>","<?php if($user->date_experation < Carbon::now()): ?> - <?php endif; ?><?php echo e((Carbon::parse($user->date_experation))->diffInDays(Carbon::now())); ?> ","<?php if($user->verified): ?><div style='color:green'> active </div> <?php else: ?> <div style='color:red'> noActive </div> <?php endif; ?>","<a href='/superadmin/showRestaurantAllInfoByOne/<?php echo e($user->user_id); ?>'> check =></a>"],
+   [ " <?php echo e($user->name); ?>","<?php echo e($user->email); ?>",  "<?php echo e($user->address); ?>", "<?php echo e($user->restaurant_key); ?>", "<?php echo e($user->date_experation); ?>","<?php if($user->date_experation < Carbon::now()): ?> - <?php endif; ?><?php echo e((Carbon::parse($user->date_experation))->diffInDays(Carbon::now())); ?> ","<?php if($user->verified): ?><div style='color:green'> active </div> <?php else: ?> <div style='color:red'> noActive </div> <?php endif; ?>","<a href='/superadmin/showRestaurantAllInfoByOne/<?php echo e($user->admin_id); ?>'> check =></a>"],
    
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
  ];

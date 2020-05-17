@@ -11,12 +11,15 @@ use App\Employee;
 use App\Charge;
 use App\User;
 use App\Provider;
+use App\WeekProgram;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Hash;
 use DB;
 use App\TransactionHistory;
-
+use App\OrderMeals;
 use App\mail\SendMail;
+
+use Carbon\Carbon;
 
 
 use Image;
@@ -30,6 +33,26 @@ class RestaurantController extends Controller
     {
         $this->middleware(['auth','isusernotconfirmed','isrestaurant']);
     }
+
+
+    // check if restaurants has privilage
+public function checkPrivilege(String $name)
+{
+  
+    $exists = Auth::user()->restaurant->admin->privileges->contains($name);
+
+    return $exists;
+    if (!$exists) {
+       
+        return redirect()->back();
+    }
+
+    return true;
+
+}
+
+//==================================================== ============================================
+
 
 
     public function productNoQntfunction(){
@@ -63,15 +86,206 @@ return $productNoQnt;
 
     public function index()
     {
+        
+//partie chart  revenus depenses===================================================================
+
+
+$year = 2020;
+$tz = 'Europe/Madrid';
+
+
+$revenus = array();
+   for ($i=1; $i <13 ; $i++) { 
+   
+
+   $order = DB::table('orders')
+/*    ->select('orders.*') */
+   ->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+   ->where('caisses.restaurant_id', Auth::user()->restaurant->id )
+   ->where('orders.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+   ->where('orders.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+   ->sum('orders.priceOrder');
+
+
+
+   array_push($revenus,  $order);
+
+
+
+}
+
+$depenses = array();
+   for ($i=1; $i <13 ; $i++) { 
+   
+
+   $order = DB::table('charges')
+/*    ->select('charges.*') */
+   ->where('charges.restaurant_id', Auth::user()->restaurant->id )
+   ->where('charges.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+   ->where('charges.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+   ->sum('charges.priceCharge');
+
+
+
+   array_push($depenses,  $order);
+
+
+
+}
+
+
+//end partie chart revenus depenses===================================================================
+        //partie chart===================================================================
+$charts = array();
+$caisses = Auth::user()->restaurant->caisses()->get();
+// feach all restaurant of this admin and try yo evry one put there name end revuen of year
+foreach($caisses as $caisse){
+   $year = 2020;
+   $tz = 'Europe/Madrid';
+$mounth = array();
+   for ($i=1; $i <13 ; $i++) { 
+   $order = DB::table('orders')
+   ->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+   ->where('caisses.id', $caisse->id )
+   ->where('orders.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+   ->where('orders.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+   ->sum('orders.priceOrder');
+   array_push($mounth,  $order);
+}
+   array_push($charts,  array( $caisse->caisseName,$mounth));
+}
+
+//dd($charts);
+
+//end partie charts===================================================================
+      
+        // total spent , total revenues , total customers , totals orders 
+
+        $year = carbon::now()->year;
+        $month = carbon::now()->month;
+        $tz = 'Europe/Madrid';
+        
+        $totalspents = DB::table('charges')
+        ->leftJoin('restaurants',  'restaurants.id', '=','charges.restaurant_id')
+        ->where('restaurants.id',Auth::user()->restaurant->id)
+        ->where('charges.created_at', '>=', Carbon::createFromDate($year, $month,0, $tz) )
+        ->where('charges.created_at', '<',Carbon::createFromDate($year, $month+1,0, $tz) )
+        ->sum('charges.priceCharge');
+
+
+        $totalcustomers = Auth::user()->restaurant->customers()->count();
+        $totalOrders =DB::table('orders')
+        ->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+        ->leftJoin('restaurants',  'restaurants.id', '=','caisses.restaurant_id')
+        ->where('restaurants.id',Auth::user()->restaurant->id)
+        ->where('orders.created_at', '>=', Carbon::createFromDate($year, $month,0, $tz) )
+        ->where('orders.created_at', '<',Carbon::createFromDate($year, $month+1,0, $tz) )
+        ->count('*');
+
+
+        $totalrevenues = DB::table('orders')
+        ->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+        ->leftJoin('restaurants',  'restaurants.id', '=','caisses.restaurant_id')
+        ->where('restaurants.id',Auth::user()->restaurant->id)
+        ->where('orders.created_at', '>=', Carbon::createFromDate($year, $month,0, $tz) )
+        ->where('orders.created_at', '<',Carbon::createFromDate($year, $month+1,0, $tz) )
+        ->sum('orders.priceOrder');
+
+
+//dd($totalOrders,$totalrevenues,$totalspents,$totalcustomers,$month);
+
+
+
 
         
+//===================================================================
+//===================================================================
 $productNoQnt = $this->productNoQntfunction();
+$privileges = Auth::user()->restaurant->admin->privileges()->get();
+//===================================================================
+//===================================================================
+//total orders , orderto delevry , order taklou hna , 
+
+
+
+$localorders = array();
+$deliveryorders = array();
+$delevrycompanyorders = array();
+$delevryboyorders = array();
+$year = carbon::now()->year;
+$tz = 'Europe/Madrid';
+
+//$mounth = array();
+for ($i=1; $i <13 ; $i++) { 
+
+
+$order = DB::table('orders')
+->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+->leftJoin('restaurants',  'restaurants.id', '=','caisses.restaurant_id')
+->where('restaurants.id',Auth::user()->restaurant->id)
+->where('orders.orderType',"local")
+->where('orders.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+->where('orders.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+->count('*');
+
+array_push($localorders,  $order);
 
 
 
 
-    
-        return view('restaurant.home', compact('productNoQnt') );
+$order = DB::table('orders')
+->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+->leftJoin('restaurants',  'restaurants.id', '=','caisses.restaurant_id')
+->where('restaurants.id',Auth::user()->restaurant->id)
+->where('orders.orderType',"delivery")
+->where('orders.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+->where('orders.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+->count('*');
+
+array_push($deliveryorders,  $order);
+
+
+
+
+$order = DB::table('orders')
+->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+->leftJoin('restaurants',  'restaurants.id', '=','caisses.restaurant_id')
+->where('restaurants.id',Auth::user()->restaurant->id)
+->where('orders.orderType',"delevryCompany")
+->where('orders.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+->where('orders.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+->count('*');
+
+array_push($delevrycompanyorders,  $order);
+
+
+
+
+
+$order = DB::table('orders')
+->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+->leftJoin('restaurants',  'restaurants.id', '=','caisses.restaurant_id')
+->where('restaurants.id',Auth::user()->restaurant->id)
+->where('orders.orderType',"delevryboy")
+->where('orders.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+->where('orders.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+->count('*');
+
+array_push($delevryboyorders,  $order);
+
+}
+
+
+//array_push($totalOrders,  array($mounth));
+
+//===================================================================
+//===================================================================
+
+//customers
+
+
+//dd($localorders,$deliveryorders,$delevrycompanyorders,$delevryboyorders);
+        return view('restaurant.home', compact('revenus','depenses','productNoQnt','privileges','localorders','deliveryorders','delevrycompanyorders','delevryboyorders','totalOrders' ,'totalrevenues', 'totalspents' ,'totalcustomers','charts'  ) );
 
     }
 
@@ -83,7 +297,8 @@ $productNoQnt = $this->productNoQntfunction();
     {
              
 $productNoQnt = $this->productNoQntfunction();
-
+$privileges = Auth::user()->restaurant->admin->privileges()->get();
+$this->checkPrivilege("stocks");
 
 
        // $this->checkPrivilege(2);
@@ -97,7 +312,7 @@ $productNoQnt = $this->productNoQntfunction();
         //$providers = Provider::where('user_id',Auth::user()->id)->get();
         $providers = Auth::user()->restaurant->providers()->get();
        
-        return view('product.addVersionProduct', compact('products','providers','productNoQnt'));
+        return view('product.addVersionProduct', compact('products','providers','productNoQnt','privileges',));
     
     }
 
@@ -108,6 +323,7 @@ $productNoQnt = $this->productNoQntfunction();
     
 public function addVersionProductForm() 
 {
+    $this->checkPrivilege("stocks");
     $data = request()->validate([
         'id_product' => 'required',
         'qntSTK' => 'required',
@@ -199,11 +415,21 @@ public function addVersionProductForm()
     $transactionHistory = new TransactionHistory;
     $transactionHistory->qnt = $data['qntSTK'];
     $transactionHistory->type = "addnew";
-    //$transactionHistory->employee()->associate(Auth::user());
+    $transactionHistory->restaurant()->associate(Auth::user()->restaurant);
     $transactionHistory->productVersion()->associate($version);
     $transactionHistory->save();
 
  
+
+    //add charge   mazalha f test
+
+    $charge = new Charge;
+    $charge->priceCharge = $data['price'];
+    $charge->type = "stock";
+    $charge->note = "restaurant added new version of product";
+    //$charge->employee()->associate(Auth::user());
+    $charge->restaurant()->associate(Auth::user()->restaurant);
+    $charge->save();
 
         
      return redirect()->back()->with("success"," Product added with success !! you can check it :)");
@@ -219,13 +445,14 @@ public function addVersionProductForm()
 
 public function purchaseOrder(product $product){
 
-if($product->user_id != Auth::user()->id){
+if($product->restaurant_id != Auth::user()->restaurant->id){
     
     return redirect()->back()->with("danger"," please don't play with that ! Do your job seriously");
     
 }
 
     $productNoQnt = $this->productNoQntfunction();
+$privileges = Auth::user()->restaurant->admin->privileges()->get();
 
   
     $productWest = DB::table('product_versions')
@@ -237,7 +464,7 @@ if($product->user_id != Auth::user()->id){
     $providers = Auth::user()->restaurant->providers()->get();
 
 
-    return view('restaurant.purchaseOrder', compact('product','productNoQnt','productWest','providers'));
+    return view('restaurant.purchaseOrder', compact('product','productNoQnt','privileges','productWest','providers'));
 
 
 }
@@ -305,7 +532,9 @@ public function mailsend() {
 
     public function addMeal()
     {
+        $this->checkPrivilege("menus");
         $productNoQnt = $this->productNoQntfunction();
+$privileges = Auth::user()->restaurant->admin->privileges()->get();
         
         
         //$categories = Category::where('user_id',Auth::user()->id)->get();
@@ -315,7 +544,7 @@ public function mailsend() {
         $products = Auth::user()->restaurant->products()->get();
     
 
-        return view('restaurant.addMeal', compact('categories','products' , 'productNoQnt')  );
+        return view('restaurant.addMeal', compact('categories','products' , 'productNoQnt','privileges',)  );
 
     }
 
@@ -327,6 +556,7 @@ public function mailsend() {
 
     public function addMealForm() 
     {
+        $this->checkPrivilege("menus");
         $data = request()->validate([
             'mealName' => 'required',
             'category' => 'required',
@@ -357,9 +587,9 @@ public function mailsend() {
 
             $imagePath = request('image')->store('meals','public');
             
-      /*       $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
+            $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
            
-            $image->save(); */
+            $image->save();
            
         }
 
@@ -430,10 +660,32 @@ if (count($dataIngridient) > 1 ) {
 
     public function addCategory()
     {
+        $this->checkPrivilege("stocks");
         $productNoQnt = $this->productNoQntfunction();
+        $privileges = Auth::user()->restaurant->admin->privileges()->get();
+
+$allcategories = Auth::user()->restaurant->categories()->get();
+
+
+        
+$tz = 'Europe/Madrid';
+$year = carbon::now()->year;
+
+$categories = DB::table('categories')
+->select('categories.*', DB::raw("COUNT(order_meals.meal_id) as nbrmeal")  )
+->leftJoin('restaurants',  'restaurants.id', '=','categories.restaurant_id')
+->leftJoin('meals',  'meals.category_id', '=','categories.id')
+->leftJoin('order_meals',  'order_meals.meal_id', '=','meals.id')
+->where('restaurants.id',Auth::user()->restaurant->id)
+->where('order_meals.created_at', '>=', Carbon::createFromDate($year, 1,0, $tz) )
+->where('order_meals.created_at', '<=',Carbon::createFromDate($year, 12,31, $tz) )
+->groupBy('order_meals.meal_id')
+->get();
+
+//dd($categories);
         
 
-        return view('restaurant.addCategory',compact('productNoQnt') );
+        return view('restaurant.addCategory',compact('productNoQnt','privileges','categories','allcategories') );
 
     }
 
@@ -444,7 +696,7 @@ if (count($dataIngridient) > 1 ) {
 
 
     public function addCategoryForm() 
-    {
+    {$this->checkPrivilege("stocks");
         $data = request()->validate([
             'categoryName' => 'required',
        
@@ -471,18 +723,33 @@ $me =   Auth::user()->restaurant->categories()->create([
     
     public function mealsList()
     {
+        $this->checkPrivilege("menus");
         $productNoQnt = $this->productNoQntfunction();
+        $privileges = Auth::user()->restaurant->admin->privileges()->get();
         
        // $meals = Meal::all();
-       $meals =  DB::table('meals')
+    /*    $meals =  DB::table('meals')
        ->select('meals.*')
        ->leftJoin('categories',  'categories.id', '=','meals.category_id')
        ->leftJoin('restaurants',  'restaurants.id', '=','categories.restaurant_id')
        ->where('restaurants.user_id', Auth::user()->id )
+       ->get(); */
+
+       $meals =  DB::table('meals')
+       //->select('meals.*', DB::raw('ingredients.qnt * product_versions.price AS priceOneIng') )
+       ->select('meals.*', DB::raw("SUM(ingredients.qnt * product_versions.price) as priceMealIng") )
+       ->leftJoin('categories',  'categories.id', '=','meals.category_id')
+       ->leftJoin('restaurants',  'restaurants.id', '=','categories.restaurant_id')
+       ->leftJoin('ingredients',  'ingredients.meal_id', '=','meals.id')
+       ->leftJoin('products',  'products.id', '=','ingredients.product_id')
+       ->leftJoin('product_versions',  'products.id', '=','product_versions.product_id')
+       ->groupby('meals.id')
+       ->where('restaurants.user_id', Auth::user()->id )
        ->get();
 
 
-        return view('restaurant.mealsList', compact('meals','productNoQnt')  );
+
+        return view('restaurant.mealsList', compact('meals','productNoQnt','privileges',)  );
 
     }
 
@@ -492,10 +759,20 @@ $me =   Auth::user()->restaurant->categories()->create([
 
     public function mealDetails(Meal $meal)
     {
+        if($meal->category->restaurant_id != Auth::user()->restaurant->id)
+        {
+            return redirect()->back()->with("danger","You can't do this action !! ");
+
+        }
+        
+        $this->checkPrivilege("menus");
   
         $productNoQnt = $this->productNoQntfunction();
+        $privileges = Auth::user()->restaurant->admin->privileges()->get();
 
-        return view('restaurant.mealDetails', compact('meal','productNoQnt')  );
+        $totalOrders = OrderMeals::where('meal_id',$meal->id)->count('*');
+
+        return view('restaurant.mealDetails', compact('meal','productNoQnt','privileges','totalOrders')  );
 
     }
 
@@ -504,6 +781,7 @@ $me =   Auth::user()->restaurant->categories()->create([
         
 
         $productNoQnt = $this->productNoQntfunction();
+        $privileges = Auth::user()->restaurant->admin->privileges()->get();
         $ingredients = Ingredient::where('meal_id', $meal->id)->get();
       
       //  $categories = Category::where('user_id',Auth::user()->id)->get();
@@ -514,7 +792,7 @@ $me =   Auth::user()->restaurant->categories()->create([
     $products = Auth::user()->restaurant->products()->get();
 
  
-        return view('restaurant.updateMeal', compact('meal','categories','products','ingredients','productNoQnt')  );
+        return view('restaurant.updateMeal', compact('meal','categories','products','ingredients','productNoQnt','privileges',)  );
 
     }
     
@@ -522,7 +800,7 @@ $me =   Auth::user()->restaurant->categories()->create([
     
 
     public function updateMealForm() 
-    {
+    {$this->checkPrivilege("menus");
         $data = request()->validate([
             'mealName' => 'required',
             'category' => 'required',
@@ -539,10 +817,10 @@ $me =   Auth::user()->restaurant->categories()->create([
 
             $imagePath = request('image')->store('meals','public');
             
-          /*   $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
+            $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
            
             $image->save();
-            */
+           
         }
 
         $category = Category::find($data['category']);
@@ -609,11 +887,67 @@ $me =   Auth::user()->restaurant->categories()->create([
 
     }
 
-    public function addEmployee()
-    {
-        $productNoQnt = $this->productNoQntfunction();
+    
+    
 
-        return view('employee.addEmployee',compact('productNoQnt'));
+    public function deactivateMeal(){
+
+
+        $data = request()->validate([
+            'meal_id' => 'required',
+         
+        ]);
+
+
+        $meal = Meal::find($data['meal_id']);
+        $meal->public = false;
+        $meal->save();
+
+         return redirect()->back()->with("success"," Meal Deactivated with success !");
+
+
+
+    }
+
+
+
+    public function activateMeal(){
+
+
+        $data = request()->validate([
+            'meal_id' => 'required',
+         
+        ]);
+
+
+        $meal = Meal::find($data['meal_id']);
+        $meal->public = true;
+        $meal->save();
+
+         return redirect()->back()->with("success"," Meal Activated with success !");
+
+
+
+    }
+
+
+
+
+
+  
+
+
+
+
+
+
+
+    public function addEmployee()
+    {$this->checkPrivilege("employee");
+        $productNoQnt = $this->productNoQntfunction();
+$privileges = Auth::user()->restaurant->admin->privileges()->get();
+
+        return view('employee.addEmployee',compact('productNoQnt','privileges',));
 
     }
 
@@ -680,8 +1014,9 @@ $me =   Auth::user()->restaurant->categories()->create([
 
     
     public function employeeCharge()
-    {
+    {$this->checkPrivilege("employee");
         $productNoQnt = $this->productNoQntfunction();
+$privileges = Auth::user()->restaurant->admin->privileges()->get();
        // $employees = Employee::where('user_id',Auth::user()->id)->get();
         $employees =Auth::user()->restaurant->employees()->get();
   /*       $employees = DB::table('employees')
@@ -715,7 +1050,7 @@ $me =   Auth::user()->restaurant->categories()->create([
         ->get(); */
 
 
-        return view('restaurant.employeeCharge',compact('employees','productNoQnt'));
+        return view('restaurant.employeeCharge',compact('employees','productNoQnt','privileges',));
 
     }
 
@@ -725,7 +1060,7 @@ $me =   Auth::user()->restaurant->categories()->create([
     public function validatePayEmployee() 
     {
         
-        
+        $this->checkPrivilege("employee");
       
         $data = request()->validate([
             'id_employee' => 'required',
@@ -757,22 +1092,24 @@ $me =   Auth::user()->restaurant->categories()->create([
 
         
         public function allEmployee()
-        {
+        {$this->checkPrivilege("employee");
             $productNoQnt = $this->productNoQntfunction();
+$privileges = Auth::user()->restaurant->admin->privileges()->get();
 
           //  $employees = Auth::user()->employees()->get();
             
           $employees =Auth::user()->restaurant->employees()->get();
 
-            return view('restaurant.allEmployee',compact('employees','productNoQnt'));
+            return view('restaurant.allEmployee',compact('employees','productNoQnt','privileges',));
     
         }
 
         
        
         public function checkEmployeeByOne(Employee $employee)
-        {
+        {$this->checkPrivilege("employee");
             $productNoQnt = $this->productNoQntfunction();
+$privileges = Auth::user()->restaurant->admin->privileges()->get();
 
             if ($employee->restaurant_id != Auth::user()->restaurant->id) {
                 return redirect()->back()->with("danger"," please don't play with that ! Do your job seriously");
@@ -785,7 +1122,7 @@ $me =   Auth::user()->restaurant->categories()->create([
                                  ->get();
             
     
-            return view('restaurant.checkEmployeeByOne',compact('employee','employeeAllCharges','productNoQnt'));
+            return view('restaurant.checkEmployeeByOne',compact('employee','employeeAllCharges','productNoQnt','privileges',));
     
         }
 
@@ -794,7 +1131,7 @@ $me =   Auth::user()->restaurant->categories()->create([
 
 
         public function updateEmployyeInfo(){
-            
+            $this->checkPrivilege("employee");
             $employee = Employee::find(request('id_emplo'));
             $em = User::find($employee->user_id);
            
@@ -834,7 +1171,7 @@ $me =   Auth::user()->restaurant->categories()->create([
 
 public function updatePasswordEmployee()
 {
-
+    $this->checkPrivilege("employee");
     
     $data = request()->validate([
         'id_emplo'=> '',
@@ -859,7 +1196,7 @@ public function updatePasswordEmployee()
 
 public function decativateEmployee()
 {
-
+    $this->checkPrivilege("employee");
         
     $data = request()->validate([
         'id_emplo'=> 'required',
@@ -886,20 +1223,34 @@ public function decativateEmployee()
     //==========================================================================================================
     //=======================================================================================================
     public function addProvider()
-    {
+    {$this->checkPrivilege("providers");
         
         $productNoQnt = $this->productNoQntfunction();
+        $privileges = Auth::user()->restaurant->admin->privileges()->get();
+      
 
-        return view('restaurant.addProvider',compact('productNoQnt'));
+        return view('restaurant.addProvider',compact('productNoQnt','privileges',));
 
     }
+    
 
+    public function allProviders()
+    {
+        
+        $this->checkPrivilege("providers");
+        
+        $productNoQnt = $this->productNoQntfunction();
+$privileges = Auth::user()->restaurant->admin->privileges()->get();
+$providers = Auth::user()->restaurant->providers()->get();
 
+        return view('restaurant.allProviders',compact('productNoQnt','privileges','providers'));
+
+    }
 
     public function addProviderForm() 
     {
 
-      
+        $this->checkPrivilege("providers");
         $data = request()->validate([
             'email' => 'required',
             'tel' => 'required',
@@ -929,19 +1280,31 @@ public function decativateEmployee()
 
     public function addCaisse()
     {
+        $this->checkPrivilege("caisses");
         $productNoQnt = $this->productNoQntfunction();
+$privileges = Auth::user()->restaurant->admin->privileges()->get();
         
 
-        return view('restaurant.addCaisse',compact('productNoQnt'));
+        return view('restaurant.addCaisse',compact('productNoQnt','privileges',));
 
     }
 
+    
+    public function allCaisses()
+    {
+        $this->checkPrivilege("caisses");
+        $productNoQnt = $this->productNoQntfunction();
+        $privileges = Auth::user()->restaurant->admin->privileges()->get();
+        $caisses = Auth::user()->restaurant->caisses()->get();
+        
 
+        return view('restaurant.allCaisses',compact('productNoQnt','privileges','caisses'));
 
+    }
     public function addCaisseForm() 
     {
 
-      
+        $this->checkPrivilege("caisses");
         $data = request()->validate([
             'caisseName' => 'required',
             'cacheInit' => 'required',
@@ -968,10 +1331,12 @@ public function decativateEmployee()
     
     public function addSupCharge()
     {
-        
+        $this->checkPrivilege("charges");
         $productNoQnt = $this->productNoQntfunction();
+        $privileges = Auth::user()->restaurant->admin->privileges()->get();
+        $charges =  Auth::user()->restaurant->charges()->get();
 
-        return view('restaurant.addSupCharge',compact('productNoQnt'));
+        return view('restaurant.addSupCharge',compact('productNoQnt','privileges','charges'));
 
     }
 
@@ -981,7 +1346,7 @@ public function decativateEmployee()
     
     public function addSupChargeForm() 
     {
-
+        $this->checkPrivilege("charges");
       
         $data = request()->validate([
             'priceCharge' => 'required',
@@ -995,15 +1360,15 @@ public function decativateEmployee()
 
             $imagePath = request('image')->store('charges','public');
             
-           /*  $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
+            $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
            
-            $image->save(); */
+            $image->save();
            
         }
 
         if (request('image')){
 
-            Auth::user()->charges()->create([
+            Auth::user()->restaurant->charges()->create([
         
                 'priceCharge'=> $data['priceCharge'] ,
                 'note'=>  $data['note'],
@@ -1014,7 +1379,7 @@ public function decativateEmployee()
     
             
           }else {
-            Auth::user()->charges()->create([
+            Auth::user()->restaurant->charges()->create([
         
                 'priceCharge'=> $data['priceCharge'] ,
                 'note'=>  $data['note'],
@@ -1031,6 +1396,382 @@ public function decativateEmployee()
     }
 
 
+
+public function allCustomers()
+{
+    
+
+$this->checkPrivilege("customers");
+$productNoQnt = $this->productNoQntfunction();
+$privileges = Auth::user()->restaurant->admin->privileges()->get();
+
+
+$tz = 'Europe/Madrid';
+$year = carbon::now()->year;
+$month = carbon::now()->month;
+
+
+$customers = DB::table('orders')
+->select('customers.*', DB::raw("SUM(orders.priceOrder) as priceIng") )
+->leftJoin('customers',  'customers.id', '=','orders.customer_id')
+->leftJoin('restaurants',  'restaurants.id', '=','customers.restaurant_id')
+->where('restaurants.id',Auth::user()->restaurant->id)
+->where('orders.created_at', '>=', Carbon::createFromDate($year, $month,0, $tz) )
+->where('orders.created_at', '<',Carbon::createFromDate($year, $month+1,0, $tz) )
+->groupBy('orders.customer_id')
+->get();
+
+$allcustomers = Auth::user()->restaurant->customers()->get();
+
+
+
+return view('restaurant.allCustomers',compact('allcustomers','customers','productNoQnt','privileges',));
+
+
+}
+
+
+
+public function weekProgram()
+{
+    $productNoQnt = $this->productNoQntfunction();
+    $privileges = Auth::user()->restaurant->admin->privileges()->get();
+    $weekPrograms = Auth::user()->restaurant->weekPrograms()->get();
+    //get meals who doesnt exist in week Program
+    $meals = DB::table('meals')
+    ->select('meals.*')
+    ->leftJoin('categories',  'categories.id', '=','meals.category_id')
+    ->leftJoin('restaurants',  'restaurants.id', '=','categories.restaurant_id')
+    ->where('restaurants.user_id', Auth::user()->id )
+    ->whereNotExists(function($query)
+                {
+                    $query->select(DB::raw(1))
+                          ->from('week_programs')
+                          ->whereRaw('meals.id = week_programs.meal_id');
+                })
+    ->get();
+   
+
+
+return view('restaurant.weekProgram',compact('meals','weekPrograms','productNoQnt','privileges',));
+
+}
+
+
+
+
+public function weekProgramForm() 
+{
+    $data = request()->validate([
+        'var' => 'required',
+        
+  
+    ]);
+   //put string geted from form too a array 
+   $dataProgram= preg_split("/[,]/",$data['var'][0]);
+         
+
+$p=count($dataProgram)/8;
+//fonction to split dataProgram to many list
+$listlen = count($dataProgram);
+$partlen = floor($listlen / $p);
+$partrem = $listlen % $p;
+$partition = array();
+$mark = 0;
+for($px = 0; $px < $p; $px ++) {
+    $incr = ($px < $partrem) ? $partlen + 1 : $partlen;
+    $partition[$px] = array_slice($dataProgram, $mark, $incr);
+    $mark += $incr;
+}
+
+// result is $partition
+
+   // dd($data,$dataProgram,$partition,count($dataProgram)/8);
+
+
+   foreach($partition as $week){
+
+
+if ($week[0] != "") {
+  
+
+    if (WeekProgram::where('meal_id',  $week[0])->exists()) {
+      //  dd('khayen');
+        
+     }else{
+       
+        $meal= Meal::find($week[0]);
+        $weekProgram = new weekProgram;
+        $weekProgram->saturday = $week[1];
+        $weekProgram->sunday = $week[2];
+        $weekProgram->monday = $week[3];
+        $weekProgram->tuesday = $week[4];
+        $weekProgram->wednesday = $week[5];
+        $weekProgram->thursday = $week[6];
+        $weekProgram->friday = $week[7];
+        $weekProgram->restaurant()->associate(Auth::user()->restaurant);
+        $weekProgram->meal()->associate($meal);
+        $weekProgram->save();
+     }
+
+    }
+     
+
+
+
+   }
+
+
+   
+   return redirect()->back()->with("success"," week program added with success !");
+
+
+
+
+}
+
+
+public function updateOneWeekProgramForm()
+{
+    $data = request()->validate([
+        'var' => 'required',
+        'id_week_program' => 'required',
+        
+  
+    ]);
+   //put string geted from form too a array 
+   $dataProgram= preg_split("/[,]/",$data['var'][0]);
+         
+ 
+   $weekpr= weekProgram::find($data['id_week_program']);
+   $weekpr->saturday = $dataProgram[0];
+   $weekpr->sunday = $dataProgram[1];
+   $weekpr->monday = $dataProgram[2];
+   $weekpr->tuesday = $dataProgram[3];
+   $weekpr->wednesday = $dataProgram[4];
+   $weekpr->thursday = $dataProgram[5];
+   $weekpr->friday = $dataProgram[6];
+   $weekpr->save();
+
+   return redirect()->back()->with("success"," week program updated with success !");
+
+
+
+}
+
+
+public function deleteOneWeekProgramForm()
+{
+    $data = request()->validate([
+  
+        'id_week_program' => 'required',
+        
+  
+    ]);
+
+         
+ 
+   $weekpr= weekProgram::find($data['id_week_program']);
+   $weekpr->delete();
+
+   return redirect()->back()->with("success"," week program deleted with success !");
+
+
+
+
+}
+
+
+
+public function stockEstimate()
+{
+
+    
+$this->checkPrivilege("stocks");
+$productNoQnt = $this->productNoQntfunction();
+$privileges = Auth::user()->restaurant->admin->privileges()->get();
+
+$meals = DB::table('meals')
+->select('meals.*')
+->leftJoin('categories',  'categories.id', '=','meals.category_id')
+->leftJoin('restaurants',  'restaurants.id', '=','categories.restaurant_id')
+->where('restaurants.user_id', Auth::user()->id )
+->get();
+
+return view('restaurant.stockEstimate',compact('productNoQnt','privileges','meals'));
+
+
+}
+
+
+
+
+public function estimationMealForm(){
+
+
+    $this->checkPrivilege("stocks");
+    $data = request()->validate([
+  
+        'meal_id' => 'required',
+        
+    ]);
+
+
+  
+    $meal = Meal::find($data['meal_id']);
+    $ingredients = $meal->ingredients()->get();
+
+ 
+    $toComparING = array();
+    $toComparProd = array();
+if (!$ingredients->isEmpty()) {
+
+
+    foreach($ingredients as $ingredient){
+
+        $product = DB::table('products')
+        ->select('products.productName', DB::raw("SUM(product_versions.qntSTK) as qntSTKto"))
+        ->leftJoin('product_versions',  'product_versions.product_id', '=','products.id')
+        ->where('products.id', $ingredient->product_id )
+        ->get();
+
+
+
+        foreach($product as $pr){
+            $prodname = $pr->productName;
+            $qnt = $pr->qntSTKto;
+
+        }
+
+
+
+        
+array_push($toComparProd,  array( $prodname, $qnt));
+
+
+array_push($toComparING, array($prodname,$ingredient->qnt));
+    }
+
+
+    $compar = array();
+    $manqueOfProd = array();
+
+   
+for($i = 0; $i < count($toComparProd) ; $i ++) {
+
+    array_push($compar, (int) ($toComparProd[$i][1] / $toComparING[$i][1]) );
+
+    if ( ((int) ($toComparProd[$i][1] / $toComparING[$i][1])) == 0  ) {
+        array_push($manqueOfProd , $toComparProd[$i][0]  );
+    }
+ 
+
+
+}
+
+  //  dd($toComparING,$toComparProd,$compar,$manqueOfProd,min($compar));
+
+$opj = " ".min($compar);
+  
+    return redirect()->back()->with("manqueOfProd", $manqueOfProd )->with("nbrnbr", $opj )->with("mealSSid", " ".$meal->id );
+
+
+
+}
+
+return redirect()->back()->with("danger", "This product doesn't have ingredients" );
+
+
+}
+
+
+//=================================================================================================
+//=================================================================================================
+//=================================================================================================
+
+public function addDeliveryCompany(){
+
+
+    $this->checkPrivilege("deliveryCompany");
+    $productNoQnt = $this->productNoQntfunction();
+    $privileges = Auth::user()->restaurant->admin->privileges()->get();
+    
+    $deliveryCompanies = Auth::user()->restaurant->deliveryCompanies()->get();
+    return view('restaurant.addDeliveryCompany',compact('productNoQnt','privileges','deliveryCompanies'));
+
+
+
+}
+
+
+public function addDeliveryCompanyForm()
+{
+    
+    $this->checkPrivilege("deliveryCompany");
+    $data = request()->validate([
+        'deliveryCompaniesName' => 'required',
+        'email' => 'email|required',
+        'adresse' => 'required',
+        'tel' => 'required',
+        'percentage' => 'required',
+  
+    ]);
+
+
+   Auth::user()->restaurant->deliveryCompanies()->create([
+    
+        'deliveryCompaniesName'=> $data['deliveryCompaniesName'] ,
+        'email'=>  $data['email'],
+        'adresse'=>  $data['adresse'],
+        'tel'=> $data['tel'] ,
+        'percentage'=> $data['percentage'] ,
+        
+    
+        ]);
+
+     return redirect()->back()->with("success"," Delivery Company added with success !");
+}
+
+
+
+
+public function liveOrders()
+{
+ 
+    $productNoQnt = $this->productNoQntfunction();
+    $privileges = Auth::user()->restaurant->admin->privileges()->get();
+
+    $orders = DB::table('orders')
+   ->select('orders.*')
+   ->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+   ->where('caisses.restaurant_id', Auth::user()->restaurant->id )
+   ->where('orders.orderStatus',"completed" )
+   ->get();
+
+    
+   return view('restaurant.liveOrders',compact('productNoQnt','privileges','orders'));
+
+
+}
+
+
+//======================================================================
+
+public function historyTransactions()
+{
+
+    
+    $productNoQnt = $this->productNoQntfunction();
+    $privileges = Auth::user()->restaurant->admin->privileges()->get();
+
+    $historyTransactions = Auth::user()->restaurant->transactionHistories()->get();
+
+    
+   return view('restaurant.historyTransactions',compact('productNoQnt','privileges','historyTransactions'));
+
+
+
+}
 
 
 }

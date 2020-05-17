@@ -4,7 +4,7 @@
 
 
 @section('content')
-
+{{App::setLocale(Session::get('locale'))}}
 
     <!-- Body Content Wrapper -->
     <div class="ms-content-wrapper">
@@ -13,7 +13,7 @@
         <div class="col-md-12">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb pl-0">
-              <li class="breadcrumb-item"><a href="#"><i class="material-icons">home</i> Home</a></li>
+              <li class="breadcrumb-item"><a href="#"><i class="material-icons">home</i> {{__('Home')}}</a></li>
               <li class="breadcrumb-item"><a href="#">Menu</a></li>
               <li class="breadcrumb-item active" aria-current="page">Add Product</li>
             </ol>
@@ -22,27 +22,7 @@
 
 
 
-          
-        <script type="text/javascript" > 
-          setTimeout(function() {
-       $('#successalert').fadeOut('fast');
-     }, 8000); // <-- time in milliseconds
-     </script>
-    
-   
-        
-        @if (session('success'))
-        <div class="x_content bs-example-popovers" id="successalert" >
-          <div class="alert alert-success" role="alert" >
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-              </button>
-              <strong>well done!</strong> {{ session('success') }}
-            </div>
-          </div>
-
-        
-          @endif
-
+       
          
 
 

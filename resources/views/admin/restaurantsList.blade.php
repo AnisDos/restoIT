@@ -6,37 +6,7 @@
 @section('content')
 
 
-<script type="text/javascript" > 
-  setTimeout(function() {
-$('#successalert').fadeOut('fast');
-}, 12000); // <-- time in milliseconds
-</script>
-
-
-
-@if (session('success'))
-<div class="x_content bs-example-popovers" id="successalert" >
-  <div class="alert alert-success" role="alert" >
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-      </button>
-      <strong>well done!</strong> {{ session('success') }}
-    </div>
-  </div>
-
-
-  @endif
-
-  @if (session('danger'))
-<div class="x_content bs-example-popovers" id="successalert" >
-  <div class="alert alert-danger" role="alert" >
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-      </button>
-      <strong>DANGER!</strong> {{ session('danger') }}
-    </div>
-  </div>
-
-
-  @endif
+{{App::setLocale(Session::get('locale'))}}
 
 
 
@@ -111,7 +81,7 @@ $('#successalert').fadeOut('fast');
     @foreach ($restaurants as $restaurant)
                             
 
-   [ "{{ $restaurant->id }}","  <img src='/storage/{{$restaurant->image}}' style='width:50px; height:30px;'>{{ $restaurant->name }} @if($restaurant->is_admin) (ADMIN) @endif",  "46546", "In Stock", "$32","<a href='/admin/restaurantDetails/{{$restaurant->id}}  '> DETAILS</a>"],
+   [ "{{ $restaurant->id }}","  <img src='/storage/{{$restaurant->image}}' style='width:50px; height:30px;'>{{ $restaurant->name }}",  "{{ $restaurant->address }}","<a href='/admin/restaurantDetails/{{$restaurant->id}}  '> DETAILS</a>"],
    
                             @endforeach
  ];
@@ -130,9 +100,8 @@ $('#successalert').fadeOut('fast');
       { title: "Restaurant ID" },
       { title: "Restaurant Name" },
 
-      { title: "Quantity" },
-      { title: "Status" },
-      { title: "Price" },
+      { title: "address" },
+  
       { title: "details" },
 
 

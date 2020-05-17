@@ -79,12 +79,12 @@
   -->
 <?php $__currentLoopData = $privileges; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $privilege): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
    
-<?php if($privilege->id == 1): ?>
+<?php if($privilege->privilegeName == "stocks"): ?>
         <!-- tomatich product -->
         <li class="menu-item">
-            <a href="#" class="has-chevron" data-toggle="collapse" data-target="#product1<?php echo e($privilege->id); ?>" aria-expanded="false" aria-controls="product1<?php echo e($privilege->id); ?>"> <span><i class="fa fa-archive fs-16"></i><?php echo e($privilege->privilegeName); ?> </span>
+            <a href="#" class="has-chevron" data-toggle="collapse" data-target="#product1<?php echo e($privilege->privilegeName); ?>" aria-expanded="false" aria-controls="product1<?php echo e($privilege->privilegeName); ?>"> <span><i class="fa fa-archive fs-16"></i><?php echo e($privilege->privilegeName); ?> </span>
             </a>
-            <ul id="product1<?php echo e($privilege->id); ?>" class="collapse" aria-labelledby="product1<?php echo e($privilege->id); ?>" data-parent="#side-nav-accordion">
+            <ul id="product1<?php echo e($privilege->privilegeName); ?>" class="collapse" aria-labelledby="product1<?php echo e($privilege->privilegeName); ?>" data-parent="#side-nav-accordion">
              
       
               <li> <a href="<?php echo e(url('employee/tomatich')); ?>">Add <?php echo e($privilege->privilegeName); ?></a>
@@ -95,13 +95,13 @@
           </li>
           <!-- tomatich product end -->
     
-<?php else: ?>
-<?php if($privilege->id == 2): ?>
+          <?php endif; ?> 
+<?php if($privilege->privilegeName == "stocks"): ?>
         <!-- stock product -->
         <li class="menu-item">
-            <a href="#" class="has-chevron" data-toggle="collapse" data-target="#product1<?php echo e($privilege->id); ?>" aria-expanded="false" aria-controls="product1<?php echo e($privilege->id); ?>"> <span><i class="fa fa-archive fs-16"></i><?php echo e($privilege->privilegeName); ?>  </span>
+            <a href="#" class="has-chevron" data-toggle="collapse" data-target="#product1<?php echo e($privilege->privilegeName); ?>" aria-expanded="false" aria-controls="product1<?php echo e($privilege->privilegeName); ?>"> <span><i class="fa fa-archive fs-16"></i><?php echo e($privilege->privilegeName); ?>  </span>
             </a>
-            <ul id="product1<?php echo e($privilege->id); ?>" class="collapse" aria-labelledby="product1<?php echo e($privilege->id); ?>" data-parent="#side-nav-accordion">
+            <ul id="product1<?php echo e($privilege->privilegeName); ?>" class="collapse" aria-labelledby="product1<?php echo e($privilege->privilegeName); ?>" data-parent="#side-nav-accordion">
              
       
               <li> <a href="<?php echo e(url('employee/stocks/versionProduct')); ?>">Add Product</a>
@@ -112,12 +112,13 @@
           </li>
           <!-- stock product end -->
     
-<?php else: ?>     <?php if($privilege->id == 3): ?>
+          <?php endif; ?> 
+             <?php if($privilege->privilegeName == "stocks"): ?>
 <!-- stock product -->
 <li class="menu-item">
-    <a href="#" class="has-chevron" data-toggle="collapse" data-target="#product1<?php echo e($privilege->id); ?>" aria-expanded="false" aria-controls="product1<?php echo e($privilege->id); ?>"> <span><i class="fa fa-archive fs-16"></i><?php echo e($privilege->privilegeName); ?>  </span>
+    <a href="#" class="has-chevron" data-toggle="collapse" data-target="#product1<?php echo e($privilege->privilegeName); ?>" aria-expanded="false" aria-controls="product1<?php echo e($privilege->privilegeName); ?>"> <span><i class="fa fa-archive fs-16"></i><?php echo e($privilege->privilegeName); ?>  </span>
     </a>
-    <ul id="product1<?php echo e($privilege->id); ?>" class="collapse" aria-labelledby="product1<?php echo e($privilege->id); ?>" data-parent="#side-nav-accordion">
+    <ul id="product1<?php echo e($privilege->privilegeName); ?>" class="collapse" aria-labelledby="product1<?php echo e($privilege->privilegeName); ?>" data-parent="#side-nav-accordion">
      
 
       <li> <a href="<?php echo e(url('employee/stocks')); ?>">Add <?php echo e($privilege->privilegeName); ?></a>
@@ -127,9 +128,9 @@
   </li>
   <!-- stock product end -->
     
-<?php endif; ?>  
+ 
 
-<?php endif; ?>
+
     
 <?php endif; ?>
      
@@ -216,7 +217,7 @@
         <span class="ms-toggler-bar bg-primary"></span>
       </div>
       <div class="logo-sn logo-sm ms-d-block-sm">
-        <a class="pl-0 ml-0 text-center navbar-brand mr-0" href="<?php echo e(url('employee')); ?>"><img src="assets/img/costic/costic-logo-84x41.png" alt="logo"> </a>
+        <a class="pl-0 ml-0 text-center navbar-brand mr-0" href="<?php echo e(url('employee')); ?>"><img src="<?php echo e(asset ('styleRestoIT/assets/img/costic/costic-logo-84x41.png')); ?>" alt="logo"> </a>
       </div>
       <ul class="ms-nav-list ms-inline mb-0" id="ms-nav-options">
         <li class="ms-nav-item ms-search-form pb-0 py-0">
@@ -226,43 +227,7 @@
             </div>
           </form>
         </li>
-        <li class="ms-nav-item dropdown"> <a href="#" class="text-disabled ms-has-notification" id="mailDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="flaticon-mail"></i></a>
-          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="mailDropdown">
-            <li class="dropdown-menu-header">
-              <h6 class="dropdown-header ms-inline m-0"><span class="text-disabled">Mail</span></h6><span class="badge badge-pill badge-success">3 New</span>
-            </li>
-            <li class="dropdown-divider"></li>
-            <li class="ms-scrollable ms-dropdown-list">
-              <a class="media p-2" href="#">
-                <div class="ms-chat-status ms-status-offline ms-chat-img mr-2 align-self-center">
-                  <img src="assets/img/costic/customer-3.jpg" class="ms-img-round" alt="people">
-                </div>
-                <div class="media-body"> <span>Hey man, looking forward to your new project.</span>
-                  <p class="fs-10 my-1 text-disabled"><i class="material-icons">access_time</i> 30 seconds ago</p>
-                </div>
-              </a>
-              <a class="media p-2" href="#">
-                <div class="ms-chat-status ms-status-online ms-chat-img mr-2 align-self-center">
-                  <img src="assets/img/costic/customer-2.jpg" class="ms-img-round" alt="people">
-                </div>
-                <div class="media-body"> <span>Dear John, I was told you bought Costic! Send me your feedback</span>
-                  <p class="fs-10 my-1 text-disabled"><i class="material-icons">access_time</i> 28 minutes ago</p>
-                </div>
-              </a>
-              <a class="media p-2" href="#">
-                <div class="ms-chat-status ms-status-offline ms-chat-img mr-2 align-self-center">
-                  <img src="assets/img/costic/customer-1.jpg" class="ms-img-round" alt="people">
-                </div>
-                <div class="media-body"> <span>How many people are we inviting to the dashboard?</span>
-                  <p class="fs-10 my-1 text-disabled"><i class="material-icons">access_time</i> 6 hours ago</p>
-                </div>
-              </a>
-            </li>
-            <li class="dropdown-divider"></li>
-            <li class="dropdown-menu-footer text-center"> <a href="pages/apps/email.html">Go to Inbox</a>
-            </li>
-          </ul>
-        </li>
+
         <li class="ms-nav-item dropdown"> <a href="#" class="text-disabled ms-has-notification" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="flaticon-bell"></i></a>
           <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="notificationDropdown">
             <li class="dropdown-menu-header">
@@ -299,31 +264,27 @@
 
         <li class="ms-nav-item ms-nav-user dropdown">
           <a href="#" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <img class="ms-user-img ms-img-round float-right" src="/storage/<?php echo e(Auth::user()->image); ?>" alt="people">
+            <img class="ms-user-img ms-img-round float-right" src="/storage/<?php echo e(Auth::user()->employee->image); ?>" alt="people">
           </a>
           <ul class="dropdown-menu dropdown-menu-right user-dropdown" aria-labelledby="userDropdown">
             <li class="dropdown-menu-header">
-              <h6 class="dropdown-header ms-inline m-0"><span class="text-disabled">Welcome, Anny Farisha</span></h6>
+              <h6 class="dropdown-header ms-inline m-0"><span class="text-disabled"><?php echo e(Auth::user()->email); ?></span></h6>
             </li>
             <li class="dropdown-divider"></li>
             <li class="ms-dropdown-list">
-              <a class="media fs-14 p-2" href="pages/prebuilt-pages/user-profile.html"> <span><i class="flaticon-user mr-2"></i> Profile</span>
+              <a class="media fs-14 p-2" href="<?php echo e(url('employee')); ?>"> <span><i class="flaticon-user mr-2"></i> <?php echo e(__('Profile')); ?></span>
               </a>
-              <a class="media fs-14 p-2" href="pages/apps/email.html"> <span><i class="flaticon-mail mr-2"></i> Inbox</span> <span class="badge badge-pill badge-info">3</span>
-              </a>
-              <a class="media fs-14 p-2" href="pages/prebuilt-pages/user-profile.html"> <span><i class="flaticon-gear mr-2"></i> Account Settings</span>
-              </a>
+           
             </li>
             <li class="dropdown-divider"></li>
             <li class="dropdown-menu-footer">
-              <a class="media fs-14 p-2" href="pages/prebuilt-pages/lock-screen.html"> <span><i class="flaticon-security mr-2"></i> Lock</span>
-              </a>
+            
             </li>
             <li class="dropdown-menu-footer">
               <a class="media fs-14 p-2" href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
-              document.getElementById('logout-form').submit();"> <span><i class="flaticon-shut-down mr-2"></i> Logout</span>
+              document.getElementById('logout-form').submit();"> <span><i class="flaticon-shut-down mr-2"></i> <?php echo e(__('Logout')); ?></span>
                 
-     <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" style="display: none;">
+                      <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" style="display: none;">
                                         <?php echo csrf_field(); ?>
                                     </form>
               </a>
@@ -817,7 +778,5 @@
   <?php echo $__env->yieldContent('script'); ?>
 </body>
 
-
-<!-- Mirrored from slidesigma.com/themes/html/costic/<?php echo e(url('employee')); ?> by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 10 Apr 2020 18:48:09 GMT -->
 </html>
 <?php /**PATH D:\laravelAnis\restoIT\resources\views/employee/base.blade.php ENDPATH**/ ?>

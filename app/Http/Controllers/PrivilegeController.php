@@ -20,6 +20,27 @@ class PrivilegeController extends Controller
 
 
 
+        // check if employee has privilage
+public function checkPrivilege(String $name)
+{
+  
+    $exists = Auth::user()->restaurant->admin->privileges->contains($name);
+
+    return $exists;
+    if (!$exists) {
+       
+        return redirect()->back();
+    }
+
+    return true;
+
+}
+
+//====================================================  ============================================
+
+
+
+
     public function productNoQntfunction(){
         
         // $products = Product::where('user_id',Auth::user()->id)->get();
@@ -55,12 +76,14 @@ class PrivilegeController extends Controller
 
     public function addPrivilegeToUser()
     {
+        $this->checkPrivilege("employee");
+            $productNoQnt = $this->productNoQntfunction();
+$privileges = Auth::user()->restaurant->admin->privileges()->get();
         
-        $productNoQnt = $this->productNoQntfunction();
      //   $employees = Employee::where('user_id', Auth::user()->id)->get();
         $employees =Auth::user()->restaurant->employees()->get();
 
-        return view('privilege.addPrivilegeToUser', compact('employees','productNoQnt'));
+        return view('privilege.addPrivilegeToUser', compact('employees','productNoQnt','privileges'));
 
     }
 

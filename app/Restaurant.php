@@ -11,9 +11,12 @@ use App\Provider;
 use App\DeliveryCompany;
 use App\Charge;
 use App\Caisse;
-
+use App\WeekProgram;
 use App\Category;
 
+use App\TransactionHistory;
+  
+    
 use App\Customer;
     
 
@@ -93,6 +96,21 @@ public function employees()
           return $this->hasMany(Category::class);
       }
     
+
+      
+    public function weekPrograms()
+    {
+        return $this->hasMany(WeekProgram::class);
+    }
+      
+
+
+    
+public function transactionHistories()
+{
+    return $this->hasMany(TransactionHistory::class);
+}
+
     
 
 }

@@ -24,7 +24,7 @@ class CreateEmployeesTable extends Migration
             $table->decimal('price_ph', 12, 2);
             $table->enum('type', array('kashir', 'cook'));
             $table->string('active')->default(true);
-            $table->string('image')->default("employees/default.jpg");
+            $table->string('image')->default("users/default.jpg");
             $table->timestamps();
         });
     }

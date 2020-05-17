@@ -4,6 +4,7 @@
 
 
 <?php $__env->startSection('content'); ?>
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
 
 
 

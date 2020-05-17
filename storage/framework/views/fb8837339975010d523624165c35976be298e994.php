@@ -4,6 +4,10 @@
 
 
 <?php $__env->startSection('content'); ?>
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
+
+
+
 
 
 
@@ -16,23 +20,23 @@
             <ol class="breadcrumb pl-0">
               <li class="breadcrumb-item"><a href="#"><i class="material-icons">home</i> Home</a></li>
               <li class="breadcrumb-item"><a href="#">Menu</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Product Detail</li>
+              <li class="breadcrumb-item active" aria-current="page">Meal Detail</li>
             </ol>
           </nav>
         </div>
          <div class="col-md-12">
           <div class="ms-panel">
             <div class="ms-panel-header">
-              <h6>Product Details</h6>
+              <h6>Meal Details</h6>
             </div>
             <div class="ms-panel-body">
 
               <div id="arrowSlider" class="ms-arrow-slider carousel slide" data-ride="carousel" data-interval="false">
                 <div class="carousel-inner">
                   <div class="carousel-item active">
-                    <img class="d-block w-100" src="/storage/<?php echo e($meal->image); ?>" alt="First slide">
+                    <img class="d-block w-100" style="height: 400px;" src="/storage/<?php echo e($meal->image); ?>" alt="First slide">
                     <div class="carousel-caption d-none d-md-block">
-                      <h3 class="text-white">Pizaa img 1</h3>
+                      <h3 class="text-white"><?php echo e($meal->mealName); ?> img </h3>
                     </div>
                   </div>
                 
@@ -47,21 +51,21 @@
 <div class=" col-md-6">
           <div class="ms-panel ms-panel-fh">
             <div class="ms-panel-body">
-              <h4 class="section-title bold">Product Info</h4>
+              <h4 class="section-title bold">Meal Info</h4>
               <table class="table ms-profile-information">
                 <tbody>
 
                   <tr>
                     <th scope="row">Price</th>
-                    <td>$<?php echo e($meal->price); ?></td>
+                    <td><?php echo e($meal->price); ?> SAR </td>
                   </tr>
                   <tr>
                     <th scope="row">Product Category</th>
                     <td><?php echo e($meal->category->categoryName); ?></td>
                   </tr>
                   <tr>
-                    <th scope="row">Availiblity</th>
-                 <td><span class="badge badge-pill badge-primary">In stock</span></td>
+                    <th scope="row">Public</th>
+                 <td><span class="badge badge-pill badge-primary"><?php if($meal->public ): ?> active <?php else: ?> deactive <?php endif; ?></span></td>
                   </tr>
                   <tr>
                     <th scope="row">Delivery Charges</th>
@@ -78,8 +82,27 @@
               <div class="new">
                 <a href="/restaurant/updateMeal/<?php echo e($meal->id); ?>" class="btn btn-primary">Edit</a>
 
+
+                <?php if($meal->public ): ?>
+                <form method="POST" action="/restaurant/deactivateMeal" >
+                  <?php echo csrf_field(); ?>
+                  <input type="hidden" name="meal_id" value="<?php echo e($meal->id); ?>" >
+                  <button type="submit" class="btn btn-secondary">Deactivate</button>
+                </form>
              
-                <button type="button" class="btn btn-secondary">Delete</button>
+               
+                 <?php else: ?> 
+                 <form method="POST" action="/restaurant/activateMeal" >
+                  <?php echo csrf_field(); ?>
+                  <input type="hidden" name="meal_id" value="<?php echo e($meal->id); ?>" >
+                  <button type="submit" class="btn btn-success">Activate</button>
+                </form>
+             
+                 <?php endif; ?>
+           
+
+
+
               </div>
 
             </div>
@@ -90,7 +113,7 @@
           <div class="ms-panel ms-panel-fh">
             <div class="ms-panel-body">
 
-              <h4 class="section-title bold">Product Details </h4>
+              <h4 class="section-title bold">Meal Details </h4>
               <p class="description"><?php echo e($meal->description); ?>.</p>
 
 
@@ -98,7 +121,7 @@
             <div class="ms-quick-stats">
                 <div class="ms-stats-grid">
                   <i class="fa fa-bullhorn"></i>
-                  <p class="ms-text-dark">1,033</p>
+                <p class="ms-text-dark"><?php echo e($totalOrders); ?></p>
                   <span>Today Order</span>
                 </div>
                 <div class="ms-stats-grid">

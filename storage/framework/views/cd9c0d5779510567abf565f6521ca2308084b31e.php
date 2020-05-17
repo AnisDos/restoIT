@@ -6,39 +6,8 @@
 <?php $__env->startSection('content'); ?>
 
    
-<script type="text/javascript" > 
-  setTimeout(function() {
-$('#successalert').fadeOut('fast');
-}, 12000); // <-- time in milliseconds
-</script>
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
 
-
-
-<?php if(session('success')): ?>
-<div class="x_content bs-example-popovers" id="successalert" >
-  <div class="alert alert-success" role="alert" >
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-      </button>
-      <strong>well done!</strong> <?php echo e(session('success')); ?>
-
-    </div>
-  </div>
-
-
-  <?php endif; ?>
-
-  <?php if(session('danger')): ?>
-<div class="x_content bs-example-popovers" id="successalert" >
-  <div class="alert alert-danger" role="alert" >
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-      </button>
-      <strong>DANGER!</strong> <?php echo e(session('danger')); ?>
-
-    </div>
-  </div>
-
-
-  <?php endif; ?>
 
 
     <!-- Body Content Wrapper -->
@@ -51,9 +20,9 @@ $('#successalert').fadeOut('fast');
           <div class="ms-card card-gradient-success ms-widget ms-infographics-widget">
             <div class="ms-card-body media">
               <div class="media-body">
-                <h6>Total Branches</h6>
-                <p class="ms-card-change"> <i class="material-icons">arrow_upward</i> <?php echo e($restaurant->users()->count()); ?></p>
-                <p class="fs-12">48% From Last 24 Hours</p>
+                <h6>Total Orders</h6>
+                <p class="ms-card-change"> <i class="material-icons">arrow_upward</i> <?php echo e($totalorders); ?> </p>
+                <p class="fs-12">orders this year</p>
               </div>
             </div> <i class="flaticon-statistics"></i>
           </div>
@@ -62,9 +31,9 @@ $('#successalert').fadeOut('fast');
           <div class="ms-card card-gradient-secondary ms-widget ms-infographics-widget">
             <div class="ms-card-body media">
               <div class="media-body">
-                <h6>Budgets</h6>
-                <p class="ms-card-change">$80,950</p>
-                <p class="fs-12">2% Decreased from last budget</p>
+                <h6>Revenus (SAR)</h6>
+                <p class="ms-card-change"><?php echo e($totalrevenus); ?> </p>
+                <p class="fs-12">This Year</p>
               </div>
             </div> <i class="flaticon-stats"></i>
           </div>
@@ -75,7 +44,7 @@ $('#successalert').fadeOut('fast');
               <div class="media-body">
                 <h6>Total Employees</h6>
                 <p class="ms-card-change"> <i class="material-icons">arrow_upward</i> <?php echo e($someInfoEmployees->count()); ?></</p>
-                <p class="fs-12">48% From Last 24 Hours</p>
+                <p class="fs-12">Employees of this restaurants</p>
               </div>
             </div> <i class="flaticon-user"></i>
           </div>
@@ -84,9 +53,9 @@ $('#successalert').fadeOut('fast');
           <div class="ms-card card-gradient-secondary ms-widget ms-infographics-widget">
             <div class="ms-card-body media">
               <div class="media-body">
-                <h6>Conversions</h6>
-                <p class="ms-card-change">$80,950</p>
-                <p class="fs-12">2% Decreased from last budget</p>
+                <h6>Charges (SAR) </h6>
+                <p class="ms-card-change"><?php echo e($totaldepenses); ?> </p>
+                <p class="fs-12">This Year</p>
               </div>
             </div> <i class="flaticon-reuse"></i>
           </div>
@@ -99,7 +68,7 @@ $('#successalert').fadeOut('fast');
         <div class="col-xl-6 col-md-12">
           <div class="ms-panel">
               <div class="ms-card-header clearfix">
-                  <h6 class="ms-card-title">Products List</h6>
+                  <h6 class="ms-card-title">Employees List</h6>
       
                 </div>
               <div class="ms-panel-body">
@@ -271,13 +240,13 @@ $('#successalert').fadeOut('fast');
     yAxis: {
         min: 0,
         title: {
-            text: 'Rainfall (SAR)'
+            text: ' SAR'
         }
     },
     tooltip: {
         headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
         pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} SAR</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.2f} SAR</b></td></tr>',
         footerFormat: '</table>',
         shared: true,
         useHTML: true
@@ -321,22 +290,59 @@ $('#successalert').fadeOut('fast');
 
 
 
-
-
-<!--===============================================================================================-->
-  
-
-
 <!--=================================================================================-->
 
 <!--//////////////////////////////////////////////////////////////// -->
 
+<div class="col-xl-12 col-md-12">
+  <div class="ms-panel">
+    <div class="ms-panel-header">
+      <h6>All Charge List</h6>
+    </div>
+    <div class="ms-panel-body">
+      <div class="table-responsive">
+        <table id="data-table-1234" class="table w-100 thead-primary"></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--//////////////////////////////////////////////////////////////// -->
 
 
-<!--update info restaurant -->
+
+<div class="col-xl-12 col-md-12">
+<div class="ms-panel">
+  <div class="ms-panel-header">
+    <h6>Completed Orders List</h6>
+  </div>
+  <div class="ms-panel-body">
+    <div class="table-responsive">
+      <table id="data-table-12345" class="table w-100 thead-primary"></table>
+    </div>
+  </div>
+</div>
+</div>
 
 
 <!--//////////////////////////////////////////////////////////////// -->
+
+<div class="col-xl-12 col-md-12">
+<div class="ms-panel">
+  <div class="ms-panel-header">
+  <h6>All Actions in your System  </h6>
+  </div>
+  <div class="ms-panel-body">
+    <div class="table-responsive">
+      <table id="data-table-history" class="table w-100 thead-primary"></table>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!--//////////////////////////////////////////////////////////////// -->
+<!--update info restaurant -->
 <div class="col-xl-6 col-md-12">
     <div class="ms-panel ms-panel-fh">
       <div class="ms-panel-header">
@@ -416,7 +422,7 @@ unset($__errorArgs, $__bag); ?>
                 <div class="col-md-12 mb-3">
                   <label for="validationCustom08">Email Address</label>
                   <div class="input-group">
-                    <input type="email" value="<?php echo e($restaurant->email); ?>"  name="email" class="form-control <?php $__errorArgs = ['email'];
+                    <input type="email" value="<?php echo e($restaurant->user->email); ?>"  name="email" class="form-control <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -650,6 +656,7 @@ unset($__errorArgs, $__bag); ?>
         <h6>Update Password Form</h6>
       </div>
       <div class="ms-panel-body">
+        <?php if($restaurant->active): ?>
         <form method="POST"  action="<?php echo e(url('admin/updatePasswordRestaurant')); ?>"  class="needs-validation clearfix" novalidate>
           
         <?php echo csrf_field(); ?>
@@ -729,7 +736,7 @@ unset($__errorArgs, $__bag); ?>
 
 
         </form>
-
+<?php endif; ?>
       </div>
     </div>
 
@@ -768,7 +775,7 @@ unset($__errorArgs, $__bag); ?>
     <?php $__currentLoopData = $someInfoEmployees; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $InfoEmployee): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             
 
-   [ "  <?php echo e($InfoEmployee->idEmployee); ?>", " <?php echo e($InfoEmployee->email); ?>",  " <?php echo e($InfoEmployee->type); ?>", "<?php echo e($InfoEmployee->name); ?><?php if( $InfoEmployee->is_admin ): ?><div style='color:red'> (ADMIN)</div> <?php endif; ?>"],
+   [ "  <?php echo e($InfoEmployee->idEmployee); ?>", " <?php echo e($InfoEmployee->user->email); ?>",  " <?php echo e($InfoEmployee->type); ?>", "<?php echo e($InfoEmployee->restaurant->name); ?>"],
    
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 ];
@@ -805,7 +812,164 @@ unset($__errorArgs, $__bag); ?>
 
 </script>
 
+<script>
+
+  (function($) {
+    'use strict';
   
+     var dataSet123 = [
+      <?php $__currentLoopData = $charges; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $charge): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                              
+  
+     [ "  <?php echo e($charge->type); ?>"," <?php if( $charge->type == 'employee'): ?> <?php echo e($charge->employee->idEmployee); ?><?php endif; ?> ",  " <?php if( $charge->type == 'delevryCompany' ): ?><?php echo e($charge->delivery_companies->deliveryCompaniesName); ?> <?php endif; ?> ", "<?php echo e($charge->note); ?>", "<?php echo e($charge->priceCharge); ?>", "<?php if( $charge->type == 'additional'): ?> <?php if($charge->image): ?><img id='imgadd' src='/storage/<?php echo e($charge->image); ?>' > <?php endif; ?> <?php endif; ?>"],
+     
+                              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+  ];
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    var tableFour = $('#data-table-1234').DataTable( {
+      data: dataSet123,
+      columns: [
+      
+        { title: "type" },
+        { title: "Id Employee" },
+        { title: "delivery Company Name" },
+        { title: "note" },
+        { title: "price Charge" },
+        { title: "image" },
+     
+  
+      ],
+    });
+  
+  
+   
+  
+  
+  
+  
+  })(jQuery);
+  
+  </script>
+  
+<script>
+
+  (function($) {
+    'use strict';
+  
+     var dataSet1245 = [
+      <?php $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                              
+  
+     [ "<?php echo e($order->nOrder); ?>","  <?php echo e($order->taux); ?>",  "<?php echo e($order->orderType); ?>", "<?php echo e($order->paymentMethod); ?>", "<?php echo e($order->created_at); ?>", "<?php echo e($order->priceOrder); ?>"],
+     
+                              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+  ];
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    var tableFour = $('#data-table-12345').DataTable( {
+      data: dataSet1245,
+      columns: [
+        { title: "nOrder" },
+        { title: "taux" },
+  
+        { title: "orderType" },
+        { title: "paymentMethod" },
+        { title: "date" },
+        { title: "priceOrder" },
+  
+  
+      ],
+    });
+  
+  
+   
+  
+  
+  
+  
+  })(jQuery);
+  
+  </script>
+  
+<script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  (function($) {
+    'use strict';
+  
+     var dataSet12history = [
+      <?php $__currentLoopData = $historyTransactions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $historyTransaction): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                              
+  
+     [ "<?php echo e($historyTransaction->type); ?>","  <?php echo e($historyTransaction->restaurant->name); ?>",  "<?php if( $historyTransaction->employee_id): ?> <?php echo e($historyTransaction->employee->idEmployee); ?> <?php endif; ?>", "<?php echo e($historyTransaction->productVersion->product->productName); ?>","<?php echo e($historyTransaction->oldqnt); ?>","<?php echo e($historyTransaction->qnt); ?>" ,"<?php echo e($historyTransaction->noteIfDelete); ?>" ,"<?php echo e($historyTransaction->created_at); ?>"],
+     
+                              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+  ];
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    var tableFour = $('#data-table-history').DataTable( {
+      data: dataSet12history,
+      columns: [
+        { title: "type" },
+        { title: "restaurant name" },
+  
+        { title: "employee_id" },
+        { title: "product_version_id" },
+        { title: "oldqnt" },
+        { title: "qnt" },
+        { title: "noteIfDelete" },
+        { title: "date" },
+      
+      
+  
+  
+      ],
+    });
+  
+  
+   
+  
+  
+  
+  
+  })(jQuery);
+  
+  </script>
 <?php $__env->stopSection(); ?>
 
 

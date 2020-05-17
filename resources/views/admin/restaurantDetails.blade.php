@@ -6,37 +6,7 @@
 @section('content')
 
    
-<script type="text/javascript" > 
-  setTimeout(function() {
-$('#successalert').fadeOut('fast');
-}, 12000); // <-- time in milliseconds
-</script>
-
-
-
-@if (session('success'))
-<div class="x_content bs-example-popovers" id="successalert" >
-  <div class="alert alert-success" role="alert" >
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-      </button>
-      <strong>well done!</strong> {{ session('success') }}
-    </div>
-  </div>
-
-
-  @endif
-
-  @if (session('danger'))
-<div class="x_content bs-example-popovers" id="successalert" >
-  <div class="alert alert-danger" role="alert" >
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-      </button>
-      <strong>DANGER!</strong> {{ session('danger') }}
-    </div>
-  </div>
-
-
-  @endif
+{{App::setLocale(Session::get('locale'))}}
 
 
     <!-- Body Content Wrapper -->
@@ -49,9 +19,9 @@ $('#successalert').fadeOut('fast');
           <div class="ms-card card-gradient-success ms-widget ms-infographics-widget">
             <div class="ms-card-body media">
               <div class="media-body">
-                <h6>Total Branches</h6>
-                <p class="ms-card-change"> <i class="material-icons">arrow_upward</i> {{$restaurant->users()->count()}}</p>
-                <p class="fs-12">48% From Last 24 Hours</p>
+                <h6>Total Orders</h6>
+                <p class="ms-card-change"> <i class="material-icons">arrow_upward</i> {{$totalorders}} </p>
+                <p class="fs-12">orders this year</p>
               </div>
             </div> <i class="flaticon-statistics"></i>
           </div>
@@ -60,9 +30,9 @@ $('#successalert').fadeOut('fast');
           <div class="ms-card card-gradient-secondary ms-widget ms-infographics-widget">
             <div class="ms-card-body media">
               <div class="media-body">
-                <h6>Budgets</h6>
-                <p class="ms-card-change">$80,950</p>
-                <p class="fs-12">2% Decreased from last budget</p>
+                <h6>Revenus (SAR)</h6>
+                <p class="ms-card-change">{{$totalrevenus}} </p>
+                <p class="fs-12">This Year</p>
               </div>
             </div> <i class="flaticon-stats"></i>
           </div>
@@ -73,7 +43,7 @@ $('#successalert').fadeOut('fast');
               <div class="media-body">
                 <h6>Total Employees</h6>
                 <p class="ms-card-change"> <i class="material-icons">arrow_upward</i> {{$someInfoEmployees->count()}}</</p>
-                <p class="fs-12">48% From Last 24 Hours</p>
+                <p class="fs-12">Employees of this restaurants</p>
               </div>
             </div> <i class="flaticon-user"></i>
           </div>
@@ -82,9 +52,9 @@ $('#successalert').fadeOut('fast');
           <div class="ms-card card-gradient-secondary ms-widget ms-infographics-widget">
             <div class="ms-card-body media">
               <div class="media-body">
-                <h6>Conversions</h6>
-                <p class="ms-card-change">$80,950</p>
-                <p class="fs-12">2% Decreased from last budget</p>
+                <h6>Charges (SAR) </h6>
+                <p class="ms-card-change">{{$totaldepenses}} </p>
+                <p class="fs-12">This Year</p>
               </div>
             </div> <i class="flaticon-reuse"></i>
           </div>
@@ -97,7 +67,7 @@ $('#successalert').fadeOut('fast');
         <div class="col-xl-6 col-md-12">
           <div class="ms-panel">
               <div class="ms-card-header clearfix">
-                  <h6 class="ms-card-title">Products List</h6>
+                  <h6 class="ms-card-title">Employees List</h6>
       
                 </div>
               <div class="ms-panel-body">
@@ -269,13 +239,13 @@ $('#successalert').fadeOut('fast');
     yAxis: {
         min: 0,
         title: {
-            text: 'Rainfall (SAR)'
+            text: ' SAR'
         }
     },
     tooltip: {
         headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
         pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} SAR</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.2f} SAR</b></td></tr>',
         footerFormat: '</table>',
         shared: true,
         useHTML: true
@@ -319,205 +289,59 @@ $('#successalert').fadeOut('fast');
 
 
 
-
-
-<!--===============================================================================================-->
-  {{--       <div class="col-xl-5 col-md-12">
-          <div class="ms-panel">
-            <div class="ms-panel-header">
-              <h6>most sellings projects</h6>
-            </div>
-            <div class="ms-panel-body"> <span class="progress-label">HTML & CSS Projects</span><span class="progress-status">83%</span>
-              <div class="progress progress-tiny">
-                <div class="progress-bar bg-primary" role="progressbar" style="width: 83%" aria-valuenow="83" aria-valuemin="0" aria-valuemax="100"></div>
-              </div> <span class="progress-label">Wordpress Projects</span><span class="progress-status">50%</span>
-              <div class="progress progress-tiny">
-                <div class="progress-bar bg-secondary" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-              </div> <span class="progress-label">PSD Projects</span><span class="progress-status">75%</span>
-              <div class="progress progress-tiny">
-                <div class="progress-bar bg-success" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-              </div> <span class="progress-label">Code Snippets</span><span class="progress-status">92%</span>
-              <div class="progress progress-tiny">
-                <div class="progress-bar bg-danger" role="progressbar" style="width: 92%" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-            </div>
-          </div>
-          <div class="ms-panel">
-            <div class="ms-panel-header">
-              <h6>Top Sales</h6>
-              <p>Your highest selling projects</p>
-            </div>
-            <div class="ms-panel-body p-0">
-              <div class="ms-quick-stats">
-                <div class="ms-stats-grid">
-                  <p class="ms-text-success">+47.18%</p>
-                  <p class="ms-text-dark">8,033</p> <span>Admin Dashboard</span>
-                </div>
-                <div class="ms-stats-grid">
-                  <p class="ms-text-success">+17.24%</p>
-                  <p class="ms-text-dark">6,039</p> <span>Wordpress Theme</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-12">
-          <div class="ms-panel">
-            <div class="ms-panel-header">
-              <h6>Latest Projects</h6>
-              <p>Some of your latest works</p>
-            </div>
-            <div class="ms-panel-body">
-              <div class="row">
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                  <div class="ms-card">
-                    <div class="ms-card-body">
-                      <div class="media fs-14">
-                        <div class="mr-2 align-self-center">
-                          <img src="../../assets/img/costic/customer-1.jpg" class="ms-img-round" alt="people">
-                        </div>
-                        <div class="media-body">
-                          <h6>John Doe </h6>
-                          <div class="dropdown float-right">
-                            <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="material-icons">more_vert</i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                              <li class="ms-dropdown-list">
-                                <a class="media p-2" href="#">
-                                  <div class="media-body"> <span>Comment</span>
-                                  </div>
-                                </a>
-                                <a class="media p-2" href="#">
-                                  <div class="media-body"> <span>Share</span>
-                                  </div>
-                                </a>
-                                <a class="media p-2" href="#">
-                                  <div class="media-body"> <span>Favorite</span>
-                                  </div>
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                          <p class="fs-12 my-1 text-disabled">30 seconds ago</p>
-                        </div>
-                      </div>
-                      <h6>This is a project name</h6>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nunc velit, dictum eget nulla a, sollicitudin rhoncus orci. Vivamus nec commodo turpis.</p>
-                    </div>
-                    <div class="ms-card-img">
-                      <img src="../../assets/img/costic/food-2.jpg" alt="card_img">
-                    </div>
-                    <div class="ms-card-footer text-disabled d-flex">
-                      <div class="ms-card-options"> <i class="material-icons">favorite</i> 982</div>
-                      <div class="ms-card-options"> <i class="material-icons">comment</i> 785</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                  <div class="ms-card">
-                    <div class="ms-card-body">
-                      <div class="media fs-14">
-                        <div class="mr-2 align-self-center">
-                          <img src="../../assets/img/costic/customer-4.jpg" class="ms-img-round" alt="people">
-                        </div>
-                        <div class="media-body">
-                          <h6>John Doe </h6>
-                          <div class="dropdown float-right">
-                            <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="material-icons">more_vert</i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                              <li class="ms-dropdown-list">
-                                <a class="media p-2" href="#">
-                                  <div class="media-body"> <span>Comment</span>
-                                  </div>
-                                </a>
-                                <a class="media p-2" href="#">
-                                  <div class="media-body"> <span>Share</span>
-                                  </div>
-                                </a>
-                                <a class="media p-2" href="#">
-                                  <div class="media-body"> <span>Favorite</span>
-                                  </div>
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                          <p class="fs-12 my-1 text-disabled">30 seconds ago</p>
-                        </div>
-                      </div>
-                      <h6>This is a project name</h6>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nunc velit, dictum eget nulla a, sollicitudin rhoncus orci. Vivamus nec commodo turpis.</p>
-                    </div>
-                    <div class="ms-card-img">
-                      <img src="../../assets/img/costic/food-3.jpg" alt="card_img">
-                    </div>
-                    <div class="ms-card-footer text-disabled d-flex">
-                      <div class="ms-card-options"> <i class="material-icons">favorite</i> 982</div>
-                      <div class="ms-card-options"> <i class="material-icons">comment</i> 785</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                  <div class="ms-card">
-                    <div class="ms-card-body">
-                      <div class="media fs-14">
-                        <div class="mr-2 align-self-center">
-                          <img src="../../assets/img/costic/customer-5.jpg" class="ms-img-round" alt="people">
-                        </div>
-                        <div class="media-body">
-                          <h6>John Doe </h6>
-                          <div class="dropdown float-right">
-                            <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="material-icons">more_vert</i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                              <li class="ms-dropdown-list">
-                                <a class="media p-2" href="#">
-                                  <div class="media-body"> <span>Comment</span>
-                                  </div>
-                                </a>
-                                <a class="media p-2" href="#">
-                                  <div class="media-body"> <span>Share</span>
-                                  </div>
-                                </a>
-                                <a class="media p-2" href="#">
-                                  <div class="media-body"> <span>Favorite</span>
-                                  </div>
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                          <p class="fs-12 my-1 text-disabled">30 seconds ago</p>
-                        </div>
-                      </div>
-                      <h6>This is a project name</h6>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nunc velit, dictum eget nulla a, sollicitudin rhoncus orci. Vivamus nec commodo turpis.</p>
-                    </div>
-                    <div class="ms-card-img">
-                      <img src="../../assets/img/costic/food-1.jpg" alt="card_img">
-                    </div>
-                    <div class="ms-card-footer text-disabled d-flex">
-                      <div class="ms-card-options"> <i class="material-icons">favorite</i> 982</div>
-                      <div class="ms-card-options"> <i class="material-icons">comment</i> 785</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
- --}}
-
-
 <!--=================================================================================-->
 
 <!--//////////////////////////////////////////////////////////////// -->
 
+<div class="col-xl-12 col-md-12">
+  <div class="ms-panel">
+    <div class="ms-panel-header">
+      <h6>All Charge List</h6>
+    </div>
+    <div class="ms-panel-body">
+      <div class="table-responsive">
+        <table id="data-table-1234" class="table w-100 thead-primary"></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--//////////////////////////////////////////////////////////////// -->
 
 
-<!--update info restaurant -->
+
+<div class="col-xl-12 col-md-12">
+<div class="ms-panel">
+  <div class="ms-panel-header">
+    <h6>Completed Orders List</h6>
+  </div>
+  <div class="ms-panel-body">
+    <div class="table-responsive">
+      <table id="data-table-12345" class="table w-100 thead-primary"></table>
+    </div>
+  </div>
+</div>
+</div>
 
 
 <!--//////////////////////////////////////////////////////////////// -->
+
+<div class="col-xl-12 col-md-12">
+<div class="ms-panel">
+  <div class="ms-panel-header">
+  <h6>All Actions in your System  </h6>
+  </div>
+  <div class="ms-panel-body">
+    <div class="table-responsive">
+      <table id="data-table-history" class="table w-100 thead-primary"></table>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!--//////////////////////////////////////////////////////////////// -->
+<!--update info restaurant -->
 <div class="col-xl-6 col-md-12">
     <div class="ms-panel ms-panel-fh">
       <div class="ms-panel-header">
@@ -569,7 +393,7 @@ $('#successalert').fadeOut('fast');
                 <div class="col-md-12 mb-3">
                   <label for="validationCustom08">Email Address</label>
                   <div class="input-group">
-                    <input type="email" value="{{ $restaurant->email }}"  name="email" class="form-control @error('email') is-invalid @enderror" id="validationCustom08" placeholder="Email Address" required>
+                    <input type="email" value="{{ $restaurant->user->email }}"  name="email" class="form-control @error('email') is-invalid @enderror" id="validationCustom08" placeholder="Email Address" required>
                     @error('email')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -747,6 +571,7 @@ $('#successalert').fadeOut('fast');
         <h6>Update Password Form</h6>
       </div>
       <div class="ms-panel-body">
+        @if($restaurant->active)
         <form method="POST"  action="{{ url('admin/updatePasswordRestaurant') }}"  class="needs-validation clearfix" novalidate>
           
         @csrf
@@ -798,7 +623,7 @@ $('#successalert').fadeOut('fast');
 
 
         </form>
-
+@endif
       </div>
     </div>
 
@@ -837,7 +662,7 @@ $('#successalert').fadeOut('fast');
     @foreach ($someInfoEmployees as $InfoEmployee)
                             
 
-   [ "  {{ $InfoEmployee->idEmployee }}", " {{ $InfoEmployee->email }}",  " {{ $InfoEmployee->type }}", "{{ $InfoEmployee->name }}@if ( $InfoEmployee->is_admin )<div style='color:red'> (ADMIN)</div> @endif"],
+   [ "  {{ $InfoEmployee->idEmployee }}", " {{ $InfoEmployee->user->email }}",  " {{ $InfoEmployee->type }}", "{{ $InfoEmployee->restaurant->name }}"],
    
                             @endforeach
 ];
@@ -874,6 +699,163 @@ $('#successalert').fadeOut('fast');
 
 </script>
 
+<script>
+
+  (function($) {
+    'use strict';
   
+     var dataSet123 = [
+      @foreach ($charges as $charge)
+                              
+  
+     [ "  {{ $charge->type }}"," @if( $charge->type == 'employee') {{ $charge->employee->idEmployee }}@endif ",  " @if( $charge->type == 'delevryCompany' ){{ $charge->delivery_companies->deliveryCompaniesName }} @endif ", "{{ $charge->note }}", "{{ $charge->priceCharge }}", "@if( $charge->type == 'additional') @if($charge->image)<img id='imgadd' src='/storage/{{ $charge->image }}' > @endif @endif"],
+     
+                              @endforeach
+  ];
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    var tableFour = $('#data-table-1234').DataTable( {
+      data: dataSet123,
+      columns: [
+      
+        { title: "type" },
+        { title: "Id Employee" },
+        { title: "delivery Company Name" },
+        { title: "note" },
+        { title: "price Charge" },
+        { title: "image" },
+     
+  
+      ],
+    });
+  
+  
+   
+  
+  
+  
+  
+  })(jQuery);
+  
+  </script>
+  
+<script>
+
+  (function($) {
+    'use strict';
+  
+     var dataSet1245 = [
+      @foreach ($orders as $order)
+                              
+  
+     [ "{{ $order->nOrder }}","  {{ $order->taux }}",  "{{ $order->orderType }}", "{{ $order->paymentMethod }}", "{{ $order->created_at }}", "{{ $order->priceOrder }}"],
+     
+                              @endforeach
+  ];
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    var tableFour = $('#data-table-12345').DataTable( {
+      data: dataSet1245,
+      columns: [
+        { title: "nOrder" },
+        { title: "taux" },
+  
+        { title: "orderType" },
+        { title: "paymentMethod" },
+        { title: "date" },
+        { title: "priceOrder" },
+  
+  
+      ],
+    });
+  
+  
+   
+  
+  
+  
+  
+  })(jQuery);
+  
+  </script>
+  
+<script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  (function($) {
+    'use strict';
+  
+     var dataSet12history = [
+      @foreach ($historyTransactions as $historyTransaction)
+                              
+  
+     [ "{{ $historyTransaction->type }}","  {{ $historyTransaction->restaurant->name }}",  "@if( $historyTransaction->employee_id) {{ $historyTransaction->employee->idEmployee }} @endif", "{{ $historyTransaction->productVersion->product->productName }}","{{ $historyTransaction->oldqnt }}","{{ $historyTransaction->qnt }}" ,"{{ $historyTransaction->noteIfDelete }}" ,"{{ $historyTransaction->created_at }}"],
+     
+                              @endforeach
+  ];
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    var tableFour = $('#data-table-history').DataTable( {
+      data: dataSet12history,
+      columns: [
+        { title: "type" },
+        { title: "restaurant name" },
+  
+        { title: "employee_id" },
+        { title: "product_version_id" },
+        { title: "oldqnt" },
+        { title: "qnt" },
+        { title: "noteIfDelete" },
+        { title: "date" },
+      
+      
+  
+  
+      ],
+    });
+  
+  
+   
+  
+  
+  
+  
+  })(jQuery);
+  
+  </script>
 @endsection
 

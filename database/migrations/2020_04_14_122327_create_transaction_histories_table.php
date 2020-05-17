@@ -15,6 +15,7 @@ class CreateTransactionHistoriesTable extends Migration
     {
         Schema::create('transaction_histories', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('restaurant_id')->nullable();
             $table->unsignedBigInteger('employee_id')->nullable();
             $table->unsignedBigInteger('product_version_id')->nullable();
             $table->enum('type', array('addqnt', 'revokeqnt', 'addnew', 'delete'));

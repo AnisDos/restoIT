@@ -136,9 +136,9 @@
 </div>
             <div class="content">
                 <div class="title m-b-md">
-                    @component('components.who')
-                  
-                    @endcomponent
+                    {{App::setlocale('ar')}}
+                    {{  App::getlocale()}}
+           {{__('khra')}}
                 </div>
 
                 <div class="links">

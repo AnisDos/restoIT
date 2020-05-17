@@ -6,39 +6,8 @@
 <?php $__env->startSection('content'); ?>
 
 
-<script type="text/javascript" > 
-  setTimeout(function() {
-$('#successalert').fadeOut('fast');
-}, 12000); // <-- time in milliseconds
-</script>
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
 
-
-
-<?php if(session('success')): ?>
-<div class="x_content bs-example-popovers" id="successalert" >
-  <div class="alert alert-success" role="alert" >
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-      </button>
-      <strong>well done!</strong> <?php echo e(session('success')); ?>
-
-    </div>
-  </div>
-
-
-  <?php endif; ?>
-
-  <?php if(session('danger')): ?>
-<div class="x_content bs-example-popovers" id="successalert" >
-  <div class="alert alert-danger" role="alert" >
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-      </button>
-      <strong>DANGER!</strong> <?php echo e(session('danger')); ?>
-
-    </div>
-  </div>
-
-
-  <?php endif; ?>
 
 
 
@@ -113,7 +82,7 @@ $('#successalert').fadeOut('fast');
     <?php $__currentLoopData = $restaurants; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $restaurant): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             
 
-   [ "<?php echo e($restaurant->id); ?>","  <img src='/storage/<?php echo e($restaurant->image); ?>' style='width:50px; height:30px;'><?php echo e($restaurant->name); ?> <?php if($restaurant->is_admin): ?> (ADMIN) <?php endif; ?>",  "46546", "In Stock", "$32","<a href='/admin/restaurantDetails/<?php echo e($restaurant->id); ?>  '> DETAILS</a>"],
+   [ "<?php echo e($restaurant->id); ?>","  <img src='/storage/<?php echo e($restaurant->image); ?>' style='width:50px; height:30px;'><?php echo e($restaurant->name); ?>",  "<?php echo e($restaurant->address); ?>","<a href='/admin/restaurantDetails/<?php echo e($restaurant->id); ?>  '> DETAILS</a>"],
    
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
  ];
@@ -132,9 +101,8 @@ $('#successalert').fadeOut('fast');
       { title: "Restaurant ID" },
       { title: "Restaurant Name" },
 
-      { title: "Quantity" },
-      { title: "Status" },
-      { title: "Price" },
+      { title: "address" },
+  
       { title: "details" },
 
 

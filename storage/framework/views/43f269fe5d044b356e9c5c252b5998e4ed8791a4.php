@@ -4,6 +4,8 @@
 
 
 <?php $__env->startSection('content'); ?>
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
+
 
 
     <!-- Body Content Wrapper -->
@@ -23,28 +25,6 @@
 
 
           
-        <script type="text/javascript" > 
-          setTimeout(function() {
-       $('#successalert').fadeOut('fast');
-     }, 8000); // <-- time in milliseconds
-     </script>
-    
-   
-        
-        <?php if(session('success')): ?>
-        <div class="x_content bs-example-popovers" id="successalert" >
-          <div class="alert alert-success" role="alert" >
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-              </button>
-              <strong>well done!</strong> <?php echo e(session('success')); ?>
-
-            </div>
-          </div>
-
-        
-          <?php endif; ?>
-
-         
 
 
 
@@ -55,7 +35,7 @@
         </div>
 
 
-        <div class="col-xl-6 col-md-12">
+        <div class="col-xl-12 col-md-12">
             <div class="ms-panel ms-panel-fh">
               <div class="ms-panel-header">
                 <h6>Login Form</h6>
@@ -77,7 +57,7 @@
                       <div class="col-md-12 mb-3">
                         <label for="validationCustom18">Price Charge</label>
                         <div class="input-group">
-                          <input type="nomber" min="0" step=".01" name="priceCharge" value="<?php echo e(old('priceCharge')); ?>"  class="form-control <?php $__errorArgs = ['priceCharge'];
+                          <input type="number" min="0" step=".01" name="priceCharge" value="<?php echo e(old('priceCharge')); ?>"  class="form-control <?php $__errorArgs = ['priceCharge'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -179,12 +159,95 @@ unset($__errorArgs, $__bag); ?>
   
             </div>
             </div>
+        </div>
+
+
+
+
+
+
+
+        <div class="col-xl-12 col-md-12">
+          <div class="ms-panel">
+            <div class="ms-panel-header">
+              <h6>All Charge List</h6>
+            </div>
+            <div class="ms-panel-body">
+              <div class="table-responsive">
+                <table id="data-table-123" class="table w-100 thead-primary"></table>
+              </div>
+            </div>
           </div>
+        </div>
+
+
+
+
+
 
       </div>
     </div>
 
 
+
   
     <?php $__env->stopSection(); ?>
+
+    
+
+<?php $__env->startSection('script'); ?>
+
+
+
+
+<script>
+
+(function($) {
+  'use strict';
+
+   var dataSet12 = [
+    <?php $__currentLoopData = $charges; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $charge): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            
+
+   [ "  <?php echo e($charge->type); ?>"," <?php if( $charge->type == 'employee'): ?> <?php echo e($charge->employee->idEmployee); ?><?php endif; ?> ",  " <?php if( $charge->type == 'delevryCompany' ): ?><?php echo e($charge->delivery_companies->deliveryCompaniesName); ?> <?php endif; ?> ", "<?php echo e($charge->note); ?>", "<?php echo e($charge->priceCharge); ?>", "<?php if( $charge->type == 'additional'): ?> <?php if($charge->image): ?><img id='imgadd' src='/storage/<?php echo e($charge->image); ?>' > <?php endif; ?> <?php endif; ?>"],
+   
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+];
+
+
+
+
+
+
+
+
+
+  var tableFour = $('#data-table-123').DataTable( {
+    data: dataSet12,
+    columns: [
+    
+      { title: "type" },
+      { title: "Id Employee" },
+      { title: "delivery Company Name" },
+      { title: "note" },
+      { title: "price Charge" },
+      { title: "image" },
+   
+
+    ],
+  });
+
+
+ 
+
+
+
+
+})(jQuery);
+
+</script>
+
+  
+<?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('restaurant.base', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\laravelAnis\restoIT\resources\views/restaurant/addSupCharge.blade.php ENDPATH**/ ?>

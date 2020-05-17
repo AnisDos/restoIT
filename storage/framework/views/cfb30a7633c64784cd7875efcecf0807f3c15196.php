@@ -4,6 +4,8 @@
 
 
 <?php $__env->startSection('content'); ?>
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
+
 
 
     <!-- Body Content Wrapper -->
@@ -24,29 +26,10 @@
 
 
           
-        <script type="text/javascript" > 
-          setTimeout(function() {
-       $('#successalert').fadeOut('fast');
-     }, 8000); // <-- time in milliseconds
-     </script>
     
    
         
-        <?php if(session('success')): ?>
-        <div class="x_content bs-example-popovers" id="successalert" >
-          <div class="alert alert-success" role="alert" >
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-              </button>
-              <strong>well done!</strong> <?php echo e(session('success')); ?>
-
-            </div>
-          </div>
-
-        
-          <?php endif; ?>
-
-         
-
+      
 
 
 
@@ -218,7 +201,7 @@ unset($__errorArgs, $__bag); ?>
                   <div class="col-md-12 mb-3">
                     <label for="validationCustom25">price of working per hour  </label>
                     <div class="input-group">
-                      <input type="number" value="<?php echo e(old('price_ph')); ?>"  class="form-control <?php $__errorArgs = ['price_ph'];
+                      <input type="number" min="0" step=".01" value="<?php echo e(old('price_ph')); ?>"  class="form-control <?php $__errorArgs = ['price_ph'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }

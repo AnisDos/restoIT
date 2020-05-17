@@ -4,6 +4,10 @@
 
 
 <?php $__env->startSection('content'); ?>
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
+
+
+
 
 
 
@@ -29,7 +33,7 @@
 
           <div class="ms-panel">
             <div class="ms-panel-header">
-              <h6>Product List</h6>
+              <h6>Meals List</h6>
             </div>
             <div class="ms-panel-body">
               <div class="table-responsive">
@@ -79,7 +83,7 @@
     <?php $__currentLoopData = $meals; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $meal): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             
 
-   [ "<?php echo e($meal->id); ?>","  <img src='/storage/<?php echo e($meal->image); ?>' style='width:50px; height:30px;'><?php echo e($meal->mealName); ?>",  "46546", "In Stock", "$32","<a href='/restaurant/mealDetails/<?php echo e($meal->id); ?>  '> 3abez</a>"],
+   [ "<?php echo e($meal->id); ?>","  <img src='/storage/<?php echo e($meal->image); ?>' style='width:50px; height:30px;'><?php echo e($meal->mealName); ?>",   "<?php if($meal->public): ?> Activate <?php else: ?> Deactivate <?php endif; ?>", "<?php echo e($meal->price); ?> SAR","<?php echo e($meal->priceMealIng); ?> SAR","<a href='/restaurant/mealDetails/<?php echo e($meal->id); ?>  '> Show</a>"],
    
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 ];
@@ -95,12 +99,12 @@
   var tableFour = $('#data-table-123').DataTable( {
     data: dataSet12,
     columns: [
-      { title: "Product ID" },
-      { title: "Product Name" },
+      { title: "Meal ID" },
+      { title: "Meal Name" },
 
-      { title: "Quantity" },
       { title: "Status" },
       { title: "Price" },
+      { title: "Cost" },
       { title: "details" },
 
 

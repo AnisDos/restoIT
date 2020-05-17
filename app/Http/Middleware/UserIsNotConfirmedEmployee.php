@@ -21,7 +21,7 @@ class UserIsNotConfirmedEmployee
         
         if (Auth::user()) {
             if (Auth::user()->employee()->exists()) {
-                if (!Auth::user()->restaurant->admin->verified) {
+                if (!Auth::user()->employee->restaurant->admin->verified) {
                     return redirect('notVerifiedForEmployee');
                 }
                 return $next($request);

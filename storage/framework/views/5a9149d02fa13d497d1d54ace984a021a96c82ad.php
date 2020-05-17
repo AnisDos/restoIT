@@ -4,6 +4,8 @@
 
 
 <?php $__env->startSection('content'); ?>
+<?php echo e(App::setLocale(Session::get('locale'))); ?>
+
 
 
     <!-- Body Content Wrapper -->
@@ -13,39 +15,17 @@
         <div class="col-md-12">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb pl-0">
-              <li class="breadcrumb-item"><a href="#"><i class="material-icons">home</i> Home</a></li>
+              <li class="breadcrumb-item"><a href="#"><i class="material-icons">home</i> <?php echo e(__('Home')); ?></a></li>
         
-              <li class="breadcrumb-item"><a href="#">Employee</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Add Employee</li>
+              <li class="breadcrumb-item"><a href="#"><?php echo e(__('Caisse')); ?></a></li>
+              <li class="breadcrumb-item active" aria-current="page"><?php echo e(__('Add Caisse')); ?></li>
             </ol>
           </nav>
 
 
 
 
-          
-        <script type="text/javascript" > 
-          setTimeout(function() {
-       $('#successalert').fadeOut('fast');
-     }, 8000); // <-- time in milliseconds
-     </script>
-    
-   
-        
-        <?php if(session('success')): ?>
-        <div class="x_content bs-example-popovers" id="successalert" >
-          <div class="alert alert-success" role="alert" >
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-              </button>
-              <strong>well done!</strong> <?php echo e(session('success')); ?>
 
-            </div>
-          </div>
-
-        
-          <?php endif; ?>
-
-         
 
 
 
@@ -60,7 +40,7 @@
         <div class="col-xl-6 col-md-12">
           <div class="ms-panel ms-panel-fh">
             <div class="ms-panel-header">
-              <h6>Add Employee Form</h6>
+              <h6><?php echo e(__('Add Caisse Form')); ?></h6>
             </div>
             <div class="ms-panel-body">
               <form method="POST"  action="<?php echo e(url('restaurant/addCaisseForm')); ?>"  class="needs-validation clearfix" novalidate>
@@ -71,7 +51,7 @@
 
 
                   <div class="col-md-12 mb-3">
-                    <label for="validationCustom18">Name Caisse</label>
+                    <label for="validationCustom18"><?php echo e(__('Name Caisse')); ?>  </label>
                     <div class="input-group">
                       <input type="text" name="caisseName" value="<?php echo e(old('caisseName')); ?>"  class="form-control <?php $__errorArgs = ['caisseName'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -118,9 +98,9 @@ unset($__errorArgs, $__bag); ?>
 
 
                   <div class="col-md-12 mb-3">
-                    <label for="validationCustom25">Cache Init</label>
+                    <label for="validationCustom25"><?php echo e(__('Cache Init')); ?></label>
                     <div class="input-group">
-                      <input type="number" value="<?php echo e(old('cacheInit')); ?>"  class="form-control <?php $__errorArgs = ['cacheInit'];
+                      <input type="number" min="0" step=".01" value="<?php echo e(old('cacheInit')); ?>"  class="form-control <?php $__errorArgs = ['cacheInit'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -161,7 +141,7 @@ unset($__errorArgs, $__bag); ?>
 
 
                 <div class="ms-panel-header new">
-                  <button class="btn btn-primary d-block" type="submit">Add Caisse</button>
+                  <button class="btn btn-primary d-block" type="submit"><?php echo e(__('Add Caisse')); ?></button>
                 </div>
 
 

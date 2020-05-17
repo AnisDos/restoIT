@@ -278,59 +278,7 @@ unset($__errorArgs, $__bag); ?>
 
         </div>
 
-        <div class="col-xl-6 col-md-12">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="ms-panel">
-                <div class="ms-panel-header">
-                  <h6>Product </h6>
-                </div>
-                <div class="ms-panel-body">
-                  <div id="imagesSlider" class="ms-image-slider carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                      <div class="carousel-item active">
-                        <img class="d-block w-100" src="<?php echo e(asset ('styleRestoIT/assets/img/costic/add-product-1.jpg')); ?>" alt="First slide">
-                      </div>
-                      <div class="carousel-item">
-                        <img class="d-block w-100" src="<?php echo e(asset ('styleRestoIT/assets/img/costic/add-product-2.jpg')); ?>" alt="Second slide">
-                      </div>
-                      <div class="carousel-item">
-                        <img class="d-block w-100" src="<?php echo e(asset ('styleRestoIT/assets/img/costic/add-product-3.jpg')); ?>" alt="Third slide">
-                      </div>
-                    </div>
-                    <ol class="carousel-indicators">
-                      <li data-target="#imagesSlider" data-slide-to="0" class="active"> <img class="d-block w-100" src="<?php echo e(asset ('styleRestoIT/assets/img/costic/add-product-1.jpg')); ?>" alt="First slide"></li>
-                      <li data-target="#imagesSlider" data-slide-to="1"><img class="d-block w-100" src="<?php echo e(asset ('styleRestoIT/assets/img/costic/add-product-2.jpg')); ?>" alt="Second slide"></li>
-                      <li data-target="#imagesSlider" data-slide-to="2"><img class="d-block w-100" src="<?php echo e(asset ('styleRestoIT/assets/img/costic/add-product-3.jpg')); ?>" alt="Third slide"></li>
-                    </ol>
-                  </div>
-                </div>
-                <div class="ms-panel-header new">
-                  <p class="medium">Status Available</p>
-                  <div>
-                    <label class="ms-switch">
-                      <input type="checkbox">
-                      <span class="ms-switch-slider round"></span>
-                    </label>
-                  </div>
-                </div>
-                <div class="ms-panel-header new">
-                  <p class="medium">Discount Active</p>
-                  <div>
-                    <label class="ms-switch">
-                      <input type="checkbox" checked="">
-                      <span class="ms-switch-slider round"></span>
-                    </label>
-                  </div>
-                </div>
-                <div class="ms-panel-header new">
-                  <button class="btn btn-secondary d-block" type="submit">Save</button>
-                  <button class="btn btn-primary d-block" type="submit">Save and Add</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      
 
 
 

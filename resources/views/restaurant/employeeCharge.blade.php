@@ -4,7 +4,7 @@
 
 
 @section('content')
-
+{{App::setLocale(Session::get('locale'))}}
 
 
 
@@ -169,7 +169,7 @@ function changeTextOfLabelInCOnfermationAlert(id,idEmployee,employeeName,total){
                             
 
    [ "{{ $employee->idEmployee }}",
-   "  {{ $employee->email}}",  
+   "  {{ $employee->user->email}}",  
    "{{ $employee->type}}",
     "{{ $employee->hWork}}", 
     "{{ $employee->price_ph}}",

@@ -51,7 +51,7 @@
 
 
                 <div class="col-md-12 ">
-                  <label for="validationCustom01">Name</label>
+                  <label for="validationCustom01">Name  {{ __('name') }} </label>
                   <div class="input-group">
                     <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}"  id="validationCustom01" placeholder="Name"  required="">
                     <div class="valid-feedback">

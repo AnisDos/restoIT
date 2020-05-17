@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Category;
 use App\Meal;
 use App\Product;
+use App\Admin;
 use App\Ingredient;
 use Illuminate\Support\Arr;
 
@@ -18,7 +19,6 @@ use DB;
 use Carbon\Carbon;
 
 
-//require 'vendor/autoload.php';
 use Intervention\Image\ImageManagerStatic as Image;
 
 class AdminController extends Controller
@@ -31,60 +31,72 @@ class AdminController extends Controller
     }
 
 
-
+   // check if admin has privilage
+   public function checkPrivilege(String $name)
+   {
+     
+       $exists = Auth::user()->admin->privileges->contains($name);
+   
+       return $exists;
+       if (!$exists) {
+          
+           return redirect()->back();
+       }
+   
+       return true;
+   
+   }
+   
 
 
 
     public function index()
     {
-
+        $privileges = Auth::user()->admin->privileges()->get();
 //partie chart===================================================================
-//$chart = [];
-
 $charts = array();
-
-
-//$restaurants = User::where('user_id',Auth::user()->id)->where('id','!=',Auth::user()->id)->get();
 $restaurants = Auth::user()->admin->restaurants()->get();
-//dd($restaurants);
 // feach all restaurant of this admin and try yo evry one put there name end revuen of year
 foreach($restaurants as $restaurant){
-
-  
    $year = 2020;
    $tz = 'Europe/Madrid';
-
 $mounth = array();
    for ($i=1; $i <13 ; $i++) { 
-   
-
    $order = DB::table('orders')
-/*    ->select('orders.*') */
    ->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
    ->where('caisses.restaurant_id', $restaurant->id )
    ->where('orders.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
    ->where('orders.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
    ->sum('orders.priceOrder');
-
-
-
    array_push($mounth,  $order);
-
-
-
 }
-
-
    array_push($charts,  array( $restaurant->name,$mounth));
-
 }
+//end partie charts===================================================================
+//partie chart===================================================================
+$chartsexpenses = array();
 
+// feach all restaurant of this admin and try yo evry one put there name end revuen of year
+foreach($restaurants as $restaurant){
+   $year = 2020;
+   $tz = 'Europe/Madrid';
+$mounth = array();
+   for ($i=1; $i <13 ; $i++) { 
+   $order = DB::table('charges')
+   ->where('charges.restaurant_id', $restaurant->id )
+   ->where('charges.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
+   ->where('charges.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
+   ->sum('charges.priceCharge');
+   array_push($mounth,  $order);
+}
+   array_push($chartsexpenses,  array( $restaurant->name,$mounth));
+}
 //end partie charts===================================================================
 //dd($charts[0][1],$order);
 
-        
 
-        return view('admin.home',compact('charts') );
+
+        return view('admin.home',compact('chartsexpenses','charts','privileges') );
 
     }
  //=======================================================================================================
@@ -93,6 +105,8 @@ $mounth = array();
  //=======================================================================================================   
     public function addRestaurant()
     {
+
+        $privileges = Auth::user()->admin->privileges()->get();
       /*   $meals = Meal::find(1);
         
         $oldingredients = $meals->ingredients()->get();
@@ -111,12 +125,12 @@ $mounth = array();
               dd($oldingredients);
       }    */   
      
-        return view('admin.addRestaurant', );
+        return view('admin.addRestaurant', compact('privileges') );
 
     }
     
 
-    public function addRestaurantFormValidation(Request $request)
+    public function addRestaurantFormValidation()
 {
    
     $data = request()->validate([
@@ -132,9 +146,9 @@ $mounth = array();
     if (request('image') != null){
      
         $imagePath = request('image')->store('users','public');
-      /*  $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
+       $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
        
-        $image->save(); */
+        $image->save();
 
     }
 
@@ -153,7 +167,7 @@ $compte->save();
     $restaurant->password = $password; */
     if (request('image') != null){$restaurant->image = $imagePath;}
     
-    $restaurant->admin()->associate(Auth::user());
+    $restaurant->admin()->associate(Auth::user()->admin);
     $restaurant->user()->associate($compte);
     $restaurant->save();
 
@@ -283,20 +297,22 @@ foreach($meals as $mealee){
 public function restaurantsList()
 {
 
+    $privileges = Auth::user()->admin->privileges()->get();
+
    // $restaurants= User::where('user_id',Auth::user()->id)->get();
     $restaurants= Auth::user()->admin->restaurants()->get();
     
 
-    return view('admin.restaurantsList', compact('restaurants') );
+    return view('admin.restaurantsList', compact('restaurants','privileges') );
 
 }
 
 
 
-public function restaurantDetails(User $restaurant)
+public function restaurantDetails(Restaurant $restaurant)
 {
  
-    if ($restaurant->user_id != Auth::user()->id) {
+    if ( !Restaurant::where('admin_id',auth::user()->admin->id)->where('id',$restaurant->id)->exists() ) {
         return redirect()->back()->with("danger"," please don't play with that ! Do your job seriously");
     }
  
@@ -317,7 +333,7 @@ $revenus = array();
    $order = DB::table('orders')
 /*    ->select('orders.*') */
    ->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
-   ->where('caisses.user_id', $restaurant->id )
+   ->where('caisses.restaurant_id', $restaurant->id )
    ->where('orders.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
    ->where('orders.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
    ->sum('orders.priceOrder');
@@ -336,7 +352,7 @@ $depenses = array();
 
    $order = DB::table('charges')
 /*    ->select('charges.*') */
-   ->where('charges.user_id', $restaurant->id )
+   ->where('charges.restaurant_id', $restaurant->id )
    ->where('charges.created_at', '>=', Carbon::createFromDate($year, $i,0, $tz) )
    ->where('charges.created_at', '<',Carbon::createFromDate($year, $i+1,0, $tz) )
    ->sum('charges.priceCharge');
@@ -352,9 +368,46 @@ $depenses = array();
 
 //end partie chart===================================================================
 
-//dd($revenus,$depenses);
 
-    return view('admin.restaurantDetails', compact('restaurant','someInfoEmployees','revenus','depenses') );
+
+$totalrevenus= DB::table('orders')
+   ->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+   ->where('caisses.restaurant_id', $restaurant->id )
+   ->where('orders.created_at', '>=',  Carbon::createFromDate($year, 1,0, $tz)  )
+   ->where('orders.created_at', '<',Carbon::createFromDate($year+1, 1,0, $tz) )
+   ->sum('orders.priceOrder');
+
+$totaldepenses= DB::table('charges')
+/*    ->select('charges.*') */
+   ->where('charges.restaurant_id', $restaurant->id )
+   ->where('charges.created_at', '>=', Carbon::createFromDate($year, 1,0, $tz) )
+   ->where('charges.created_at', '<',Carbon::createFromDate($year+1, 1,0, $tz) )
+   ->sum('charges.priceCharge');
+
+
+   $totalorders =  DB::table('orders')
+      ->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+      ->where('caisses.restaurant_id', $restaurant->id )
+      ->count('*');
+   
+   
+   
+
+//dd($totalrevenus,$totaldepenses);
+$privileges = Auth::user()->admin->privileges()->get();
+
+$charges = $restaurant->charges()->get();
+$orders = DB::table('orders')
+->select('orders.*')
+->leftJoin('caisses',  'caisses.id', '=','orders.caisse_id')
+->where('caisses.restaurant_id',$restaurant->id  )
+->where('orders.orderStatus',"completed" )
+->get();
+
+$historyTransactions =$restaurant->transactionHistories()->get();
+
+
+    return view('admin.restaurantDetails', compact('historyTransactions','orders','charges','restaurant','someInfoEmployees','revenus','depenses','totalrevenus','totaldepenses','totalorders','privileges') );
   
 
 }
@@ -364,14 +417,14 @@ $depenses = array();
 
 
 public function updateRestaurantInfo(){
-    //$em = User::find('')
+    $restaurant = Restaurant::find(request()['id_res']);
    
     $data = request()->validate([
         'id_res'=> '',
         'name' => 'required|min:3|max:50',
         //'email' => 'unique:users'.request()['email'],
        // 'email'=>'',
-       'email' => ['required','email', \Illuminate\Validation\Rule::unique('users')->ignore(request()['id_res'])],
+       'email' => ['required','email', \Illuminate\Validation\Rule::unique('users')->ignore($restaurant->user->id)],
        // 'password' => 'confirmed|min:6',
         'address'=>'required',
         'image' => '',
@@ -383,20 +436,22 @@ public function updateRestaurantInfo(){
       
         $imagePath = request('image')->store('users','public');
         
-      /*   $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
+        $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
        
         $image->save();
-        */
+       
     }
   
 
+$compte = User::find($restaurant->user->id);
+$compte->email = $data['email'];
+$compte->save();
 
-
-    $restaurant = User::find($data['id_res']);
+    //$restaurant = User::find($data['id_res']);
     //dd($restaurant,$data['id_res']);
     $restaurant->name = $data['name'];
     $restaurant->address = $data['address'];
-    $restaurant->email = $data['email'];
+ 
     if (request('image') != null){$restaurant->image = $imagePath;}
     
     $restaurant->save();
@@ -405,6 +460,11 @@ public function updateRestaurantInfo(){
 
 
 }
+
+
+
+
+
 
 
 public function updatePasswordRestaurant()
@@ -420,8 +480,19 @@ public function updatePasswordRestaurant()
 
     $password = \Hash::make($data['password']);
 
-    $restaurant = User::find($data['id_res']);
-    $restaurant->password = $password;
+
+
+
+    $restaurant = Restaurant::find($data['id_res']);
+
+
+
+    
+$compte = User::find($restaurant->user->id);
+$compte->password = $password;
+$compte->save();
+
+
 
     if (request('Activate') == "activih"){$restaurant->active = true;}
     
@@ -443,8 +514,16 @@ public function decativateRestaurant()
 
     $password = "djit nkasi la routine";
 
-    $restaurant = User::find($data['id_res']);
-    $restaurant->password = $password;
+    $restaurant = Restaurant::find($data['id_res']);
+
+
+    
+    
+$compte = User::find($restaurant->user->id);
+$compte->password = $password;
+$compte->save();
+
+
 
    $restaurant->active = false;
     
@@ -460,6 +539,10 @@ public function decativateRestaurant()
 
 public function addMeal()
 {
+    $this->checkPrivilege("stocks");
+    $privileges = Auth::user()->admin->privileges()->get();
+    
+    
     
     //$categories = Category::where('user_id',Auth::user()->id)->get();
     //$products = Product::all();
@@ -467,7 +550,7 @@ public function addMeal()
     $categories = Auth::user()->admin->categories()->get();
     $products = Auth::user()->admin->products()->get();
 
-    return view('admin.addMeal', compact('categories','products')  );
+    return view('admin.addMeal', compact('categories','products','privileges')  );
 
 }
 
@@ -495,9 +578,9 @@ public function addMealForm()
 
         $imagePath = request('image')->store('meals','public');
         
-/*         $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
+        $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
        
-        $image->save(); */
+        $image->save();
        
     }
 
@@ -568,9 +651,12 @@ for($i = 0;  $i< count($dataIngridient) ;  $i++)
 
 public function addCategory()
 {
+    $this->checkPrivilege("stocks");
+    $privileges = Auth::user()->admin->privileges()->get();
+    
     
 
-    return view('admin.addCategory', );
+    return view('admin.addCategory',compact('privileges') );
 
 }
 
@@ -609,6 +695,9 @@ $me =    Auth::user()->admin->categories()->create([
 public function mealsList()
 {
     
+    $this->checkPrivilege("stocks");
+    $privileges = Auth::user()->admin->privileges()->get();
+    
     //$meals = Meal::all();
    // $meals = Auth::user()->admin->categories()->meals()->get();
     $meals = DB::table('meals')
@@ -619,7 +708,7 @@ public function mealsList()
        ->get();
 
     //dd($meals);
-    return view('admin.mealsList', compact('meals')  );
+    return view('admin.mealsList', compact('meals','privileges')  );
 
 }
 
@@ -630,21 +719,28 @@ public function mealsList()
 public function mealDetails(Meal $meal)
 {
 
+    $this->checkPrivilege("stocks");
+    $privileges = Auth::user()->admin->privileges()->get();
+    
 
-    return view('admin.mealDetails', compact('meal')  );
+    return view('admin.mealDetails', compact('meal','privileges')  );
 
 }
 
 public function updateMeal(Meal $meal)
 {
 
+    $this->checkPrivilege("stocks");
+    $privileges = Auth::user()->admin->privileges()->get();
+    
+    
     $ingredients = Ingredient::where('meal_id', $meal->id)->get();
     $categories = Auth::user()->admin->categories()->get();
     //$categories = Category::where('user_id',Auth::user()->id)->get();
    // $products = Product::all();
     $products = Auth::user()->admin->products()->get();
 
-    return view('admin.updateMeal', compact('meal','categories','products','ingredients')  );
+    return view('admin.updateMeal', compact('meal','categories','products','ingredients','privileges')  );
 
 }
 
@@ -669,9 +765,9 @@ public function updateMealForm()
 
         $imagePath = request('image')->store('meals','public');
         
-/*         $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
+        $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
        
-        $image->save(); */
+        $image->save();
        
     }
 
@@ -754,12 +850,162 @@ $t=  Ingredient::where('meal_id', $me->id)->delete();
 
 public function chartTotalOrders()
 {
+    $privileges = Auth::user()->admin->privileges()->get();
 
 
-
-    return view('admin.chartTotalOrders',   );
+    return view('admin.chartTotalOrders', compact('privileges')  );
 
 }
+
+
+
+
+
+
+
+public function allCustomers()
+{
+    
+
+$this->checkPrivilege("customers");
+$privileges = Auth::user()->admin->privileges()->get();
+
+
+$tz = 'Europe/Madrid';
+$year = carbon::now()->year;
+$month = carbon::now()->month;
+
+
+$customers = DB::table('orders')
+->select('customers.*','restaurants.name as resname', DB::raw("SUM(orders.priceOrder) as priceIng") )
+->leftJoin('customers',  'customers.id', '=','orders.customer_id')
+->leftJoin('restaurants',  'restaurants.id', '=','customers.restaurant_id')
+->leftJoin('admins',  'admins.id', '=','restaurants.admin_id')
+->where('admins.id',Auth::user()->admin->id)
+->where('orders.created_at', '>=', Carbon::createFromDate($year, $month,0, $tz) )
+->where('orders.created_at', '<',Carbon::createFromDate($year, $month+1,0, $tz) )
+->groupBy('orders.customer_id')
+->get();
+
+
+$allcustomers = DB::table('customers')
+->select('customers.*','restaurants.name as resname')
+->leftJoin('restaurants',  'restaurants.id', '=','customers.restaurant_id')
+->leftJoin('admins',  'admins.id', '=','restaurants.admin_id')
+->where('admins.id',Auth::user()->admin->id)
+->groupBy('customers.id')
+->get();
+
+
+
+
+return view('admin.allCustomers',compact('allcustomers','customers','privileges',));
+
+
+}
+
+
+
+public function accountsettings(Admin $admin) 
+{
+
+    if(auth::user()->admin->id != $admin->id){
+
+        return redirect()->back()->with("danger"," You try to do a danger things be careful I will punish you ! ");
+
+    }
+    $privileges = Auth::user()->admin->privileges()->get();
+
+
+
+    return view('admin.accountsettings',compact('admin','privileges') );
+
+
+
+}
+
+
+
+
+
+
+
+
+
+public function updateadminInfo(){
+    $data = request()->validate([
+        'id_res'=> '',
+        'name' => 'required|min:3|max:50',
+        //'email' => 'unique:users'.request()['email'],
+       // 'email'=>'',
+       'email' => ['required','email', \Illuminate\Validation\Rule::unique('users')->ignore(request()['id_res'])],
+       // 'password' => 'confirmed|min:6',
+    
+        'image' => '',
+    ]);
+
+  
+ 
+    if (request('image') != null){
+      
+        $imagePath = request('image')->store('users','public');
+        
+        $image = Image::make(public_path("storage/{$imagePath}"))->fit(120,120);
+       
+        $image->save();
+       
+    }
+  
+
+
+
+    $admin = Admin::find(Auth::user()->admin->id);
+    $compte = User::find(Auth::user()->id);
+    $admin->name = $data['name'];
+
+    $compte->email = $data['email'];
+    if (request('image') != null){$admin->image = $imagePath;}
+    
+    $admin->save();
+    $compte->save();
+
+    return redirect()->back()->with("success","Admin information Updated with success !! ");
+
+
+}
+
+
+public function updatePasswordadmin()
+{
+
+    
+    $data = request()->validate([
+        'id_res'=> '',
+        'Activate'=> '',
+        'password' => 'confirmed|min:6',
+       
+    ]);
+
+    $password = \Hash::make($data['password']);
+
+    $compte = User::find($data['id_res']);
+    $compte->password = $password;
+
+
+    
+    $compte->save();
+    return redirect()->back()->with("success","Admin Password Updated with success !! ");
+
+
+}
+
+
+
+
+
+
+
+
 
 
 

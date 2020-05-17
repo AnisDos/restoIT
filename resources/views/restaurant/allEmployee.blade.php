@@ -4,7 +4,7 @@
 
 
 @section('content')
-
+{{App::setLocale(Session::get('locale'))}}
 
 
 
